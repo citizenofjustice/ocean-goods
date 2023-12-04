@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
-import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  MagnifyingGlassIcon,
+  PhoneIcon,
+} from "@heroicons/react/24/outline";
 
 import MenuList from "./MenuList";
 
@@ -21,6 +25,11 @@ const menuItems: menuItem[] = [
     title: "Поиск",
     path: "/search",
     icon: <MagnifyingGlassIcon className="w-4 h-4" />,
+  },
+  {
+    title: "Контакты",
+    path: "/contact",
+    icon: <PhoneIcon className="w-4 h-4" />,
   },
 ];
 

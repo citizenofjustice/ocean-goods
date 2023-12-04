@@ -6,6 +6,7 @@ import ItemPage from "./components/Pages/ItemPage";
 import CatalogPage from "./components/Pages/CatalogPage";
 import NotFoundPage from "./components/Pages/NotFoundPage";
 import SearchPage from "./components/Pages/SearchPage";
+import ContactPage from "./components/Pages/ContactPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ function App() {
               <Route index element={<CatalogPage />} />
               <Route path="item/:id" element={<ItemPage />} />
               <Route path="search" element={<SearchPage />} />
+              <Route path="contact" element={<ContactPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>
