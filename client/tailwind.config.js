@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./src/**/**/*.{js,jsx,ts,tsx}"],
   presets: [],
   darkMode: "media", // or 'class'
   theme: {
@@ -791,6 +791,7 @@ export default {
       150: "1.5",
     },
     screens: {
+      vsm: "425px",
       sm: "640px",
       md: "768px",
       lg: "1024px",

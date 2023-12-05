@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
-import Layout from "./components/Pages/Layout";
+import Layout from "./components/Layouts/Layout";
 import ItemPage from "./components/Pages/ItemPage";
 import CatalogPage from "./components/Pages/CatalogPage";
 import NotFoundPage from "./components/Pages/NotFoundPage";
