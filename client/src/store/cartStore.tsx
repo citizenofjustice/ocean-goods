@@ -1,18 +1,34 @@
 import { makeAutoObservable } from "mobx";
 
 import CartItemModel from "../classes/CartItemModel";
-import tmpImg from "../assets/images/tmp.jpg"; //when removing change file extension
+import { CatalogItem } from "../types/CatalogItem";
 
 // creating store class for keeping cart items
 class cartStore {
-  cartItems?: CartItemModel[] = [
-    new CartItemModel("Горбуша", 200, 320, 80, <img src={tmpImg} />),
-    new CartItemModel("Тунец", 250, 280, 90, <img src={tmpImg} />),
-    new CartItemModel("Сайра", 230, 350, 120, <img src={tmpImg} />),
-  ];
+  cartItems: CartItemModel[] = [];
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  addItem(product: CatalogItem) {
+    const inCartProduct: CartItemModel | undefined = this.cartItems.find(
+      (item) => item.productId === product.productId
+    );
+    if (inCartProduct) {
+      inCartProduct.incrementAmount();
+    } else {
+      this.cartItems?.push(
+        new CartItemModel(
+          product.productId,
+          product.name,
+          product.weigth,
+          product.price,
+          product.kcal,
+          product.image
+        )
+      );
+    }
   }
 }
 

@@ -6,7 +6,7 @@ import { CartItem } from "../types/cartItem";
 // Cart item class implementing CartItem interface
 class CartItemModel implements CartItem {
   cartItemId: string = nanoid();
-  amount: number = 0;
+  amount: number = 1;
   productId: string = nanoid();
   name: string;
   price: number;
@@ -21,6 +21,7 @@ class CartItemModel implements CartItem {
   }
 
   constructor(
+    productId: string,
     name: string,
     weigth: number,
     price: number,
@@ -28,6 +29,7 @@ class CartItemModel implements CartItem {
     image?: JSX.Element
   ) {
     makeAutoObservable(this);
+    this.productId = productId;
     this.name = name;
     this.price = price;
     this.weigth = weigth;
