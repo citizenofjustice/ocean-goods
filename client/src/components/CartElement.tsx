@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { action } from "mobx";
+import { observer } from "mobx-react-lite";
 
-import { cartItem } from "./Cart";
 import AmountControls from "./AmontControls";
+import CartItemModel from "../classes/CartItemModel";
 
 /**
  * Component for rendering each cart element
@@ -9,10 +10,8 @@ import AmountControls from "./AmontControls";
  * @returns
  */
 const CartElement: React.FC<{
-  cartItem: cartItem;
-}> = ({ cartItem }) => {
-  const [currentValue, setCurrentValue] = useState<number>(cartItem.amount);
-
+  cartItem: CartItemModel;
+}> = observer(({ cartItem }) => {
   return (
     <>
       <li className="flex flex-row place-content-between items-align h-fit mx-4 py-4">
@@ -23,20 +22,20 @@ const CartElement: React.FC<{
           <div>{cartItem.name}</div>
           <div>{`${cartItem.kcal} ккал., ${cartItem.weigth} гр.`}</div>
         </div>
-        <div className="basis-1/8 text-right mr-4">{`${
-          cartItem.price * cartItem.amount
-        } руб.`}</div>
+        <div className="basis-1/8 text-right mr-4">
+          {cartItem.totalProductPrice}
+        </div>
         <div className="basis-1/8">
           <AmountControls
-            currentValue={currentValue}
+            currentValue={cartItem.amount}
             additonalStyle="flex-col-reverse justify-end"
-            onDecrement={() => setCurrentValue((prev) => prev - 1)}
-            onIncrement={() => setCurrentValue((prev) => prev + 1)}
+            onDecrement={action(() => cartItem.decrementAmount())}
+            onIncrement={action(() => cartItem.incrementAmount())}
           />
         </div>
       </li>
     </>
   );
-};
+});
 
 export default CartElement;

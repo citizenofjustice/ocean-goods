@@ -1,45 +1,9 @@
+import { observer } from "mobx-react-lite";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useLockBodyScroll } from "@uidotdev/usehooks";
 
-import CartElement from "./CartItem";
-import { catalogItem } from "./Pages/CatalogPage";
-
-import Tuna from "../assets/images/Tuna.jpg";
-import Saira from "../assets/images/Saira.jpeg";
-import Gorbusha from "../assets/images/Gorbusha.jpg";
-
-// extend interface of catalog item with amount
-export interface cartItem extends catalogItem {
-  amount: number;
-}
-
-// creating temp dummy data of cart items
-const CartItems: cartItem[] = [
-  {
-    name: "Горбуша",
-    price: 200,
-    weigth: 320,
-    kcal: 80,
-    image: <img src={Gorbusha} />,
-    amount: 4,
-  },
-  {
-    name: "Тунец",
-    price: 250,
-    weigth: 280,
-    kcal: 90,
-    image: <img src={Tuna} />,
-    amount: 8,
-  },
-  {
-    name: "Сайра",
-    price: 230,
-    weigth: 350,
-    kcal: 120,
-    image: <img src={Saira} />,
-    amount: 2,
-  },
-];
+import CartElement from "./CartElement";
+import { useStore } from "../store/root-store-context";
 
 /**
  * Component rendering list of cart items
@@ -47,7 +11,11 @@ const CartItems: cartItem[] = [
  */
 const Cart: React.FC<{
   onCartClose: () => void;
-}> = ({ onCartClose }) => {
+}> = observer(({ onCartClose }) => {
+  // getting cart state from store
+  const { cart } = useStore();
+  const { cartItems } = cart;
+
   useLockBodyScroll(); // disabling body scroll
 
   return (
@@ -64,13 +32,14 @@ const Cart: React.FC<{
           </div>
         </div>
         <ul className="divide-y">
-          {CartItems.map((item, index) => (
-            <CartElement key={index} cartItem={item} />
-          ))}
+          {cartItems &&
+            cartItems.map((item) => (
+              <CartElement key={item.cartItemId} cartItem={item} />
+            ))}
         </ul>
       </div>
     </>
   );
-};
+});
 
 export default Cart;

@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { useState } from "react";
 import {
   Bars3Icon,
@@ -9,26 +10,24 @@ import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 
 import Cart from "../Cart";
 import MenuList from "../MenuList";
+import { MenuItem } from "../../types/MenuItem";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 
-// defining menuItem interface
-export interface menuItem {
-  title: string;
-  path: string;
-  icon?: JSX.Element;
-}
 // setting menuItems with values
-const menuItems: menuItem[] = [
+const menuItems: MenuItem[] = [
   {
+    id: nanoid(),
     title: "Каталог",
     path: "/",
   },
   {
+    id: nanoid(),
     title: "Поиск",
     path: "/search",
     icon: <MagnifyingGlassIcon className="w-4 h-4" />,
   },
   {
+    id: nanoid(),
     title: "Контакты",
     path: "/contact",
     icon: <PhoneIcon className="w-4 h-4" />,

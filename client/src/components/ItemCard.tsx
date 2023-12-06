@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import ItemInfoCard from "./UI/ItemInfoCard";
 import AmountControls from "./AmontControls";
-import { catalogItem } from "./Pages/CatalogPage";
+import { CatalogItem } from "../types/CatalogItem";
 
 /**
  * Renders catalog item card
@@ -10,7 +10,7 @@ import { catalogItem } from "./Pages/CatalogPage";
  * @returns
  */
 const ItemCard: React.FC<{
-  catalogItem: catalogItem;
+  catalogItem: CatalogItem;
 }> = ({ catalogItem }) => {
   // state for setting each item amount to buy
   const [itemAmount, setItemAmount] = useState<number>(0);

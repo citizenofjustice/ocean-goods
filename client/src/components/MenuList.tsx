@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useLockBodyScroll } from "@uidotdev/usehooks";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { menuItem } from "./Layouts/Navbar";
+import { MenuItem } from "../types/MenuItem";
 
 /**
  * Component for rendering menu list
@@ -12,7 +12,7 @@ import { menuItem } from "./Layouts/Navbar";
  * @returns
  */
 const MenuList: React.FC<{
-  menuItems: menuItem[];
+  menuItems: MenuItem[];
   onMenuClose?: () => void;
   isDesktop?: boolean;
 }> = ({ menuItems, onMenuClose, isDesktop = false }) => {
@@ -29,9 +29,9 @@ const MenuList: React.FC<{
           <XMarkIcon className="w-6 h-6" />
         </li>
       )}
-      {menuItems.map((item: menuItem, index: number) => (
+      {menuItems.map((item) => (
         <li
-          key={index}
+          key={item.id}
           onClick={onMenuClose}
           className={isDesktop ? "mx-4" : "m-4"}
         >
