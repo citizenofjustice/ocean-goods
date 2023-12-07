@@ -16,17 +16,16 @@ const MenuList: React.FC<{
   onMenuClose?: () => void;
   isDesktop?: boolean;
 }> = ({ menuItems, onMenuClose, isDesktop = false }) => {
-  useLockBodyScroll(); // disable body scroll
-
   return (
     <ul id="nav-menu" className={`flex ${isDesktop ? "flex-row" : "flex-col"}`}>
       {/* show only if screen is smaller than desktop */}
       {!isDesktop && (
-        <li
-          onClick={onMenuClose}
-          className="flex ml-4 mt-4 mb-4 hover:cursor-pointer"
-        >
-          <XMarkIcon className="w-6 h-6" />
+        <li className="flex py-4">
+          <div onClick={onMenuClose} className="basis-1/12 flex justify-start">
+            <div className="flex items-center justify-end h-10 w-12 hover:cursor-pointer">
+              <CloseMenuIcon />
+            </div>
+          </div>
         </li>
       )}
       {menuItems.map((item) => (
@@ -46,3 +45,12 @@ const MenuList: React.FC<{
 };
 
 export default MenuList;
+
+/**
+ * separate component for calling here useLockBodyScroll hook
+ * @returns
+ */
+const CloseMenuIcon = () => {
+  useLockBodyScroll(); // disable body scroll
+  return <XMarkIcon className="w-6 h-6" />;
+};

@@ -21,14 +21,11 @@ const Cart: React.FC<{
   return (
     <>
       <div>
-        <div className="flex sticky top-0 bg-white border-b-2 items-center place-content-between p-4">
+        <div className="flex sticky top-0 bg-white border-b-2 items-center place-content-between py-4">
           <div className="basis-1/12"></div>
           <p className="text-center">Корзина:</p>
-          <div
-            onClick={onCartClose}
-            className="basis-1/12 flex justify-end hover:cursor-pointer"
-          >
-            <div className="flex items-center h-10 w-12 ">
+          <div onClick={onCartClose} className="basis-1/12 flex justify-end">
+            <div className="flex items-center h-10 w-12 hover:cursor-pointer">
               <XMarkIcon className="w-6 h-6" />
             </div>
           </div>

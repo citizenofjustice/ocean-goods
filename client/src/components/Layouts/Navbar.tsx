@@ -51,8 +51,8 @@ const Navbar = observer(() => {
     "w-full h-full fixed z-50 bg-white top-0 left-0 transition-all duration-300 ease-in-out";
 
   return (
-    <header className="sticky top-0 bg-white border-b-2 flex items-center flex-row p-4">
-      <nav className="basis-1/12">
+    <header className="sticky top-0 bg-white border-b-2 flex items-center flex-row py-4">
+      <nav className="basis-1/12 flex justify-start">
         {isMenuOpen && (
           <div className={menuClasses}>
             <MenuList
@@ -65,13 +65,13 @@ const Navbar = observer(() => {
           // if screen width smaller than tablets show mobile menu icon
           <div
             onClick={() => setIsMenuOpen(true)}
-            className="w-6 h-6 hover:cursor-pointer"
+            className="flex items-center justify-end h-10 w-12 hover:cursor-pointer"
           >
             <Bars3Icon className="w-6 h-6" />
           </div>
         ) : (
           // if screen width bigger than tablets show app name
-          <div className="whitespace-nowrap">
+          <div className="flex items-center justify-end h-10 ml-[1.625rem] whitespace-nowrap">
             <Link to="/">Ocean Goods</Link>
           </div>
         )}
