@@ -1,10 +1,10 @@
+import { action } from "mobx";
+import { observer } from "mobx-react-lite";
+
 import ItemInfoCard from "./UI/ItemInfoCard";
 import AmountControls from "./AmontControls";
 import { CatalogItem } from "../types/CatalogItem";
-import { action } from "mobx";
 import { useStore } from "../store/root-store-context";
-import CartItemModel from "../classes/CartItemModel";
-import { observer } from "mobx-react-lite";
 
 /**
  * Renders catalog item card
@@ -15,10 +15,9 @@ const ItemCard: React.FC<{
   catalogItem: CatalogItem;
 }> = observer(({ catalogItem }) => {
   const { cart } = useStore();
-  const { cartItems } = cart;
-  const inCartProduct: CartItemModel | undefined = cartItems.find(
-    (item) => item.productId === catalogItem.productId
-  );
+
+  // check if item is in cart (if there display amount controls)
+  const inCartProduct = cart.findCartItem(catalogItem.productId);
 
   return (
     <>
@@ -42,7 +41,7 @@ const ItemCard: React.FC<{
         {!inCartProduct && (
           <button
             type="button"
-            onClick={action(() => cart.addItem(catalogItem))} //() => setItemAmount((prev) => prev + 1)
+            onClick={action(() => cart.addItem(catalogItem))}
             className="transition ease-in-out transition-all text-white bg-gradient-to-br h-8 px-2 from-green-400 to-blue-600 hover:bg-gradient-to-bl font-medium rounded-lg text-sm text-center"
           >
             В корзину
@@ -51,8 +50,8 @@ const ItemCard: React.FC<{
         {inCartProduct && (
           <AmountControls
             currentValue={inCartProduct.amount}
-            onDecrement={action(() => inCartProduct.decrementAmount())}
-            onIncrement={action(() => inCartProduct.incrementAmount())}
+            onDecrement={action(() => cart.removeItem(catalogItem.productId))}
+            onIncrement={action(() => cart.addItem(catalogItem))}
           />
         )}
       </div>

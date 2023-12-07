@@ -21,14 +21,16 @@ const Cart: React.FC<{
   return (
     <>
       <div>
-        <div className="flex sticky top-0 bg-white border-b-2 items-center place-content-between">
+        <div className="flex sticky top-0 bg-white border-b-2 items-center place-content-between p-4">
           <div className="basis-1/12"></div>
           <p className="text-center">Корзина:</p>
           <div
             onClick={onCartClose}
-            className="basis-1/12 flex justify-end mr-6 mt-4 mb-4 hover:cursor-pointer"
+            className="basis-1/12 flex justify-end hover:cursor-pointer"
           >
-            <XMarkIcon className="w-6 h-6" />
+            <div className="flex items-center h-10 w-12 ">
+              <XMarkIcon className="w-6 h-6" />
+            </div>
           </div>
         </div>
         <ul className="divide-y">
@@ -37,6 +39,10 @@ const Cart: React.FC<{
               <CartElement key={item.cartItemId} cartItem={item} />
             ))}
         </ul>
+        <div className="flex place-content-between items-center py-4 px-8">
+          <p>Общая сумма заказа:</p>
+          <p>{`${cart.totalCartPrice} руб.`}</p>
+        </div>
       </div>
     </>
   );

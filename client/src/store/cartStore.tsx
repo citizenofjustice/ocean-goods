@@ -7,14 +7,33 @@ import { CatalogItem } from "../types/CatalogItem";
 class cartStore {
   cartItems: CartItemModel[] = [];
 
+  get totalQuantity(): number {
+    return this.cartItems.length;
+  }
+
+  get totalCartPrice(): number {
+    const initialValue = 0;
+    const summedPrice: number = this.cartItems.reduce(
+      (accumulator: number, currentValue: CartItemModel) =>
+        accumulator + currentValue.totalProductPrice,
+      initialValue
+    );
+    return summedPrice;
+  }
+
   constructor() {
     makeAutoObservable(this);
   }
 
-  addItem(product: CatalogItem) {
-    const inCartProduct: CartItemModel | undefined = this.cartItems.find(
-      (item) => item.productId === product.productId
+  findCartItem(id: string) {
+    const cartItem: CartItemModel | undefined = this.cartItems.find(
+      (item) => item.productId === id
     );
+    return cartItem;
+  }
+
+  addItem(product: CatalogItem) {
+    const inCartProduct = this.findCartItem(product.productId);
     if (inCartProduct) {
       inCartProduct.incrementAmount();
     } else {
@@ -28,6 +47,20 @@ class cartStore {
           product.image
         )
       );
+    }
+  }
+
+  removeItem(productId: string) {
+    const inCartProduct = this.findCartItem(productId);
+    if (inCartProduct) {
+      if (inCartProduct.amount === 1) {
+        const filteredItems = this.cartItems.filter(
+          (item) => item.productId !== productId
+        );
+        this.cartItems = filteredItems;
+      } else {
+        inCartProduct.decrementAmount();
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { makeAutoObservable } from "mobx";
 
-import { CartItem } from "../types/cartItem";
+import { CartItem } from "../types/CartItem";
 
 // Cart item class implementing CartItem interface
 class CartItemModel implements CartItem {
@@ -43,7 +43,8 @@ class CartItemModel implements CartItem {
   }
   // decrease cart item amount by 1
   decrementAmount(): void {
-    this.amount--;
+    // decrease only if amount is more than 0
+    if (this.amount > 0) this.amount--;
   }
 }
 

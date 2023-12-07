@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 
 import AmountControls from "./AmontControls";
 import CartItemModel from "../classes/CartItemModel";
+import { useStore } from "../store/root-store-context";
 
 /**
  * Component for rendering each cart element
@@ -12,6 +13,8 @@ import CartItemModel from "../classes/CartItemModel";
 const CartElement: React.FC<{
   cartItem: CartItemModel;
 }> = observer(({ cartItem }) => {
+  const { cart } = useStore();
+
   return (
     <>
       <li className="flex flex-row place-content-between items-align h-fit mx-4 py-4">
@@ -29,7 +32,7 @@ const CartElement: React.FC<{
           <AmountControls
             currentValue={cartItem.amount}
             additonalStyle="flex-col-reverse justify-end"
-            onDecrement={action(() => cartItem.decrementAmount())}
+            onDecrement={action(() => cart.removeItem(cartItem.productId))}
             onIncrement={action(() => cartItem.incrementAmount())}
           />
         </div>
