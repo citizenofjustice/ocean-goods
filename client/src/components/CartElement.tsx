@@ -23,7 +23,7 @@ const CartElement: React.FC<{
         </div>
         <div className="grow flex flex-col justify-start items-start mr-4">
           <div>{cartItem.name}</div>
-          <div>{`${cartItem.kcal} ккал., ${cartItem.weigth} гр.`}</div>
+          <div>{`${cartItem.kcal} ккал., ${cartItem.weight} гр.`}</div>
         </div>
         <div className="basis-1/8 text-right mr-4">
           {cartItem.totalProductPrice}

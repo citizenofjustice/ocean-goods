@@ -41,7 +41,7 @@ class cartStore {
         new CartItemModel(
           product.productId,
           product.name,
-          product.weigth,
+          product.weight,
           product.price,
           product.kcal,
           product.image

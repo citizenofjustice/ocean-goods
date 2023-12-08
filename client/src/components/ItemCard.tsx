@@ -30,7 +30,7 @@ const ItemCard: React.FC<{
         <div className="basis-1/12" />
         <div className="basis-2/12 flex items-center">
           <div className="flex flex-col justify-end">
-            <ItemInfoCard>{`${catalogItem.weigth} гр.`}</ItemInfoCard>
+            <ItemInfoCard>{`${catalogItem.weight} гр.`}</ItemInfoCard>
             <ItemInfoCard>{`${catalogItem.kcal} ккал.`}</ItemInfoCard>
             <ItemInfoCard>{`${catalogItem.price} руб.`}</ItemInfoCard>
           </div>

@@ -3,7 +3,7 @@ export interface CatalogItem {
   productId: string;
   name: string;
   price: number;
-  weigth: number;
+  weight: number;
   kcal: number;
   image?: JSX.Element;
 }

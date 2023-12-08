@@ -10,7 +10,7 @@ class CartItemModel implements CartItem {
   productId: string = nanoid();
   name: string;
   price: number;
-  weigth: number;
+  weight: number;
   kcal: number;
   image?: JSX.Element;
 
@@ -23,7 +23,7 @@ class CartItemModel implements CartItem {
   constructor(
     productId: string,
     name: string,
-    weigth: number,
+    weight: number,
     price: number,
     kcal: number,
     image?: JSX.Element
@@ -32,7 +32,7 @@ class CartItemModel implements CartItem {
     this.productId = productId;
     this.name = name;
     this.price = price;
-    this.weigth = weigth;
+    this.weight = weight;
     this.kcal = kcal;
     this.image = image;
   }

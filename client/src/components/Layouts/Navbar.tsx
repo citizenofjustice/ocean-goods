@@ -34,6 +34,13 @@ const menuItems: MenuItem[] = [
     path: "/contact",
     icon: <PhoneIcon className="w-4 h-4" />,
   },
+  {
+    //temp
+    id: nanoid(),
+    title: "Создать",
+    path: "/new-item",
+    // icon: <PhoneIcon className="w-4 h-4" />,
+  },
 ];
 
 /**
