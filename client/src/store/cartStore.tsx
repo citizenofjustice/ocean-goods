@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 import CartItemModel from "../classes/CartItemModel";
-import { CatalogItem } from "../types/CatalogItem";
+import CatalogItemModel from "../classes/CatalogItemModel";
 
 // creating store class for keeping cart items
 class cartStore {
@@ -32,7 +32,7 @@ class cartStore {
     return cartItem;
   }
 
-  addItem(product: CatalogItem) {
+  addItem(product: CatalogItemModel) {
     const inCartProduct = this.findCartItem(product.productId);
     if (inCartProduct) {
       inCartProduct.incrementAmount();

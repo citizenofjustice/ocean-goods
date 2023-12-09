@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 
 import ItemInfoCard from "./UI/ItemInfoCard";
 import AmountControls from "./AmontControls";
-import { CatalogItem } from "../types/CatalogItem";
+import CatalogItemModel from "../classes/CatalogItemModel";
 import { useStore } from "../store/root-store-context";
 
 /**
@@ -12,7 +12,7 @@ import { useStore } from "../store/root-store-context";
  * @returns
  */
 const ItemCard: React.FC<{
-  catalogItem: CatalogItem;
+  catalogItem: CatalogItemModel;
 }> = observer(({ catalogItem }) => {
   const { cart } = useStore();
 

@@ -1,38 +1,97 @@
+import { useState } from "react";
+
+import ImageDropzone from "../UI/ImageDropzone";
 import LabeledInputField from "../UI/LabeledInputField";
-// import { CatalogItem } from "../../types/CatalogItem";
+import CatalogItemModel from "../../classes/CatalogItemModel";
+import { observer } from "mobx-react-lite";
+import { useStore } from "../../store/root-store-context";
 
-interface InputFields {
-  title: string;
-  inputId: string;
-  inputType: string;
-}
+const initValues = {
+  name: "",
+  price: "",
+  weight: "",
+  kcal: "",
+  image: "",
+};
 
-const formInputs: InputFields[] = [
-  { title: "Название", inputId: "add-to-catalog-name", inputType: "text" },
-  { title: "Цена", inputId: "add-to-catalog-price", inputType: "number" },
-  { title: "Вес", inputId: "add-to-catalog-weight", inputType: "number" },
-  {
-    title: "Ккал (на 100 гр.)",
-    inputId: "add-to-catalog-kcal",
-    inputType: "number",
-  },
-  { title: "Изображение", inputId: "add-to-catalog-image", inputType: "file" },
-];
+const AddToCatalogPage = observer(() => {
+  const { catalog } = useStore();
+  const [inputValues, setInputValues] = useState(initValues);
 
-const AddToCatalogPage = () => {
+  const handleItemAddition = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const target = event.target as HTMLFormElement;
+    const fData = new FormData(target);
+    const formObject = Object.fromEntries(fData.entries());
+    const { name, price, weight, kcal } = formObject;
+
+    /* temp for testing */
+    catalog.addCatalogItem(
+      new CatalogItemModel(name.toString(), +price, +weight, +kcal)
+    );
+    setInputValues(initValues);
+  };
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === "image") {
+      const selectedFiles = e.target.files as FileList;
+      const imageUrl = URL.createObjectURL(selectedFiles?.[0]);
+      setInputValues({ ...inputValues, [name]: imageUrl });
+    } else {
+      setInputValues({ ...inputValues, [name]: value });
+    }
+  };
+
+  const handleImageReset = () => {
+    setInputValues({ ...inputValues, image: "" });
+  };
+
   return (
     <>
       <div className="p-4">
-        <form>
+        <form onSubmit={handleItemAddition}>
           <div className="grid gap-6 mb-6 md:grid-cols-2">
-            {formInputs.map((input) => (
-              <LabeledInputField
-                key={input.inputId}
-                title={input.title}
-                inputId={input.inputId}
-                inputType={input.inputType}
-              />
-            ))}
+            <LabeledInputField
+              title="Название"
+              inputId="add-to-catalog-name"
+              inputType="text"
+              name="name"
+              value={inputValues.name}
+              onInputChange={handleValueChange}
+            />
+            <LabeledInputField
+              title="Цена"
+              inputId="add-to-catalog-price"
+              inputType="number"
+              name="price"
+              value={inputValues.price}
+              onInputChange={handleValueChange}
+            />
+            <LabeledInputField
+              title="Вес"
+              inputId="add-to-catalog-weight"
+              inputType="number"
+              name="weight"
+              value={inputValues.weight}
+              onInputChange={handleValueChange}
+            />
+            <LabeledInputField
+              title="Ккал (на 100 гр.)"
+              inputId="add-to-catalog-kcal"
+              inputType="number"
+              name="kcal"
+              value={inputValues.kcal}
+              onInputChange={handleValueChange}
+            />
+            <ImageDropzone
+              id="add-to-catalog-image"
+              type="file"
+              name="image"
+              previewImage={inputValues.image}
+              onInputChange={handleValueChange}
+              onRemove={handleImageReset}
+            />
           </div>
           <div className="flex justify-center">
             <button
@@ -46,6 +105,5 @@ const AddToCatalogPage = () => {
       </div>
     </>
   );
-};
-
+});
 export default AddToCatalogPage;
