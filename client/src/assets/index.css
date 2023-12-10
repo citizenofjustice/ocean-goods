@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* class for highlighting active route */
+#nav-menu a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
