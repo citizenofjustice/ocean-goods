@@ -1,11 +1,13 @@
 import express, { Application } from "express";
 import Server from "./index";
+import userRouter from "./routes/user.routes";
 
 const app: Application = express();
 const server: Server = new Server(app);
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
-console.log(123);
+app.use(express.json());
+app.use("/api", userRouter);
 
 app
   .listen(PORT, "localhost", function () {
