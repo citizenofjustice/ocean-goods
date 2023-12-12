@@ -39,3 +39,4 @@ create Table product_types(
 
 -- INSERT INTO priveleges (title) VALUES ('catalog managment');
 -- INSERT INTO roles (title, privelege_id) VALUES ('manager', 1);
+-- INSERT INTO product_types (type) VALUES ('fish');

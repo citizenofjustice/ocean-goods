@@ -1,13 +1,17 @@
 import express, { Application } from "express";
 import Server from "./index";
 import userRouter from "./routes/user.routes";
+import catalogRouter from "./routes/catalog.routes";
+import cors from "cors";
 
 const app: Application = express();
 const server: Server = new Server(app);
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
+app.use(cors());
 app.use(express.json());
-app.use("/api", userRouter);
+app.use("/api/users", userRouter);
+app.use("/api/catalog", catalogRouter);
 
 app
   .listen(PORT, "localhost", function () {
