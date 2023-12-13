@@ -1,13 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import CatalogItemModel from "../classes/CatalogItemModel";
-import tmpImg from "../assets/images/tmp.jpg";
+import { CatalogItem } from "../types/CatalogItem";
 
 class CatalogStore {
-  catalogItems: CatalogItemModel[] = [
-    new CatalogItemModel("Горбуша", 200, 320, 80, <img src={tmpImg} />),
-    new CatalogItemModel("Тунец", 250, 208, 90, <img src={tmpImg} />),
-    new CatalogItemModel("Сайра", 230, 350, 120, <img src={tmpImg} />),
-  ];
+  catalogItems: CatalogItemModel[] = [];
 
   get itemCouter(): number {
     return this.catalogItems.length;
@@ -17,14 +13,19 @@ class CatalogStore {
     makeAutoObservable(this);
   }
 
-  addCatalogItem(item: CatalogItemModel) {
+  addCatalogItem(item: CatalogItem) {
     this.catalogItems?.push(
       new CatalogItemModel(
-        item.name,
+        item.id,
+        item.productName,
+        item.productTypeId,
+        item.inStoke,
+        item.description,
         item.weight,
         item.price,
+        item.discount,
         item.kcal,
-        item.image
+        item.mainImage
       )
     );
   }

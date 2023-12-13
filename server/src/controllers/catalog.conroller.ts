@@ -3,7 +3,7 @@ import db from "../db";
 
 class CatalogController {
   async createCatalogItem(req: Request, res: Response) {
-    const { item } = req.body;
+    const item = await req.body;
     const newItem = await db.query(
       `INSERT INTO catalog
         (product_name, product_type_id, in_stoke, description, price, discount, weight, kcal, main_image)
@@ -17,7 +17,7 @@ class CatalogController {
         item.discount,
         item.weight,
         item.kcal,
-        item.main_image,
+        item.mainImage,
       ]
     );
     res.json(newItem.rows[0]);

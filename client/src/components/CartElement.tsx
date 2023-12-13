@@ -19,10 +19,10 @@ const CartElement: React.FC<{
     <>
       <li className="flex flex-row place-content-between items-align h-fit mx-4 py-4">
         <div className="basis-2/6 rounded overflow-hidden mr-4 min-w-[80px]">
-          {cartItem.image}
+          {cartItem.mainImage && <img src={cartItem.mainImage} />}
         </div>
         <div className="grow flex flex-col justify-start items-start mr-4">
-          <div>{cartItem.name}</div>
+          <div>{cartItem.productName}</div>
           <div>{`${cartItem.kcal} ккал., ${cartItem.weight} гр.`}</div>
         </div>
         <div className="basis-1/8 text-right mr-4">

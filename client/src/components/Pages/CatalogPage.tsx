@@ -1,34 +1,49 @@
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../store/root-store-context";
+// import { useStore } from "../../store/root-store-context";
 
 import Grid from "../UI/Grid";
 import ItemCard from "../ItemCard";
 import GridElement from "../UI/GridElement";
-// import { getCatalog, getCatalogItem } from "../../api";
+import { useQuery } from "@tanstack/react-query";
+import { getCatalog } from "../../api";
+import CatalogItemModel from "../../classes/CatalogItemModel";
+import LoadingSVG from "../UI/LoadingSVG";
 
 /**
  * Component for rendering Catalog page dividided into grid
  * @returns
  */
 const CatalogPage = observer(() => {
-  const { catalog } = useStore();
-  const { catalogItems } = catalog;
+  // const { catalog } = useStore();
+  // const { catalogItems } = catalog;
 
-  // const dbCatalog = getCatalog();
-  // console.log(dbCatalog);
+  const { isLoading, isError, error, data } = useQuery({
+    queryKey: ["catalog"],
+    queryFn: () => getCatalog(),
+    refetchOnWindowFocus: false,
+  });
 
-  // const dbCatalogItem = getCatalogItem(1);
-  // console.log(dbCatalogItem);
+  if (isError) return <div>{error.message}</div>;
 
   return (
     <div className="px-2 vsm:px-4">
-      <Grid xCount="2">
-        {catalogItems.map((item) => (
-          <GridElement key={item.productId}>
-            <ItemCard catalogItem={item} />
-          </GridElement>
-        ))}
-      </Grid>
+      {isLoading && (
+        <div className="flex items-center justify-center h-40">
+          <div className="animate-spin w-10 h-10">
+            <LoadingSVG className="w-10 h-10" />
+          </div>
+        </div>
+      )}
+      {!isLoading && !isError && (
+        <Grid xCount="2">
+          {data.length > 0 &&
+            data.map((item: CatalogItemModel) => (
+              <GridElement key={item.id}>
+                <ItemCard catalogItem={item} />
+              </GridElement>
+            ))}
+        </Grid>
+      )}
     </div>
   );
 });

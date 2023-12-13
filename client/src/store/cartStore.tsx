@@ -25,32 +25,35 @@ class cartStore {
     makeAutoObservable(this);
   }
 
-  findCartItem(id: string) {
+  findCartItem(productId: number) {
     const cartItem: CartItemModel | undefined = this.cartItems.find(
-      (item) => item.productId === id
+      (item) => item.productId === productId
     );
     return cartItem;
   }
 
   addItem(product: CatalogItemModel) {
-    const inCartProduct = this.findCartItem(product.productId);
+    const inCartProduct = this.findCartItem(product.id);
     if (inCartProduct) {
       inCartProduct.incrementAmount();
     } else {
-      this.cartItems?.push(
-        new CartItemModel(
-          product.productId,
-          product.name,
-          product.weight,
-          product.price,
-          product.kcal,
-          product.image
-        )
-      );
+      // this.cartItems?.push(
+      //   new CartItemModel(
+      //     id,
+      //     product.id,
+      //     product.productName,
+      //     product.productTypeId,
+      //     product.price,
+      //     product.discount,
+      //     product.weight,
+      //     product.kcal,
+      //     product.mainImage
+      //   )
+      // );
     }
   }
 
-  removeItem(productId: string) {
+  removeItem(productId: number) {
     const inCartProduct = this.findCartItem(productId);
     if (inCartProduct) {
       if (inCartProduct.amount === 1) {

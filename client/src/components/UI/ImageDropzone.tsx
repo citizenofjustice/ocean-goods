@@ -4,7 +4,7 @@ const ImageDropzone: React.FC<{
   id: string;
   type: string;
   name: string;
-  previewImage: string;
+  previewImage: string | undefined;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: () => void;
 }> = ({ id, type, name, previewImage, onInputChange, onRemove }) => {
@@ -19,7 +19,7 @@ const ImageDropzone: React.FC<{
       >
         <div className="flex flex-col items-center justify-center h-44">
           <CloudArrowUpIcon className="w-10 h-10 text-gray-500" />
-          <p className="mb-2 text-sm text-gray-500">
+          <p className="mb-2 px-4 text-center text-sm text-gray-500">
             <span className="font-semibold">Нажмите чтобы загрузить</span> или
             перетащите сюда файл
           </p>

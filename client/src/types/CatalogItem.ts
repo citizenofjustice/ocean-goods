@@ -1,9 +1,13 @@
 // declaring interface for catalog item
 export interface CatalogItem {
-  productId: string;
-  name: string;
+  id: number;
+  productName: string;
+  productTypeId: number;
+  inStoke: boolean;
+  description: string;
   price: number;
+  discount: number;
   weight: number;
   kcal: number;
-  image?: JSX.Element;
+  mainImage?: string;
 }

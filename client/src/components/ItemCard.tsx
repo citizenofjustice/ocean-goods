@@ -17,15 +17,15 @@ const ItemCard: React.FC<{
   const { cart } = useStore();
 
   // check if item is in cart (if there display amount controls)
-  const inCartProduct = cart.findCartItem(catalogItem.productId);
+  const inCartProduct = cart.findCartItem(catalogItem.id);
 
   return (
     <>
-      <div className="my-2">{catalogItem.name}</div>
+      <div className="my-2">{catalogItem.productName}</div>
       <div className="flex justify-center mb">
         <div className="basis-1/12" />
         <div className="grow rounded overflow-hidden flex items-center">
-          {catalogItem.image}
+          {catalogItem.mainImage && <img src={catalogItem.mainImage} />}
         </div>
         <div className="basis-1/12" />
         <div className="basis-2/12 flex items-center">
@@ -50,7 +50,7 @@ const ItemCard: React.FC<{
         {inCartProduct && (
           <AmountControls
             currentValue={inCartProduct.amount}
-            onDecrement={action(() => cart.removeItem(catalogItem.productId))}
+            onDecrement={action(() => cart.removeItem(catalogItem.id))}
             onIncrement={action(() => cart.addItem(catalogItem))}
           />
         )}
