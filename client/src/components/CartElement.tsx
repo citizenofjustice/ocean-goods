@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import AmountControls from "./AmontControls";
 import CartItemModel from "../classes/CartItemModel";
 import { useStore } from "../store/root-store-context";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 /**
  * Component for rendering each cart element
@@ -14,6 +15,8 @@ const CartElement: React.FC<{
   cartItem: CartItemModel;
 }> = observer(({ cartItem }) => {
   const { cart } = useStore();
+  const { cartItems } = cart;
+  const [, setCartContent] = useLocalStorage("cart", cartItems);
 
   return (
     <>
@@ -32,8 +35,14 @@ const CartElement: React.FC<{
           <AmountControls
             currentValue={cartItem.amount}
             additonalStyle="flex-col-reverse justify-end"
-            onDecrement={action(() => cart.removeItem(cartItem.productId))}
-            onIncrement={action(() => cartItem.incrementAmount())}
+            onDecrement={action(() => {
+              const filteredItems: CartItemModel[] = cart.removeItem(cartItem);
+              setCartContent(filteredItems);
+            })}
+            onIncrement={action(() => {
+              cartItem.amount--;
+              setCartContent(cartItems);
+            })}
           />
         </div>
       </li>

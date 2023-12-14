@@ -13,10 +13,14 @@ class CatalogStore {
     makeAutoObservable(this);
   }
 
+  setCatalogItems(catalog: CatalogItemModel[]) {
+    this.catalogItems = catalog;
+  }
+
   addCatalogItem(item: CatalogItem) {
     this.catalogItems?.push(
       new CatalogItemModel(
-        item.id,
+        item.productId,
         item.productName,
         item.productTypeId,
         item.inStoke,

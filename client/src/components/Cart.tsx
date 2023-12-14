@@ -33,7 +33,7 @@ const Cart: React.FC<{
         <ul className="divide-y">
           {cartItems &&
             cartItems.map((item) => (
-              <CartElement key={item.id} cartItem={item} />
+              <CartElement key={item.cartItemId} cartItem={item} />
             ))}
         </ul>
         <div className="flex place-content-between items-center py-4 px-8">

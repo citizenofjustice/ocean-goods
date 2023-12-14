@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-// import { useStore } from "../../store/root-store-context";
+import { useStore } from "../../store/root-store-context";
 
 import Grid from "../UI/Grid";
 import ItemCard from "../ItemCard";
@@ -14,12 +14,16 @@ import LoadingSVG from "../UI/LoadingSVG";
  * @returns
  */
 const CatalogPage = observer(() => {
-  // const { catalog } = useStore();
-  // const { catalogItems } = catalog;
+  const { catalog } = useStore();
+  const { catalogItems } = catalog;
 
-  const { isLoading, isError, error, data } = useQuery({
+  const { isLoading, isError, error } = useQuery({
     queryKey: ["catalog"],
-    queryFn: () => getCatalog(),
+    queryFn: async () => {
+      const data = await getCatalog();
+      catalog.setCatalogItems(data);
+      return data;
+    },
     refetchOnWindowFocus: false,
   });
 
@@ -36,9 +40,9 @@ const CatalogPage = observer(() => {
       )}
       {!isLoading && !isError && (
         <Grid xCount="2">
-          {data.length > 0 &&
-            data.map((item: CatalogItemModel) => (
-              <GridElement key={item.id}>
+          {catalogItems.length > 0 &&
+            catalogItems.map((item: CatalogItemModel) => (
+              <GridElement key={item.productId}>
                 <ItemCard catalogItem={item} />
               </GridElement>
             ))}

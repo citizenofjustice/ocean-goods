@@ -1,6 +1,6 @@
 // declaring interface for catalog item
 export interface CatalogItem {
-  id: number;
+  productId: number;
   productName: string;
   productTypeId: number;
   inStoke: boolean;

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import db from "../db";
 
+const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStoke", description, price, discount, weight, kcal, main_image as "mainImage"`;
+
 class CatalogController {
   async createCatalogItem(req: Request, res: Response) {
     const item = await req.body;
@@ -23,14 +25,15 @@ class CatalogController {
     res.json(newItem.rows[0]);
   }
   async getCatalog(req: Request, res: Response) {
-    const catalog = await db.query("SELECT * FROM catalog");
+    const catalog = await db.query(`SELECT ${catalogCamelCase} FROM catalog`);
     res.json(catalog.rows);
   }
   async getCatalogItem(req: Request, res: Response) {
     const id = req.params.id;
-    const catalogItem = await db.query(`SELECT * FROM catalog WHERE id = $1`, [
-      id,
-    ]);
+    const catalogItem = await db.query(
+      `SELECT ${catalogCamelCase} FROM catalog WHERE id = $1`,
+      [id]
+    );
     res.json(catalogItem.rows[0]);
   }
   async updateCatalogItem(req: Request, res: Response) {

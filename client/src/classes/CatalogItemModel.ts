@@ -4,7 +4,7 @@ import { CatalogItem } from "../types/CatalogItem";
 
 // Catalog item class implementing CatalogItem interface
 class CatalogItemModel implements CatalogItem {
-  id: number;
+  productId: number;
   productName: string;
   productTypeId: number;
   inStoke: boolean;
@@ -16,7 +16,7 @@ class CatalogItemModel implements CatalogItem {
   mainImage?: string;
 
   constructor(
-    id: number,
+    productId: number,
     productName: string,
     productTypeId: number,
     inStoke: boolean,
@@ -28,7 +28,7 @@ class CatalogItemModel implements CatalogItem {
     mainImage?: string
   ) {
     makeAutoObservable(this);
-    this.id = id;
+    this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;
     this.inStoke = inStoke;

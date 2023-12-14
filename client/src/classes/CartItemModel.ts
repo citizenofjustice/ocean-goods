@@ -1,11 +1,11 @@
-// import { nanoid } from "nanoid";
+import { nanoid } from "nanoid";
 import { makeAutoObservable } from "mobx";
 
 import { CartItem } from "../types/CartItem";
 
 // Cart item class implementing CartItem interface
 class CartItemModel implements CartItem {
-  id: number;
+  cartItemId: string = nanoid();
   amount: number = 1;
   productId: number;
   productName: string;
@@ -25,7 +25,7 @@ class CartItemModel implements CartItem {
   }
 
   constructor(
-    id: number,
+    // id: number,
     productId: number,
     productName: string,
     productTypeId: number,
@@ -36,7 +36,6 @@ class CartItemModel implements CartItem {
     mainImage?: string
   ) {
     makeAutoObservable(this);
-    this.id = id;
     this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;
@@ -45,16 +44,6 @@ class CartItemModel implements CartItem {
     this.weight = weight;
     this.kcal = kcal;
     this.mainImage = mainImage;
-  }
-
-  // increase cart item amount by 1
-  incrementAmount(): void {
-    this.amount++;
-  }
-  // decrease cart item amount by 1
-  decrementAmount(): void {
-    // decrease only if amount is more than 0
-    if (this.amount > 0) this.amount--;
   }
 }
 
