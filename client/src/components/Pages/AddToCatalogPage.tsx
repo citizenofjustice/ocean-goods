@@ -2,39 +2,43 @@ import { useState } from "react";
 
 import ImageDropzone from "../UI/ImageDropzone";
 import LabeledInputField from "../UI/LabeledInputField";
-import CatalogItemModel from "../../classes/CatalogItemModel";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../store/root-store-context";
+import { createCatalogItem } from "../../api";
+import { NewCatalogItem } from "../../types/form-types";
+import SelectField from "../UI/SelectField";
+import ToggleField from "../UI/ToggleField";
+import TextareaField from "../UI/TextareaField";
 
-const initValues = {
-  name: "",
+const initValues: NewCatalogItem = {
+  productName: "",
+  productTypeId: "",
+  inStoke: false,
+  description: "",
   price: "",
+  discount: "",
   weight: "",
   kcal: "",
-  image: "",
+  mainImage: "",
 };
 
 const AddToCatalogPage = observer(() => {
   const { catalog } = useStore();
   const [inputValues, setInputValues] = useState(initValues);
 
-  const handleItemAddition = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleItemAddition = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    const target = event.target as HTMLFormElement;
-    const fData = new FormData(target);
-    const formObject = Object.fromEntries(fData.entries());
-    const { name, price, weight, kcal } = formObject;
-
-    /* temp for testing */
-    catalog.addCatalogItem(
-      new CatalogItemModel(name.toString(), +price, +weight, +kcal)
-    );
+    const item: NewCatalogItem = { ...inputValues };
+    const data = await createCatalogItem(item);
+    catalog.addCatalogItem(data);
     setInputValues(initValues);
   };
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "image") {
+    if (name === "mainImage") {
       const selectedFiles = e.target.files as FileList;
       const imageUrl = URL.createObjectURL(selectedFiles?.[0]);
       setInputValues({ ...inputValues, [name]: imageUrl });
@@ -43,8 +47,22 @@ const AddToCatalogPage = observer(() => {
     }
   };
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setInputValues({ ...inputValues, [name]: value });
+  };
+
   const handleImageReset = () => {
-    setInputValues({ ...inputValues, image: "" });
+    setInputValues({ ...inputValues, mainImage: "" });
+  };
+
+  const handleToggleChange = () => {
+    setInputValues({ ...inputValues, inStoke: !inputValues.inStoke });
+  };
+
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setInputValues({ ...inputValues, [name]: value });
   };
 
   return (
@@ -56,9 +74,15 @@ const AddToCatalogPage = observer(() => {
               title="Название"
               inputId="add-to-catalog-name"
               inputType="text"
-              name="name"
-              value={inputValues.name}
+              name="productName"
+              value={inputValues.productName}
               onInputChange={handleValueChange}
+            />
+            <SelectField
+              title="Тип продукта"
+              inputId="add-to-catalog-product-type"
+              name="productTypeId"
+              onSelectChange={handleSelectChange}
             />
             <LabeledInputField
               title="Цена"
@@ -68,6 +92,16 @@ const AddToCatalogPage = observer(() => {
               value={inputValues.price}
               onInputChange={handleValueChange}
             />
+
+            <LabeledInputField
+              title="Скидка"
+              inputId="add-to-catalog-discount"
+              inputType="number"
+              name="discount"
+              value={inputValues.discount}
+              onInputChange={handleValueChange}
+            />
+
             <LabeledInputField
               title="Вес"
               inputId="add-to-catalog-weight"
@@ -87,10 +121,25 @@ const AddToCatalogPage = observer(() => {
             <ImageDropzone
               id="add-to-catalog-image"
               type="file"
-              name="image"
-              previewImage={inputValues.image}
+              name="mainImage"
+              previewImage={inputValues.mainImage}
               onInputChange={handleValueChange}
               onRemove={handleImageReset}
+            />
+            <TextareaField
+              inputId="add-to-catalog-description"
+              title="Описание"
+              name="description"
+              value={inputValues.description}
+              onInputChange={handleTextareaChange}
+            />
+            <ToggleField
+              title="Наличие продука"
+              inputId="add-to-catalog-in-stock"
+              inputType="checkbox"
+              name="inStock"
+              onToggleChange={handleToggleChange}
+              checked={initValues.inStoke}
             />
           </div>
           <div className="flex justify-center">

@@ -7,12 +7,16 @@ import { CartItem } from "../types/CartItem";
 class CartItemModel implements CartItem {
   cartItemId: string = nanoid();
   amount: number = 1;
-  productId: string = nanoid();
-  name: string;
+  productId: number;
+  productName: string;
+  productTypeId: number;
+  inStoke: boolean = true;
+  description: string = "";
   price: number;
+  discount: number;
   weight: number;
   kcal: number;
-  image?: JSX.Element;
+  mainImage?: string;
 
   // calc cart item total price
   get totalProductPrice(): number {
@@ -21,30 +25,25 @@ class CartItemModel implements CartItem {
   }
 
   constructor(
-    productId: string,
-    name: string,
+    // id: number,
+    productId: number,
+    productName: string,
+    productTypeId: number,
     weight: number,
     price: number,
+    discount: number,
     kcal: number,
-    image?: JSX.Element
+    mainImage?: string
   ) {
     makeAutoObservable(this);
     this.productId = productId;
-    this.name = name;
+    this.productName = productName;
+    this.productTypeId = productTypeId;
     this.price = price;
+    this.discount = discount;
     this.weight = weight;
     this.kcal = kcal;
-    this.image = image;
-  }
-
-  // increase cart item amount by 1
-  incrementAmount(): void {
-    this.amount++;
-  }
-  // decrease cart item amount by 1
-  decrementAmount(): void {
-    // decrease only if amount is more than 0
-    if (this.amount > 0) this.amount--;
+    this.mainImage = mainImage;
   }
 }
 

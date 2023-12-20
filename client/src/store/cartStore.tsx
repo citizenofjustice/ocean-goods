@@ -3,9 +3,13 @@ import { makeAutoObservable } from "mobx";
 import CartItemModel from "../classes/CartItemModel";
 import CatalogItemModel from "../classes/CatalogItemModel";
 
+const cartItemsFromLStorage: CartItemModel[] = JSON.parse(
+  localStorage.getItem("cart") || "[]"
+);
+
 // creating store class for keeping cart items
 class cartStore {
-  cartItems: CartItemModel[] = [];
+  cartItems: CartItemModel[] = cartItemsFromLStorage;
 
   get totalQuantity(): number {
     return this.cartItems.length;
@@ -25,9 +29,9 @@ class cartStore {
     makeAutoObservable(this);
   }
 
-  findCartItem(id: string) {
+  findCartItem(productId: number) {
     const cartItem: CartItemModel | undefined = this.cartItems.find(
-      (item) => item.productId === id
+      (item) => item.productId === productId
     );
     return cartItem;
   }
@@ -35,33 +39,33 @@ class cartStore {
   addItem(product: CatalogItemModel) {
     const inCartProduct = this.findCartItem(product.productId);
     if (inCartProduct) {
-      inCartProduct.incrementAmount();
+      inCartProduct.amount++;
     } else {
-      this.cartItems?.push(
+      this.cartItems.push(
         new CartItemModel(
           product.productId,
-          product.name,
+          product.productName,
+          product.productTypeId,
           product.weight,
           product.price,
+          product.discount,
           product.kcal,
-          product.image
+          product.mainImage
         )
       );
     }
   }
 
-  removeItem(productId: string) {
-    const inCartProduct = this.findCartItem(productId);
-    if (inCartProduct) {
-      if (inCartProduct.amount === 1) {
-        const filteredItems = this.cartItems.filter(
-          (item) => item.productId !== productId
-        );
-        this.cartItems = filteredItems;
-      } else {
-        inCartProduct.decrementAmount();
-      }
+  removeItem(inCartProduct: CartItemModel) {
+    if (inCartProduct.amount === 1) {
+      const filteredItems = this.cartItems.filter(
+        (item) => item.cartItemId !== inCartProduct.cartItemId
+      );
+      this.cartItems = filteredItems;
+    } else {
+      if (inCartProduct.amount > 0) inCartProduct.amount--;
     }
+    return this.cartItems;
   }
 }
 
