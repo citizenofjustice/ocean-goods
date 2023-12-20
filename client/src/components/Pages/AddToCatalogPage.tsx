@@ -19,7 +19,7 @@ const initValues: NewCatalogItem = {
   discount: "",
   weight: "",
   kcal: "",
-  mainImage: "",
+  mainImage: undefined,
 };
 
 const AddToCatalogPage = observer(() => {
@@ -40,8 +40,7 @@ const AddToCatalogPage = observer(() => {
     const { name, value } = e.target;
     if (name === "mainImage") {
       const selectedFiles = e.target.files as FileList;
-      const imageUrl = URL.createObjectURL(selectedFiles?.[0]);
-      setInputValues({ ...inputValues, [name]: imageUrl });
+      setInputValues({ ...inputValues, [name]: selectedFiles[0] });
     } else {
       setInputValues({ ...inputValues, [name]: value });
     }
@@ -53,7 +52,7 @@ const AddToCatalogPage = observer(() => {
   };
 
   const handleImageReset = () => {
-    setInputValues({ ...inputValues, mainImage: "" });
+    setInputValues({ ...inputValues, mainImage: undefined });
   };
 
   const handleToggleChange = () => {
