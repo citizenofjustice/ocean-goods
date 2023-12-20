@@ -1,7 +1,7 @@
 export type NewCatalogItem = {
   productName: string;
   productTypeId: string;
-  inStoke: boolean;
+  inStock: boolean;
   description: string;
   price: string;
   discount: string;

@@ -1,12 +1,13 @@
 import axios from "axios";
-import { NewCatalogItem } from "../types/form-types";
 import { CatalogItem } from "../types/CatalogItem";
 
 const baseUrl: string = "http://localhost:8080/api";
 
-export const createCatalogItem = (newItem: NewCatalogItem) => {
+export const createCatalogItem = (newItem: FormData) => {
   return axios
-    .post(`${baseUrl}/catalog/create`, newItem)
+    .post(`${baseUrl}/catalog/create`, newItem, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
     .then(function (response) {
       console.log(response);
       if (response.status === 200) return response.data;

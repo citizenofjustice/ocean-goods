@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import db from "../db";
+import upload from "../upload";
 
-const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStoke", description, price, discount, weight, kcal, main_image as "mainImage"`;
+const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStock", description, price, discount, weight, kcal, main_image as "mainImage"`;
 
 class CatalogController {
   async createCatalogItem(req: Request, res: Response) {
     const item = await req.body;
+    const imageLink = await upload(req);
     const newItem = await db.query(
       `INSERT INTO catalog
         (product_name, product_type_id, in_stoke, description, price, discount, weight, kcal, main_image)
@@ -13,13 +15,13 @@ class CatalogController {
       [
         item.productName,
         item.productTypeId,
-        item.inStoke,
+        item.inStock ? true : false,
         item.description,
         item.price,
         item.discount,
         item.weight,
         item.kcal,
-        item.mainImage,
+        imageLink,
       ]
     );
     res.json(newItem.rows[0]);
@@ -53,7 +55,7 @@ class CatalogController {
       [
         item.productName,
         item.productTypeId,
-        item.inStoke,
+        item.inStock,
         item.description,
         item.price,
         item.discount,

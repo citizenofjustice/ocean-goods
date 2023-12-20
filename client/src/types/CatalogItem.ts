@@ -3,7 +3,7 @@ export interface CatalogItem {
   productId: number;
   productName: string;
   productTypeId: number;
-  inStoke: boolean;
+  inStock: boolean;
   description: string;
   price: number;
   discount: number;

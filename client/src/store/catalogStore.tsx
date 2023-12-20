@@ -23,7 +23,7 @@ class CatalogStore {
         item.productId,
         item.productName,
         item.productTypeId,
-        item.inStoke,
+        item.inStock,
         item.description,
         item.weight,
         item.price,

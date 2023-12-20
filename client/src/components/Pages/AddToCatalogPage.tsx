@@ -13,7 +13,7 @@ import TextareaField from "../UI/TextareaField";
 const initValues: NewCatalogItem = {
   productName: "",
   productTypeId: "",
-  inStoke: false,
+  inStock: false,
   description: "",
   price: "",
   discount: "",
@@ -27,11 +27,11 @@ const AddToCatalogPage = observer(() => {
   const [inputValues, setInputValues] = useState(initValues);
 
   const handleItemAddition = async (
-    event: React.FormEvent<HTMLFormElement>
+    event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     event.preventDefault();
-    const item: NewCatalogItem = { ...inputValues };
-    const data = await createCatalogItem(item);
+    const fData = new FormData(event.currentTarget);
+    const data = await createCatalogItem(fData);
     catalog.addCatalogItem(data);
     setInputValues(initValues);
   };
@@ -56,7 +56,7 @@ const AddToCatalogPage = observer(() => {
   };
 
   const handleToggleChange = () => {
-    setInputValues({ ...inputValues, inStoke: !inputValues.inStoke });
+    setInputValues({ ...inputValues, inStock: !inputValues.inStock });
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -138,7 +138,7 @@ const AddToCatalogPage = observer(() => {
               inputType="checkbox"
               name="inStock"
               onToggleChange={handleToggleChange}
-              checked={initValues.inStoke}
+              checked={initValues.inStock}
             />
           </div>
           <div className="flex justify-center">
