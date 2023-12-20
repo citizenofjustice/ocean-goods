@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -w",
-    "dev": "node --watch-path=./build build/server.js",
+    "build": "tsc",
+    "dev": "node --watch-path=./build build/index.js",
     "start": "tsc && npm run dev"
   },
   "keywords": [],
