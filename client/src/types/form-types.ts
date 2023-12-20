@@ -7,5 +7,5 @@ export type NewCatalogItem = {
   discount: string;
   weight: string;
   kcal: string;
-  mainImage?: string;
+  mainImage?: File;
 };

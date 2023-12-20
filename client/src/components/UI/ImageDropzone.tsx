@@ -4,7 +4,7 @@ const ImageDropzone: React.FC<{
   id: string;
   type: string;
   name: string;
-  previewImage: string | undefined;
+  previewImage: File | undefined;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: () => void;
 }> = ({ id, type, name, previewImage, onInputChange, onRemove }) => {
@@ -35,7 +35,7 @@ const ImageDropzone: React.FC<{
       </label>
       {previewImage && (
         <div className="flex py-2 h-44">
-          <img className="h-full" src={previewImage} />
+          <img className="h-full" src={URL.createObjectURL(previewImage)} />
           <div onClick={onRemove} className="w-6 h-6 hover:cursor-pointer">
             <XMarkIcon className="w-6 h-6" />
           </div>
