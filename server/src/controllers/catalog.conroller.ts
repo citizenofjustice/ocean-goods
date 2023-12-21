@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import db from "../db";
-import upload from "../upload";
+import { uploadPictureAndGetUrl } from "../upload";
 
 const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStock", description, price, discount, weight, kcal, main_image as "mainImage"`;
 
 class CatalogController {
   async createCatalogItem(req: Request, res: Response) {
     const item = await req.body;
-    const imageLink = await upload(req);
+    let imageLink: string = "";
+    if (req.file) imageLink = await uploadPictureAndGetUrl(req.file);
     const newItem = await db.query(
       `INSERT INTO catalog
         (product_name, product_type_id, in_stoke, description, price, discount, weight, kcal, main_image)
