@@ -1,16 +1,32 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, action } from "mobx";
 import CatalogItemModel from "../classes/CatalogItemModel";
 import { CatalogItem } from "../types/CatalogItem";
 
 class CatalogStore {
   catalogItems: CatalogItemModel[] = [];
 
-  get itemCouter(): number {
+  get itemCounter(): number {
     return this.catalogItems.length;
   }
 
+  get catalogItemsProductIds(): Array<number> {
+    const ids = this.catalogItems.map((item) => item.productId);
+    return ids;
+  }
+
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      setCatalogItems: action,
+      addCatalogItem: action,
+      removeCatalogItemFromStore: action,
+    });
+  }
+
+  removeCatalogItemFromStore(productId: number) {
+    const filteredCatalog = this.catalogItems.filter(
+      (item) => item.productId !== productId
+    );
+    this.catalogItems = filteredCatalog;
   }
 
   setCatalogItems(catalog: CatalogItemModel[]) {

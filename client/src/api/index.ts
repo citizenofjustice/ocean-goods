@@ -19,6 +19,18 @@ export const createCatalogItem = (newItem: FormData) => {
     });
 };
 
+export const removeCatalogItem = (id: number) => {
+  return axios
+    .delete(`${baseUrl}/catalog/${id}`)
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
 export const getUserData = (id: number) => {
   axios
     .get(`${baseUrl}/users?=${id}`)

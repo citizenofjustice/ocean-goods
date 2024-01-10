@@ -8,16 +8,17 @@ import { useQuery } from "@tanstack/react-query";
 import { getCatalog } from "../../api";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import LoadingSVG from "../UI/LoadingSVG";
+import { useEffect } from "react";
 
 /**
  * Component for rendering Catalog page dividided into grid
  * @returns
  */
 const CatalogPage = observer(() => {
-  const { catalog } = useStore();
+  const { catalog, cart } = useStore();
   const { catalogItems } = catalog;
 
-  const { isLoading, isError, error } = useQuery({
+  const { isFetching, isLoading, isError, error } = useQuery({
     queryKey: ["catalog"],
     queryFn: async () => {
       const data = await getCatalog();
@@ -26,6 +27,15 @@ const CatalogPage = observer(() => {
     },
     refetchOnWindowFocus: false,
   });
+
+  const isFirstQuery = isFetching && isLoading;
+
+  useEffect(() => {
+    if (!isFirstQuery) {
+      cart.compare(catalog.catalogItemsProductIds);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFirstQuery]);
 
   if (isError) return <div>{error.message}</div>;
 

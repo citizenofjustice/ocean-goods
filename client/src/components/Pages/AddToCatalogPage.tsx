@@ -3,7 +3,6 @@ import { useState } from "react";
 import ImageDropzone from "../UI/ImageDropzone";
 import LabeledInputField from "../UI/LabeledInputField";
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../store/root-store-context";
 import { createCatalogItem } from "../../api";
 import { NewCatalogItem } from "../../types/form-types";
 import SelectField from "../UI/SelectField";
@@ -23,7 +22,6 @@ const initValues: NewCatalogItem = {
 };
 
 const AddToCatalogPage = observer(() => {
-  const { catalog } = useStore();
   const [inputValues, setInputValues] = useState(initValues);
 
   const handleItemAddition = async (
@@ -31,8 +29,7 @@ const AddToCatalogPage = observer(() => {
   ) => {
     event.preventDefault();
     const fData = new FormData(event.currentTarget);
-    const data = await createCatalogItem(fData);
-    catalog.addCatalogItem(data);
+    await createCatalogItem(fData);
     setInputValues(initValues);
   };
 
