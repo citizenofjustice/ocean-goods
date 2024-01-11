@@ -22,6 +22,15 @@ class CatalogStore {
     });
   }
 
+  findCatalogItemById(productId: number | undefined) {
+    if (productId) {
+      const foundItem = this.catalogItems.find(
+        (item) => item.productId === productId
+      );
+      return foundItem;
+    }
+  }
+
   removeCatalogItemFromStore(productId: number) {
     const filteredCatalog = this.catalogItems.filter(
       (item) => item.productId !== productId

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import db from "../db";
 import { uploadPictureAndGetUrl } from "../upload";
+import { log } from "console";
 
 const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStock", description, price, discount, weight, kcal, main_image as "mainImage"`;
 
@@ -27,10 +28,12 @@ class CatalogController {
     );
     res.json(newItem.rows[0]);
   }
+
   async getCatalog(req: Request, res: Response) {
     const catalog = await db.query(`SELECT ${catalogCamelCase} FROM catalog`);
     res.json(catalog.rows);
   }
+
   async getCatalogItem(req: Request, res: Response) {
     const id = req.params.id;
     const catalogItem = await db.query(
@@ -39,8 +42,16 @@ class CatalogController {
     );
     res.json(catalogItem.rows[0]);
   }
+
   async updateCatalogItem(req: Request, res: Response) {
-    const { item } = req.body;
+    const id = req.params.id;
+    const item = req.body;
+    console.log(item);
+
+    let imageLink: string = "";
+    if (req.file) imageLink = await uploadPictureAndGetUrl(req.file);
+    console.log(imageLink);
+
     const updatedItem = await db.query(
       `UPDATE catalog SET 
         product_name = $1,
@@ -62,12 +73,13 @@ class CatalogController {
         item.discount,
         item.weight,
         item.kcal,
-        item.main_image,
-        item.id,
+        imageLink,
+        id,
       ]
     );
     res.json(updatedItem.rows[0]);
   }
+
   async deleteCatalogItem(req: Request, res: Response) {
     const id = req.params.id;
     const catalogItem = await db.query(`DELETE FROM catalog WHERE id = $1`, [

@@ -11,7 +11,11 @@ router.post(
 );
 router.get("", CatalogConroller.getCatalog);
 router.get("/:id", CatalogConroller.getCatalogItem);
-router.put("", CatalogConroller.updateCatalogItem);
+router.put(
+  "/:id",
+  upload.single("mainImage"),
+  CatalogConroller.updateCatalogItem
+);
 router.delete("/:id", CatalogConroller.deleteCatalogItem);
 
 export default router;

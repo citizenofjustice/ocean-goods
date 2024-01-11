@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 import ItemInfoCard from "./UI/ItemInfoCard";
 import AmountControls from "./AmontControls";
@@ -9,6 +9,7 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 import CartItemModel from "../classes/CartItemModel";
 import { removeCatalogItem } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 /**
  * Renders catalog item card
@@ -54,7 +55,10 @@ const ItemCard: React.FC<{
     <>
       <div className="w-full my-2 flex place-content-between">
         <div className="w-10/12 text-center">{catalogItem.productName}</div>
-        <div className="w-2/12 text-slate-400 ">
+        <div className="w-2/12 text-slate-400">
+          <Link to={`edit-item/${catalogItem.productId}`}>
+            <PencilSquareIcon className="w-6 h-6 hover:cursor-pointer" />
+          </Link>
           <TrashIcon
             onClick={() => mutation.mutate(catalogItem.productId)}
             className="w-6 h-6 hover:cursor-pointer"

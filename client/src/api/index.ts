@@ -31,6 +31,20 @@ export const removeCatalogItem = (id: number) => {
     });
 };
 
+export const updateCatalogItem = (id: number, updatedItem: FormData) => {
+  return axios
+    .put(`${baseUrl}/catalog/${id}`, updatedItem, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
 export const getUserData = (id: number) => {
   axios
     .get(`${baseUrl}/users?=${id}`)

@@ -1,4 +1,4 @@
-export type NewCatalogItem = {
+export type CatalogItemInputs = {
   productName: string;
   productTypeId: string;
   inStock: boolean;
@@ -7,5 +7,5 @@ export type NewCatalogItem = {
   discount: string;
   weight: string;
   kcal: string;
-  mainImage?: File;
+  mainImage?: File | string;
 };

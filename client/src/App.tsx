@@ -10,6 +10,7 @@ import CatalogPage from "./components/Pages/CatalogPage";
 import NotFoundPage from "./components/Pages/NotFoundPage";
 import { RootStoreContext } from "./store/root-store-context";
 import AddToCatalogPage from "./components/Pages/AddToCatalogPage";
+import EditCatalogItemPage from "./components/Pages/EditCatalogItemPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ function App() {
                 <Route path="search" element={<SearchPage />} />
                 <Route path="contact" element={<ContactPage />} />
                 <Route path="new-item" element={<AddToCatalogPage />} />
+                <Route path="edit-item/:id" element={<EditCatalogItemPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>
