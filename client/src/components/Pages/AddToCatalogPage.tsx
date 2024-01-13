@@ -22,9 +22,9 @@ const emptyInitValues: CatalogItemInputs = {
 };
 
 const AddToCatalogPage: React.FC<{
-  actionType: "CREATE" | "UPDATE";
-  editItemId: number | undefined;
-  initValues: CatalogItemInputs;
+  actionType?: "CREATE" | "UPDATE";
+  editItemId?: number;
+  initValues?: CatalogItemInputs;
 }> = observer(
   ({
     actionType = "CREATE",

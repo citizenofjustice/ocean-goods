@@ -34,9 +34,6 @@ const EditCatalogItemPage = () => {
 
   return (
     <>
-      <h1 className="text-center">
-        Страница для редактирования продукта: ID-{id}
-      </h1>
       {beforeEditData && (
         <AddToCatalogPage
           actionType="UPDATE"

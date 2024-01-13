@@ -9,6 +9,7 @@ import { getCatalog } from "../../api";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import LoadingSVG from "../UI/LoadingSVG";
 import { useEffect } from "react";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 /**
  * Component for rendering Catalog page dividided into grid
@@ -17,12 +18,14 @@ import { useEffect } from "react";
 const CatalogPage = observer(() => {
   const { catalog, cart } = useStore();
   const { catalogItems } = catalog;
+  const [, setCatalogStorage] = useLocalStorage("catalog", catalogItems);
 
   const { isFetching, isLoading, isError, error } = useQuery({
     queryKey: ["catalog"],
     queryFn: async () => {
       const data = await getCatalog();
       catalog.setCatalogItems(data);
+      setCatalogStorage(data);
       return data;
     },
     refetchOnWindowFocus: false,

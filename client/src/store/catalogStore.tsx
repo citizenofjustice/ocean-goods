@@ -2,8 +2,12 @@ import { makeAutoObservable, action } from "mobx";
 import CatalogItemModel from "../classes/CatalogItemModel";
 import { CatalogItem } from "../types/CatalogItem";
 
+const cartItemsFromLStorage: CatalogItemModel[] = JSON.parse(
+  localStorage.getItem("catalog") || "[]"
+);
+
 class CatalogStore {
-  catalogItems: CatalogItemModel[] = [];
+  catalogItems: CatalogItemModel[] = cartItemsFromLStorage;
 
   get itemCounter(): number {
     return this.catalogItems.length;
@@ -22,13 +26,11 @@ class CatalogStore {
     });
   }
 
-  findCatalogItemById(productId: number | undefined) {
-    if (productId) {
-      const foundItem = this.catalogItems.find(
-        (item) => item.productId === productId
-      );
-      return foundItem;
-    }
+  findCatalogItemById(productId: number) {
+    const foundItem = this.catalogItems.find(
+      (item) => item.productId === productId
+    );
+    return foundItem;
   }
 
   removeCatalogItemFromStore(productId: number) {
