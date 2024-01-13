@@ -75,7 +75,15 @@ const AddToCatalogPage: React.FC<{
           break;
         }
         case "UPDATE": {
-          console.log(Object.fromEntries(fData));
+          const isInputImageValueEmpty =
+            inputValues.mainImage === undefined || inputValues.mainImage === "";
+
+          if (isInputImageValueEmpty || inputValues.mainImage instanceof File) {
+            // in case of input field containing File
+          } else {
+            // if new image file was not added, replace field in formdata
+            fData.set("mainImage", `${inputValues.mainImage}`);
+          }
 
           if (editItemId) await updateCatalogItem(editItemId, fData);
           break;

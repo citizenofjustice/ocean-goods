@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import db from "../db";
 import { uploadPictureAndGetUrl } from "../upload";
-import { log } from "console";
 
 const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStock", description, price, discount, weight, kcal, main_image as "mainImage"`;
 
@@ -45,12 +44,14 @@ class CatalogController {
 
   async updateCatalogItem(req: Request, res: Response) {
     const id = req.params.id;
-    const item = req.body;
-    console.log(item);
+    const item = await req.body;
 
     let imageLink: string = "";
-    if (req.file) imageLink = await uploadPictureAndGetUrl(req.file);
-    console.log(imageLink);
+    if (req.file) {
+      imageLink = await uploadPictureAndGetUrl(req.file);
+    } else {
+      imageLink = item.mainImage;
+    }
 
     const updatedItem = await db.query(
       `UPDATE catalog SET 
