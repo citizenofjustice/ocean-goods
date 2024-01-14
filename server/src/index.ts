@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import Server from "./server";
 import userRouter from "./routes/user.routes";
 import catalogRouter from "./routes/catalog.routes";
+import productTypesRouter from "./routes/productTypes.routes";
 
 const app: Application = express();
 const server: Server = new Server(app);
@@ -9,6 +10,7 @@ const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
 app.use("/api/users", userRouter);
 app.use("/api/catalog", catalogRouter);
+app.use("/api/product-types", productTypesRouter);
 
 app
   .listen(PORT, "localhost", function () {

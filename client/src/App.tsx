@@ -11,6 +11,8 @@ import NotFoundPage from "./components/Pages/NotFoundPage";
 import { RootStoreContext } from "./store/root-store-context";
 import AddToCatalogPage from "./components/Pages/AddToCatalogPage";
 import EditCatalogItemPage from "./components/Pages/EditCatalogItemPage";
+import DashboardPage from "./components/Pages/DashboardPage";
+import AuthPage from "./components/Pages/AuthPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<CatalogPage />} />
+                <Route path="auth" element={<AuthPage />} />
+                <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="item/:id" element={<ItemPage />} />
                 <Route path="search" element={<SearchPage />} />
                 <Route path="contact" element={<ContactPage />} />

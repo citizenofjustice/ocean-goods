@@ -19,9 +19,31 @@ export const createCatalogItem = (newItem: FormData) => {
     });
 };
 
-export const removeCatalogItem = (id: number) => {
+export const getCatalog = () => {
+  return axios(`${baseUrl}/catalog`)
+    .then(function (response) {
+      if (response.status === 200) return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+};
+
+export const getCatalogItem = (id: number) => {
+  axios(`${baseUrl}/catalog?=${id}`)
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+};
+
+export const updateCatalogItem = (id: number, updatedItem: FormData) => {
   return axios
-    .delete(`${baseUrl}/catalog/${id}`)
+    .put(`${baseUrl}/catalog/${id}`, updatedItem, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
     .then(function (response) {
       console.log(response);
     })
@@ -31,11 +53,9 @@ export const removeCatalogItem = (id: number) => {
     });
 };
 
-export const updateCatalogItem = (id: number, updatedItem: FormData) => {
+export const removeCatalogItem = (id: number) => {
   return axios
-    .put(`${baseUrl}/catalog/${id}`, updatedItem, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
+    .delete(`${baseUrl}/catalog/${id}`)
     .then(function (response) {
       console.log(response);
     })
@@ -56,20 +76,10 @@ export const getUserData = (id: number) => {
     });
 };
 
-export const getCatalog = () => {
-  return axios(`${baseUrl}/catalog`)
+export const getProductTypes = () => {
+  return axios(`${baseUrl}/product-types`)
     .then(function (response) {
       if (response.status === 200) return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-};
-
-export const getCatalogItem = (id: number) => {
-  axios(`${baseUrl}/catalog?=${id}`)
-    .then(function (response) {
-      console.log(response);
     })
     .catch(function (error) {
       console.log(error);
