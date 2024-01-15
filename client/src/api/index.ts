@@ -76,6 +76,20 @@ export const getUserData = (id: number) => {
     });
 };
 
+export const createProductType = (type: FormData) => {
+  return axios
+    .post(`${baseUrl}/product-types/create`, type, {
+      headers: { "Content-Type": "application/json" },
+    })
+    .then(function (response) {
+      console.log(response);
+      if (response.status === 200) return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+};
+
 export const getProductTypes = () => {
   return axios(`${baseUrl}/product-types`)
     .then(function (response) {

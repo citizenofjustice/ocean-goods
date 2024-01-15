@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProductTypes } from "../api";
 import { ProductType } from "../types/ProductType";
-import LoadingSVG from "./UI/LoadingSVG";
+import LoadingSpinner from "./UI/LoadingSpinner";
 
 const ProductTypesList = () => {
   const [productTypes, setProductTypes] = useState<ProductType[]>([]);
@@ -14,28 +14,25 @@ const ProductTypesList = () => {
       setProductTypes(data);
       return data;
     },
+    refetchOnWindowFocus: false,
   });
 
   if (isError) return <div>{error.message}</div>;
   return (
     <>
-      {isLoading && (
-        <div className="flex items-center justify-center h-40">
-          <div className="animate-spin w-10 h-10">
-            <LoadingSVG className="w-10 h-10" />
+      <div className="text-center w-fit">
+        {isLoading && <LoadingSpinner />}
+        {!isLoading && !isError && (
+          <div>
+            <p className="font-bold">Список типов продуктов:</p>
+            <ul>
+              {productTypes.map((item: ProductType) => (
+                <li key={item.productTypeId}>{item.type}</li>
+              ))}
+            </ul>
           </div>
-        </div>
-      )}
-      {!isLoading && !isError && (
-        <div>
-          <p className="font-bold">Список типов продуктов:</p>
-          <ul>
-            {productTypes.map((item: ProductType) => (
-              <li key={item.productTypeId}>{item.type}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };

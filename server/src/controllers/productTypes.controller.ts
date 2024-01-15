@@ -1,24 +1,27 @@
 import { Request, Response } from "express";
 import db from "../db";
 
+const productTypesCamelCase: string = `id as "productTypeId", type`;
+
 class ProductTypesController {
   async createProductType(req: Request, res: Response) {
-    const { productType } = req.body;
+    const { type } = req.body;
     const newProductType = await db.query(
-      `INSERT INTO product_types (type) value ($1) RETURNING *`,
-      [productType]
+      `INSERT INTO product_types (type) VALUES ($1) RETURNING *`,
+      [type]
     );
-    console.log(newProductType.rows[0]);
     res.json(newProductType.rows[0]);
   }
   async getProductTypes(req: Request, res: Response) {
-    const productTypes = await db.query(`SELECT * FROM product_types`);
+    const productTypes = await db.query(
+      `SELECT ${productTypesCamelCase} FROM product_types`
+    );
     res.json(productTypes.rows);
   }
   async getOneProductType(req: Request, res: Response) {
     const { id } = req.params;
     const productType = await db.query(
-      `SELECT * FROM product_types WHERE id = $1`,
+      `SELECT ${productTypesCamelCase} FROM product_types WHERE id = $1`,
       [id]
     );
     res.json(productType.rows[0]);

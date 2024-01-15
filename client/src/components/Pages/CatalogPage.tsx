@@ -7,9 +7,9 @@ import GridElement from "../UI/GridElement";
 import { useQuery } from "@tanstack/react-query";
 import { getCatalog } from "../../api";
 import CatalogItemModel from "../../classes/CatalogItemModel";
-import LoadingSVG from "../UI/LoadingSVG";
 import { useEffect } from "react";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import LoadingSpinner from "../UI/LoadingSpinner";
 
 /**
  * Component for rendering Catalog page dividided into grid
@@ -44,13 +44,7 @@ const CatalogPage = observer(() => {
 
   return (
     <div className="px-2 vsm:px-4">
-      {isLoading && (
-        <div className="flex items-center justify-center h-40">
-          <div className="animate-spin w-10 h-10">
-            <LoadingSVG className="w-10 h-10" />
-          </div>
-        </div>
-      )}
+      {isLoading && <LoadingSpinner />}
       {!isLoading && !isError && (
         <Grid xCount="2">
           {catalogItems.length > 0 &&

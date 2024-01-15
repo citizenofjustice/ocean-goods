@@ -3,11 +3,17 @@ import { useState } from "react";
 import ImageDropzone from "../UI/ImageDropzone";
 import LabeledInputField from "../UI/LabeledInputField";
 import { observer } from "mobx-react-lite";
-import { createCatalogItem, updateCatalogItem } from "../../api";
+import {
+  createCatalogItem,
+  getProductTypes,
+  updateCatalogItem,
+} from "../../api";
 import { CatalogItemInputs } from "../../types/form-types";
 import SelectField from "../UI/SelectField";
 import ToggleField from "../UI/ToggleField";
 import TextareaField from "../UI/TextareaField";
+import DefaultButton from "../UI/DefaultButton";
+import { useQuery } from "@tanstack/react-query";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -33,6 +39,12 @@ const AddToCatalogPage: React.FC<{
   }) => {
     const [inputValues, setInputValues] =
       useState<CatalogItemInputs>(initValues);
+
+    const { isLoading, isError, data } = useQuery({
+      queryKey: ["product-type"],
+      queryFn: async () => await getProductTypes(),
+      refetchOnWindowFocus: false,
+    });
 
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -100,7 +112,7 @@ const AddToCatalogPage: React.FC<{
       <>
         <div className="p-4">
           <form onSubmit={handleFormSubmittion}>
-            <div className="grid gap-6 mb-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2">
               <LabeledInputField
                 title="Название"
                 inputId="add-to-catalog-name"
@@ -115,6 +127,9 @@ const AddToCatalogPage: React.FC<{
                 name="productTypeId"
                 onSelectChange={handleSelectChange}
                 value={inputValues.productTypeId}
+                isLoading={isLoading}
+                isError={isError}
+                options={data}
               />
               <LabeledInputField
                 title="Цена"
@@ -174,14 +189,7 @@ const AddToCatalogPage: React.FC<{
                 checked={initValues.inStock}
               />
             </div>
-            <div className="flex justify-center">
-              <button
-                type="submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-3 text-center"
-              >
-                Cохранить
-              </button>
-            </div>
+            <DefaultButton type="submit">Cохранить</DefaultButton>
           </form>
         </div>
       </>
