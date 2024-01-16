@@ -4,7 +4,7 @@ const DefaultButton: React.FC<{
 }> = ({ type, children }) => {
   return (
     <>
-      <div className="flex justify-center p-4">
+      <div className="flex justify-center">
         <button
           type={type}
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-3 text-center"

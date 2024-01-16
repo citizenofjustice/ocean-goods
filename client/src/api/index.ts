@@ -1,5 +1,6 @@
 import axios from "axios";
 import { CatalogItem } from "../types/CatalogItem";
+import { ProductType } from "../types/ProductType";
 
 const baseUrl: string = "http://localhost:8080/api";
 
@@ -26,6 +27,7 @@ export const getCatalog = () => {
     })
     .catch(function (error) {
       console.log(error);
+      return error;
     });
 };
 
@@ -36,6 +38,7 @@ export const getCatalogItem = (id: number) => {
     })
     .catch(function (error) {
       console.log(error);
+      return error;
     });
 };
 
@@ -73,6 +76,7 @@ export const getUserData = (id: number) => {
     })
     .catch(function (error) {
       console.log(error);
+      return error;
     });
 };
 
@@ -87,6 +91,7 @@ export const createProductType = (type: FormData) => {
     })
     .catch(function (error) {
       console.log(error);
+      return error;
     });
 };
 
@@ -97,5 +102,36 @@ export const getProductTypes = () => {
     })
     .catch(function (error) {
       console.log(error);
+      return error;
+    });
+};
+
+export const removeProductType = (productTypeId: number) => {
+  return axios
+    .delete(`${baseUrl}/product-types/${productTypeId}`)
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
+export const updateProductType = (updatedProductType: ProductType) => {
+  return axios
+    .put(
+      `${baseUrl}/product-types/${updatedProductType.productTypeId}`,
+      updatedProductType,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
     });
 };

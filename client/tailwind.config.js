@@ -109,6 +109,7 @@ export default {
       2: "2px",
       4: "4px",
       8: "8px",
+      svg: "0.1rem",
     },
     boxShadow: {
       sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
@@ -791,6 +792,7 @@ export default {
       150: "1.5",
     },
     screens: {
+      vvsm: "320px",
       vsm: "425px",
       sm: "640px",
       md: "768px",

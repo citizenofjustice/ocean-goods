@@ -27,11 +27,10 @@ class ProductTypesController {
     res.json(productType.rows[0]);
   }
   async updateProductType(req: Request, res: Response) {
-    const { id } = req.params;
-    const { newType } = req.body;
+    const { productTypeId, type } = req.body;
     const updatedProductType = await db.query(
-      `UPDATE product_types SET type = $1 WHERE id = $2 RETURNING`,
-      [newType, id]
+      `UPDATE product_types SET type = $1 WHERE id = $2 RETURNING *`,
+      [type, productTypeId]
     );
     res.json(updatedProductType.rows[0]);
   }
