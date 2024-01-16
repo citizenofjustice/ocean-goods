@@ -13,6 +13,8 @@ import AddToCatalogPage from "./components/Pages/AddToCatalogPage";
 import EditCatalogItemPage from "./components/Pages/EditCatalogItemPage";
 import DashboardPage from "./components/Pages/DashboardPage";
 import AuthPage from "./components/Pages/AuthPage";
+import ProductTypesList from "./components/ProductTypesList";
+import Roles from "./components/Roles";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -27,7 +29,10 @@ function App() {
               <Route path="/" element={<Layout />}>
                 <Route index element={<CatalogPage />} />
                 <Route path="auth" element={<AuthPage />} />
-                <Route path="dashboard" element={<DashboardPage />} />
+                <Route path="dashboard" element={<DashboardPage />}>
+                  <Route path="product-types" element={<ProductTypesList />} />
+                  <Route path="roles" element={<Roles />} />
+                </Route>
                 <Route path="item/:id" element={<ItemPage />} />
                 <Route path="search" element={<SearchPage />} />
                 <Route path="contact" element={<ContactPage />} />

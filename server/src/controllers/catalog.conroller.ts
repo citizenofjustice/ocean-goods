@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import db from "../db";
 import { uploadPictureAndGetUrl } from "../upload";
 
-const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStock", description, price, discount, weight, kcal, main_image as "mainImage"`;
+const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStock", description, price, discount, weight, kcal, main_image as "mainImage", created_at as "createdAt", updated_at as "updatedAt"`;
 
 class CatalogController {
   async createCatalogItem(req: Request, res: Response) {
@@ -29,7 +29,9 @@ class CatalogController {
   }
 
   async getCatalog(req: Request, res: Response) {
-    const catalog = await db.query(`SELECT ${catalogCamelCase} FROM catalog`);
+    const catalog = await db.query(
+      `SELECT ${catalogCamelCase} FROM catalog ORDER BY updated_at DESC`
+    );
     res.json(catalog.rows);
   }
 
@@ -63,7 +65,8 @@ class CatalogController {
         discount = $6,
         weight = $7,
         kcal = $8,
-        main_image = $9
+        main_image = $9,
+        updated_at = NOW()
         WHERE id = $10 RETURNING *`,
       [
         item.productName,

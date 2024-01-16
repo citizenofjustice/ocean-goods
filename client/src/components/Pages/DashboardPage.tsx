@@ -1,11 +1,19 @@
-import ProductTypesList from "../ProductTypesList";
+import { Link, Outlet } from "react-router-dom";
 
 const DashboardPage = () => {
   return (
     <>
       <div className="flex flex-col items-center">
         <h1 className="mb-4">Dashboard page</h1>
-        <ProductTypesList />
+        <nav className="flex flex-row gap-4 mb-4">
+          <Link className="border border-2 rounded-lg p-2" to="product-types">
+            Типы продуктов
+          </Link>
+          <Link className="border border-2 rounded-lg p-2" to="roles">
+            Роли
+          </Link>
+        </nav>
+        <Outlet />
       </div>
     </>
   );

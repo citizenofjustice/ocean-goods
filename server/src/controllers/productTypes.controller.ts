@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import db from "../db";
 
-const productTypesCamelCase: string = `id as "productTypeId", type`;
+const productTypesCamelCase: string = `id as "productTypeId", type, created_at as "createdAt", updated_at as "updatedAt"`;
 
 class ProductTypesController {
   async createProductType(req: Request, res: Response) {
@@ -14,7 +14,7 @@ class ProductTypesController {
   }
   async getProductTypes(req: Request, res: Response) {
     const productTypes = await db.query(
-      `SELECT ${productTypesCamelCase} FROM product_types`
+      `SELECT ${productTypesCamelCase} FROM product_types ORDER BY updated_at DESC`
     );
     res.json(productTypes.rows);
   }
@@ -29,7 +29,7 @@ class ProductTypesController {
   async updateProductType(req: Request, res: Response) {
     const { productTypeId, type } = req.body;
     const updatedProductType = await db.query(
-      `UPDATE product_types SET type = $1 WHERE id = $2 RETURNING *`,
+      `UPDATE product_types SET type = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
       [type, productTypeId]
     );
     res.json(updatedProductType.rows[0]);
