@@ -53,3 +53,6 @@ create Table product_types(
 
 -- ALTER TABLE IF EXISTS public.priveleges ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();
 -- ALTER TABLE IF EXISTS public.priveleges ADD COLUMN updated_at timestamp with time zone NOT NULL DEFAULT now();
+
+-- ALTER TABLE IF EXISTS public.roles DROP COLUMN IF EXISTS privelege_id;
+-- ALTER TABLE IF EXISTS public.roles ADD COLUMN privelege_ids integer[] DEFAULT ARRAY[]::integer[];

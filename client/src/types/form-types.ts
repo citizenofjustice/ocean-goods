@@ -9,3 +9,8 @@ export type CatalogItemInputs = {
   kcal: string;
   mainImage?: File | string;
 };
+
+export type RoleInputs = {
+  title: string;
+  privelegeIds: number[];
+};

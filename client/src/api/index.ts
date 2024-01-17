@@ -35,6 +35,7 @@ export const getCatalogItem = (id: number) => {
   axios(`${baseUrl}/catalog?=${id}`)
     .then(function (response) {
       console.log(response);
+      return response.data;
     })
     .catch(function (error) {
       console.log(error);
@@ -98,7 +99,8 @@ export const createProductType = (type: FormData) => {
 export const getProductTypes = () => {
   return axios(`${baseUrl}/product-types`)
     .then(function (response) {
-      if (response.status === 200) return response.data;
+      console.log(response);
+      return response.data;
     })
     .catch(function (error) {
       console.log(error);
@@ -133,5 +135,29 @@ export const updateProductType = (updatedProductType: ProductType) => {
     .catch(function (error) {
       console.log(error);
       return error;
+    });
+};
+
+export const getRoles = () => {
+  return axios(`${baseUrl}/roles`)
+    .then(function (response) {
+      console.log(response);
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error.message;
+    });
+};
+
+export const getPriveleges = () => {
+  return axios(`${baseUrl}/priveleges`)
+    .then(function (response) {
+      console.log(response);
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error.message;
     });
 };

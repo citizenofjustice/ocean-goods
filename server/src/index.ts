@@ -1,6 +1,8 @@
 import express, { Application } from "express";
 import Server from "./server";
 import userRouter from "./routes/user.routes";
+import rolesRouter from "./routes/roles.routes";
+import privelegesRouter from "./routes/priveleges.routes";
 import catalogRouter from "./routes/catalog.routes";
 import productTypesRouter from "./routes/productTypes.routes";
 
@@ -9,6 +11,8 @@ const server: Server = new Server(app);
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
 app.use("/api/users", userRouter);
+app.use("/api/roles", rolesRouter);
+app.use("/api/priveleges", privelegesRouter);
 app.use("/api/catalog", catalogRouter);
 app.use("/api/product-types", productTypesRouter);
 

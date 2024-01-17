@@ -12,6 +12,9 @@ const DashboardPage = () => {
           <Link className="border border-2 rounded-lg p-2" to="roles">
             Роли
           </Link>
+          <Link className="border border-2 rounded-lg p-2" to="priveleges">
+            Привелегии
+          </Link>
         </nav>
         <Outlet />
       </div>
