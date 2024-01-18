@@ -138,6 +138,19 @@ export const updateProductType = (updatedProductType: ProductType) => {
     });
 };
 
+export const createRole = (newRole: FormData) => {
+  return axios
+    .post(`${baseUrl}/roles/create`, newRole, {
+      headers: { "Content-Type": "application/json" },
+    })
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      return error;
+    });
+};
+
 export const getRoles = () => {
   return axios(`${baseUrl}/roles`)
     .then(function (response) {
@@ -146,7 +159,35 @@ export const getRoles = () => {
     })
     .catch(function (error) {
       console.log(error);
-      return error.message;
+      return error;
+    });
+};
+
+export const updateRole = (updatedRole: FormData) => {
+  const id = updatedRole.get("roleId");
+  return axios
+    .put(`${baseUrl}/roles/${id}`, updatedRole, {
+      headers: { "Content-Type": "application/json" },
+    })
+    .then(function (response) {
+      console.log(response);
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
+export const removeRole = (roleId: number) => {
+  return axios
+    .delete(`${baseUrl}/roles/${roleId}`)
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
     });
 };
 
@@ -158,6 +199,6 @@ export const getPriveleges = () => {
     })
     .catch(function (error) {
       console.log(error);
-      return error.message;
+      return error;
     });
 };

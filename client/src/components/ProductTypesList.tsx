@@ -26,7 +26,7 @@ const ProductTypesList = () => {
       <div className="text-center vvsm:w-4/5 min-w-56 max-w-md bg-gray-200 rounded-lg p-4">
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
-          <div>
+          <>
             <div className="w-full flex justify-center relative">
               <p className="font-bold">Список типов продуктов:</p>
               {!isFormShown && (
@@ -57,7 +57,7 @@ const ProductTypesList = () => {
                 <h1 className="mt-4">Список типов продуктов пуст</h1>
               )}
             </ul>
-          </div>
+          </>
         )}
       </div>
     </>

@@ -36,7 +36,7 @@ const ProductTypeAdd: React.FC<{
         onSubmit={handleProductTypeSubmission}
         className="w-full text-center mt-4"
       >
-        <div className="flex bg-amber-50 p-2 rounded-lg">
+        <div className="flex bg-amber-50 p-4 rounded-lg">
           <LabeledInputField
             inputId="product-type-add"
             inputType="text"

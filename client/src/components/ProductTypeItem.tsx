@@ -19,8 +19,13 @@ const ProductTypeItem: React.FC<{
   const removeMutation = useMutation({
     mutationFn: async (productTypeId: number) =>
       await removeProductType(productTypeId),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["product-type"] });
+    onSuccess: (_data, variables) => {
+      queryClient.setQueryData(["product-type"], (oldData: ProductType[]) => {
+        const newData = oldData.filter(
+          (item) => item.productTypeId !== variables
+        );
+        return newData;
+      });
     },
   });
 
@@ -54,10 +59,7 @@ const ProductTypeItem: React.FC<{
 
   return (
     <>
-      <li
-        key={productType.productTypeId}
-        className="flex bg-amber-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2"
-      >
+      <li className="flex bg-amber-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2">
         {isInEdit ? (
           <div className="basis-10/12">
             <input

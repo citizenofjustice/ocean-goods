@@ -1,22 +1,36 @@
 import { useState } from "react";
 import LabeledInputField from "./UI/LabeledInputField";
 import CustomCheckbox from "./UI/CustomCheckbox";
-import { useQuery } from "@tanstack/react-query";
-import { getPriveleges } from "../api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createRole, getPriveleges } from "../api";
 import DefaultButton from "./UI/DefaultButton";
 import { RoleInputs } from "../types/form-types";
+import LoadingSpinner from "./UI/LoadingSpinner";
 
 const emptyInitValues: RoleInputs = {
   title: "",
   privelegeIds: [],
 };
 
-const RoleAdd = () => {
+const RoleAdd: React.FC<{
+  onFormClose: () => void;
+}> = ({ onFormClose }) => {
   const [inputValues, setInputValues] = useState(emptyInitValues);
+  const queryClient = useQueryClient();
+
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["priveleges"],
     queryFn: async () => await getPriveleges(),
     refetchOnWindowFocus: false,
+  });
+
+  const mutation = useMutation({
+    mutationFn: async (fData: FormData) => await createRole(fData),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["roles"] });
+      setInputValues(emptyInitValues);
+      onFormClose();
+    },
   });
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,17 +42,14 @@ const RoleAdd = () => {
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e.preventDefault();
-    const fData = new FormData(e.currentTarget);
-    // fData.append("privelegeIds", JSON.stringify(inputValues.privelegeIds));
-    console.log(Object.fromEntries(fData));
+    const fData = new FormData();
+    fData.append("title", inputValues.title);
+    fData.append("privelegeIds", JSON.stringify(inputValues.privelegeIds));
+    mutation.mutate(fData);
   };
 
-  // const isChecked = () => {
-  //   return
-  // }
   const handleCheckboxChange = (priveleges: number[]) => {
-    console.log(priveleges);
-    // setInputValues({ ...inputValues, privelegeIds: priveleges });
+    setInputValues({ ...inputValues, privelegeIds: priveleges });
   };
 
   if (error) return <h1>{error.message}</h1>;
@@ -46,19 +57,31 @@ const RoleAdd = () => {
   return (
     <>
       <form onSubmit={handleRoleSubmission}>
-        <div className="flex flex-col items-center bg-amber-50 p-2 rounded-lg">
-          <LabeledInputField
-            inputId="user-role-title"
-            inputType="text"
-            name="title"
-            title="Роль пользователя"
-            value={inputValues.title}
-            onInputChange={handleValueChange}
-          />
+        <div className="flex flex-col items-center bg-amber-50 p-4 rounded-lg">
+          <div className="w-4/5">
+            <LabeledInputField
+              inputId="user-role-title"
+              inputType="text"
+              name="title"
+              title="Роль пользователя"
+              value={inputValues.title}
+              onInputChange={handleValueChange}
+            />
+          </div>
+          {isLoading && <LoadingSpinner />}
           {!isLoading && !isError && (
-            <CustomCheckbox content={data} onChange={handleCheckboxChange} /> //
+            <CustomCheckbox
+              nameForIds="priveleges"
+              content={data}
+              onChange={handleCheckboxChange}
+            />
           )}
-          <DefaultButton type="submit">Сохранить</DefaultButton>
+          <div className="flex gap-4">
+            <DefaultButton type="button" onClick={onFormClose}>
+              Отмена
+            </DefaultButton>
+            <DefaultButton type="submit">Сохранить</DefaultButton>
+          </div>
         </div>
       </form>
     </>
