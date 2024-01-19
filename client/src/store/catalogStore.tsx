@@ -1,16 +1,43 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, action } from "mobx";
 import CatalogItemModel from "../classes/CatalogItemModel";
 import { CatalogItem } from "../types/CatalogItem";
 
-class CatalogStore {
-  catalogItems: CatalogItemModel[] = [];
+const cartItemsFromLStorage: CatalogItemModel[] = JSON.parse(
+  localStorage.getItem("catalog") || "[]"
+);
 
-  get itemCouter(): number {
+class CatalogStore {
+  catalogItems: CatalogItemModel[] = cartItemsFromLStorage;
+
+  get itemCounter(): number {
     return this.catalogItems.length;
   }
 
+  get catalogItemsProductIds(): Array<number> {
+    const ids = this.catalogItems.map((item) => item.productId);
+    return ids;
+  }
+
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      setCatalogItems: action,
+      addCatalogItem: action,
+      removeCatalogItemFromStore: action,
+    });
+  }
+
+  findCatalogItemById(productId: number) {
+    const foundItem = this.catalogItems.find(
+      (item) => item.productId === productId
+    );
+    return foundItem;
+  }
+
+  removeCatalogItemFromStore(productId: number) {
+    const filteredCatalog = this.catalogItems.filter(
+      (item) => item.productId !== productId
+    );
+    this.catalogItems = filteredCatalog;
   }
 
   setCatalogItems(catalog: CatalogItemModel[]) {
@@ -23,7 +50,7 @@ class CatalogStore {
         item.productId,
         item.productName,
         item.productTypeId,
-        item.inStoke,
+        item.inStock,
         item.description,
         item.weight,
         item.price,

@@ -2,8 +2,12 @@ import { nanoid } from "nanoid";
 import { useState } from "react";
 import {
   Bars3Icon,
+  Squares2X2Icon,
   MagnifyingGlassIcon,
   PhoneIcon,
+  Cog6ToothIcon,
+  ArrowRightOnRectangleIcon,
+  PlusIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
@@ -21,25 +25,37 @@ const menuItems: MenuItem[] = [
     id: nanoid(),
     title: "Каталог",
     path: "/",
+    icon: <Squares2X2Icon className="w-6 h-6" />,
   },
   {
     id: nanoid(),
     title: "Поиск",
     path: "/search",
-    icon: <MagnifyingGlassIcon className="w-4 h-4" />,
+    icon: <MagnifyingGlassIcon className="w-6 h-6" />,
   },
   {
     id: nanoid(),
     title: "Контакты",
     path: "/contact",
-    icon: <PhoneIcon className="w-4 h-4" />,
+    icon: <PhoneIcon className="w-6 h-6" />,
   },
   {
-    //temp
     id: nanoid(),
     title: "Создать",
     path: "/new-item",
-    // icon: <PhoneIcon className="w-4 h-4" />,
+    icon: <PlusIcon className="w-6 h-6" />,
+  },
+  {
+    id: nanoid(),
+    title: "Управление",
+    path: "/dashboard",
+    icon: <Cog6ToothIcon className="w-6 h-6" />,
+  },
+  {
+    id: nanoid(),
+    title: "Авторизация",
+    path: "/auth",
+    icon: <ArrowRightOnRectangleIcon className="w-6 h-6" />,
   },
 ];
 

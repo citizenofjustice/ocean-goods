@@ -1,11 +1,16 @@
-export type NewCatalogItem = {
+export type CatalogItemInputs = {
   productName: string;
   productTypeId: string;
-  inStoke: boolean;
+  inStock: boolean;
   description: string;
   price: string;
   discount: string;
   weight: string;
   kcal: string;
-  mainImage?: File;
+  mainImage?: File | string;
+};
+
+export type RoleInputs = {
+  title: string;
+  privelegeIds: number[];
 };

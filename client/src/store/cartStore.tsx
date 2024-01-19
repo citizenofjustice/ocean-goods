@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, action } from "mobx";
 
 import CartItemModel from "../classes/CartItemModel";
 import CatalogItemModel from "../classes/CatalogItemModel";
@@ -26,7 +26,10 @@ class cartStore {
   }
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      addItem: action,
+      removeItem: action,
+    });
   }
 
   findCartItem(productId: number) {
@@ -56,16 +59,31 @@ class cartStore {
     }
   }
 
-  removeItem(inCartProduct: CartItemModel) {
+  removeItem(cartItem: CartItemModel) {
+    const filteredItems = this.cartItems.filter(
+      (item) => item.cartItemId !== cartItem.cartItemId
+    );
+    this.cartItems = filteredItems;
+  }
+
+  amountDecrease(inCartProduct: CartItemModel) {
     if (inCartProduct.amount === 1) {
-      const filteredItems = this.cartItems.filter(
-        (item) => item.cartItemId !== inCartProduct.cartItemId
-      );
-      this.cartItems = filteredItems;
+      this.removeItem(inCartProduct);
     } else {
       if (inCartProduct.amount > 0) inCartProduct.amount--;
     }
     return this.cartItems;
+  }
+
+  compare(catalogItemsProductIds: number[]) {
+    if (this.cartItems.length === 0) return;
+    const removedFromCatalog = this.cartItems.filter(
+      (el) => catalogItemsProductIds.indexOf(el.productId) === -1
+    );
+    removedFromCatalog.map((item) => {
+      this.removeItem(item);
+    });
+    localStorage.setItem("cart", JSON.stringify(this.cartItems));
   }
 }
 

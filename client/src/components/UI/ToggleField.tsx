@@ -8,7 +8,7 @@ const ToggleField: React.FC<{
   onToggleChange: () => void;
   checked: boolean;
 }> = ({ inputId, inputType, title, name, onToggleChange, checked }) => {
-  const [isToggleActive, setIsToggleActive] = useState<boolean>(false);
+  const [isToggleActive, setIsToggleActive] = useState<boolean>(checked);
 
   const handleToggle = () => {
     setIsToggleActive((prev) => !prev);

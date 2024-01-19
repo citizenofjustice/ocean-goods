@@ -1,5 +1,7 @@
 import express, { Application } from "express";
 import cors, { CorsOptions } from "cors";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
 export default class Server {
   constructor(app: Application) {
@@ -11,8 +13,10 @@ export default class Server {
       origin: "http://localhost:5173",
     };
 
+    dotenv.config();
     app.use(cors(corsOptions));
     app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+    app.use(bodyParser.json({ limit: "5mb" }));
+    app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
   }
 }

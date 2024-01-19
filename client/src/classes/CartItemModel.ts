@@ -10,7 +10,7 @@ class CartItemModel implements CartItem {
   productId: number;
   productName: string;
   productTypeId: number;
-  inStoke: boolean = true;
+  inStock: boolean = true;
   description: string = "";
   price: number;
   discount: number;

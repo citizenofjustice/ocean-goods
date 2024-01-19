@@ -29,14 +29,30 @@ create Table catalog(
     discount INTEGER,
     weight INTEGER,
     kcal INTEGER,
-    main_image VARCHAR(255)
+    main_image VARCHAR(255),
 );
 
 create Table product_types(
     id SERIAL PRIMARY KEY,
-    type VARCHAR(255)
+    type VARCHAR(255),
 );
 
--- INSERT INTO priveleges (title) VALUES ('catalog managment');
--- INSERT INTO roles (title, privelege_id) VALUES ('manager', 1);
--- INSERT INTO product_types (type) VALUES ('fish');
+-- INSERT INTO priveleges (title) VALUES ('назначение ролей');
+
+-- ALTER TABLE IF EXISTS public.product_types ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();
+-- ALTER TABLE IF EXISTS public.product_types ADD COLUMN updated_at timestamp with time zone NOT NULL DEFAULT now();
+
+-- ALTER TABLE IF EXISTS public.catalog ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();
+-- ALTER TABLE IF EXISTS public.catalog ADD COLUMN updated_at timestamp with time zone NOT NULL DEFAULT now();
+
+-- ALTER TABLE IF EXISTS public.users ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();
+-- ALTER TABLE IF EXISTS public.users ADD COLUMN updated_at timestamp with time zone NOT NULL DEFAULT now();
+
+-- ALTER TABLE IF EXISTS public.roles ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();
+-- ALTER TABLE IF EXISTS public.roles ADD COLUMN updated_at timestamp with time zone NOT NULL DEFAULT now();
+
+-- ALTER TABLE IF EXISTS public.priveleges ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();
+-- ALTER TABLE IF EXISTS public.priveleges ADD COLUMN updated_at timestamp with time zone NOT NULL DEFAULT now();
+
+-- ALTER TABLE IF EXISTS public.roles DROP COLUMN IF EXISTS privelege_id;
+-- ALTER TABLE IF EXISTS public.roles ADD COLUMN privelege_ids integer[] DEFAULT ARRAY[]::integer[];

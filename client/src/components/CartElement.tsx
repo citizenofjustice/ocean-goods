@@ -36,11 +36,12 @@ const CartElement: React.FC<{
             currentValue={cartItem.amount}
             additonalStyle="flex-col-reverse justify-end"
             onDecrement={action(() => {
-              const filteredItems: CartItemModel[] = cart.removeItem(cartItem);
+              const filteredItems: CartItemModel[] =
+                cart.amountDecrease(cartItem);
               setCartContent(filteredItems);
             })}
             onIncrement={action(() => {
-              cartItem.amount--;
+              cartItem.amount++;
               setCartContent(cartItems);
             })}
           />

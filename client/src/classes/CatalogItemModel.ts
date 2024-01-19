@@ -7,7 +7,7 @@ class CatalogItemModel implements CatalogItem {
   productId: number;
   productName: string;
   productTypeId: number;
-  inStoke: boolean;
+  inStock: boolean;
   description: string;
   price: number;
   discount: number;
@@ -19,7 +19,7 @@ class CatalogItemModel implements CatalogItem {
     productId: number,
     productName: string,
     productTypeId: number,
-    inStoke: boolean,
+    inStock: boolean,
     description: string,
     price: number,
     discount: number,
@@ -31,7 +31,7 @@ class CatalogItemModel implements CatalogItem {
     this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;
-    this.inStoke = inStoke;
+    this.inStock = inStock;
     this.description = description;
     this.price = price;
     this.discount = discount;
