@@ -6,16 +6,12 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import RoleAdd from "./RoleAdd";
 import RoleItem from "./RoleItem";
-import { Privelege } from "../types/Privelege";
 
 const Roles = () => {
-  const [privelegesList, setPrivelegesList] = useState<Privelege[]>([]);
-
-  useQuery({
+  const privelegesQuery = useQuery({
     queryKey: ["priveleges"],
     queryFn: async () => {
       const data = await getPriveleges();
-      setPrivelegesList(data);
       return data;
     },
     refetchOnWindowFocus: false,
@@ -55,7 +51,7 @@ const Roles = () => {
               {data.length !== 0 ? (
                 data.map((item: Role) => (
                   <RoleItem
-                    priveleges={privelegesList}
+                    priveleges={privelegesQuery.data}
                     key={item.roleId}
                     role={item}
                   />

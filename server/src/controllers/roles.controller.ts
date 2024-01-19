@@ -5,15 +5,24 @@ import db from "../db";
 
 class RolesController {
   async createRole(req: Request, res: Response) {
-    const { title, privelegeIds } = req.body;
-    const newRole = await db.query(
-      `INSERT INTO roles (title, privelege_ids) VALUES ($1, $2) RETURNING *`,
-      [title, JSON.parse(privelegeIds)]
-    );
-    res.json(newRole.rows[0]);
+    try {
+      const { title, privelegeIds } = req.body;
+      const priveleges = JSON.parse(privelegeIds);
+
+      if (priveleges.length === 0) throw new Error("Privileges was not added");
+
+      const newRole = await db.query(
+        `INSERT INTO roles (title, privelege_ids) VALUES ($1, $2) RETURNING *`,
+        [title, priveleges]
+      );
+      res.status(201).json(newRole.rows[0]);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(409).json({ error: error.message });
+      }
+    }
   }
   async getRoles(req: Request, res: Response) {
-    // `SELECT ${rolesCamelCase} FROM roles ORDER BY title`
     const roles = await db.query(`
         SELECT r.id as "roleId", r.title, json_agg(json_build_object(
           'privelegeId', pr.id,

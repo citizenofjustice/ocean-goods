@@ -8,9 +8,9 @@ const CustomCheckbox: React.FC<{
   initValues?: number[];
 }> = ({ content, nameForIds, initValues = [], onChange }) => {
   const [checkedState, setCheckedState] = useState(
-    new Array(content.length).fill(false)
+    content.map((item) => initValues?.includes(item.privelegeId))
   );
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>(initValues);
 
   const handleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -53,7 +53,7 @@ const CustomCheckbox: React.FC<{
               id={`${nameForIds}-checkbox-${index}`}
               name={item.title}
               value={item.privelegeId}
-              checked={initValues?.includes(item.privelegeId)}
+              checked={checkedState[index]}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 handleCheckboxChange(e, index)
               }

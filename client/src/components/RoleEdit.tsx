@@ -3,6 +3,7 @@ import DefaultButton from "./UI/DefaultButton";
 import LabeledInputField from "./UI/LabeledInputField";
 import CustomCheckbox from "./UI/CustomCheckbox";
 import { Privelege } from "../types/Privelege";
+import CustomAlertMessage from "./UI/CustomAlertMessage";
 
 interface editRoleInputs {
   roleId: number;
@@ -17,6 +18,7 @@ const RoleEdit: React.FC<{
   onFormSubmit: (updatedRole: FormData) => void;
 }> = ({ initValues, priveleges, onFormClose, onFormSubmit }) => {
   const [inputValues, setInputValues] = useState(initValues);
+  const [checkboxAlert, setCheckboxAlert] = useState("");
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,12 +33,17 @@ const RoleEdit: React.FC<{
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e.preventDefault();
+    if (inputValues.privelegeIds.length === 0) {
+      setCheckboxAlert("Для роли не были выбраны полномочия");
+      return;
+    } else {
+      setCheckboxAlert("");
+    }
     const fData = new FormData();
     fData.append("roleId", JSON.stringify(inputValues.roleId));
     fData.append("title", inputValues.title);
     fData.append("privelegeIds", JSON.stringify(inputValues.privelegeIds));
-    // onFormSubmit(fData);
-    console.log(Object.fromEntries(fData));
+    onFormSubmit(fData);
   };
 
   return (
@@ -59,6 +66,7 @@ const RoleEdit: React.FC<{
             initValues={initValues.privelegeIds}
             onChange={handleCheckboxChange}
           />
+          {checkboxAlert && <CustomAlertMessage message={checkboxAlert} />}
           <div className="flex gap-4">
             <DefaultButton type="button" onClick={onFormClose}>
               Отмена

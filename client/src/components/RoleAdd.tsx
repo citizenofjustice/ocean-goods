@@ -6,6 +6,7 @@ import { createRole, getPriveleges } from "../api";
 import DefaultButton from "./UI/DefaultButton";
 import { RoleInputs } from "../types/form-types";
 import LoadingSpinner from "./UI/LoadingSpinner";
+import CustomAlertMessage from "./UI/CustomAlertMessage";
 
 const emptyInitValues: RoleInputs = {
   title: "",
@@ -16,6 +17,7 @@ const RoleAdd: React.FC<{
   onFormClose: () => void;
 }> = ({ onFormClose }) => {
   const [inputValues, setInputValues] = useState(emptyInitValues);
+  const [checkboxAlert, setCheckboxAlert] = useState("");
   const queryClient = useQueryClient();
 
   const { isLoading, isError, error, data } = useQuery({
@@ -42,6 +44,12 @@ const RoleAdd: React.FC<{
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e.preventDefault();
+    if (inputValues.privelegeIds.length === 0) {
+      setCheckboxAlert("Для роли не были выбраны полномочия");
+      return;
+    } else {
+      setCheckboxAlert("");
+    }
     const fData = new FormData();
     fData.append("title", inputValues.title);
     fData.append("privelegeIds", JSON.stringify(inputValues.privelegeIds));
@@ -76,6 +84,7 @@ const RoleAdd: React.FC<{
               onChange={handleCheckboxChange}
             />
           )}
+          {checkboxAlert && <CustomAlertMessage message={checkboxAlert} />}
           <div className="flex gap-4">
             <DefaultButton type="button" onClick={onFormClose}>
               Отмена
