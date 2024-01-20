@@ -6,6 +6,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import RoleAdd from "./RoleAdd";
 import RoleItem from "./RoleItem";
+import FormCard from "./UI/FormCard";
 
 const Roles = () => {
   const privelegesQuery = useQuery({
@@ -29,7 +30,7 @@ const Roles = () => {
 
   return (
     <>
-      <div className="text-center vvsm:w-4/5 min-w-56 max-w-md bg-gray-200 rounded-lg p-4">
+      <FormCard>
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
@@ -62,7 +63,7 @@ const Roles = () => {
             </ul>
           </>
         )}
-      </div>
+      </FormCard>
     </>
   );
 };

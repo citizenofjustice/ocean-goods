@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Privelege } from "../types/Privelege";
 import { getPriveleges } from "../api";
 import LoadingSpinner from "./UI/LoadingSpinner";
+import FormCard from "./UI/FormCard";
 
 const Priveleges = () => {
   const { isLoading, isError, error, data } = useQuery({
@@ -14,11 +15,11 @@ const Priveleges = () => {
 
   return (
     <>
-      <div className="text-center vvsm:w-4/5 min-w-56 max-w-md bg-gray-200 rounded-lg p-4">
+      <FormCard>
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
-            <h1>Перечень полномочий:</h1>
+            <p className="font-bold">Перечень полномочий:</p>
             <ul>
               {data.length !== 0 ? (
                 data.map((item: Privelege) => (
@@ -37,7 +38,7 @@ const Priveleges = () => {
             </ul>
           </>
         )}
-      </div>
+      </FormCard>
     </>
   );
 };

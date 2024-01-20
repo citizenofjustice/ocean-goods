@@ -36,6 +36,12 @@ class RolesController {
       `);
     res.json(roles.rows);
   }
+  async getRolesSelectValues(req: Request, res: Response) {
+    const selectValues = await db.query(
+      `SELECT id, title as "optionValue" FROM roles ORDER BY title ASC`
+    );
+    res.json(selectValues.rows);
+  }
   async getOneRole(req: Request, res: Response) {}
   async updateRole(req: Request, res: Response) {
     const { roleId, title, privelegeIds } = req.body;

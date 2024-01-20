@@ -1,4 +1,4 @@
-import { ProductType } from "../../types/ProductType";
+import { SelectValue } from "../../types/SelectValue";
 import LoadingSpinner from "./LoadingSpinner";
 
 const SelectField: React.FC<{
@@ -9,7 +9,7 @@ const SelectField: React.FC<{
   value: string;
   isLoading: boolean;
   isError: boolean;
-  options: ProductType[];
+  options: SelectValue[];
 }> = ({
   inputId,
   title,
@@ -33,19 +33,15 @@ const SelectField: React.FC<{
             id={inputId}
             onChange={onSelectChange}
             defaultValue={value}
-            className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="lowercase border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             required
           >
             <option value="" disabled>
-              --- Выберите тип ---
+              {`--- Выберите ${title} ---`}
             </option>
             {options.map((item) => (
-              <option
-                key={item.productTypeId}
-                className="text-black"
-                value={item.productTypeId}
-              >
-                {item.type}
+              <option key={item.id} className="text-black" value={item.id}>
+                {item.optionValue}
               </option>
             ))}
           </select>

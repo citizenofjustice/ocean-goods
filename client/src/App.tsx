@@ -16,6 +16,7 @@ import AuthPage from "./components/Pages/AuthPage";
 import ProductTypesList from "./components/ProductTypesList";
 import Roles from "./components/Roles";
 import Priveleges from "./components/Priveleges";
+import RegisterForm from "./components/RegisterForm";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ function App() {
                   <Route path="product-types" element={<ProductTypesList />} />
                   <Route path="roles" element={<Roles />} />
                   <Route path="priveleges" element={<Priveleges />} />
+                  <Route path="register-user" element={<RegisterForm />} />
                 </Route>
                 <Route path="item/:id" element={<ItemPage />} />
                 <Route path="search" element={<SearchPage />} />

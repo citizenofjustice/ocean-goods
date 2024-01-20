@@ -5,7 +5,7 @@ import LabeledInputField from "../UI/LabeledInputField";
 import { observer } from "mobx-react-lite";
 import {
   createCatalogItem,
-  getProductTypes,
+  getProductTypesSelectValues,
   updateCatalogItem,
 } from "../../api";
 import { CatalogItemInputs } from "../../types/form-types";
@@ -41,8 +41,8 @@ const AddToCatalogPage: React.FC<{
       useState<CatalogItemInputs>(initValues);
 
     const { isLoading, isError, data } = useQuery({
-      queryKey: ["product-type"],
-      queryFn: async () => await getProductTypes(),
+      queryKey: ["product-type-select"],
+      queryFn: async () => await getProductTypesSelectValues(),
       refetchOnWindowFocus: false,
     });
 

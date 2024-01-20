@@ -6,6 +6,7 @@ import ProductTypeItem from "./ProductTypeItem";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import ProductTypeAdd from "./ProductTypeAdd";
+import FormCard from "./UI/FormCard";
 
 const ProductTypesList = () => {
   const [isFormShown, setIsFormShown] = useState(false);
@@ -23,7 +24,7 @@ const ProductTypesList = () => {
 
   return (
     <>
-      <div className="text-center vvsm:w-4/5 min-w-56 max-w-md bg-gray-200 rounded-lg p-4">
+      <FormCard>
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
@@ -59,7 +60,7 @@ const ProductTypesList = () => {
             </ul>
           </>
         )}
-      </div>
+      </FormCard>
     </>
   );
 };

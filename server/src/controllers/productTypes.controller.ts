@@ -18,6 +18,12 @@ class ProductTypesController {
     );
     res.json(productTypes.rows);
   }
+  async getProductTypesSelectValues(req: Request, res: Response) {
+    const selectValues = await db.query(
+      `SELECT id, type as "optionValue" FROM product_types ORDER BY type ASC`
+    );
+    res.json(selectValues.rows);
+  }
   async getOneProductType(req: Request, res: Response) {
     const { id } = req.params;
     const productType = await db.query(

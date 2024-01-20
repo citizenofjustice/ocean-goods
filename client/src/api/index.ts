@@ -108,6 +108,18 @@ export const getProductTypes = () => {
     });
 };
 
+export const getProductTypesSelectValues = () => {
+  return axios(`${baseUrl}/product-types/select-values`)
+    .then(function (response) {
+      console.log(response);
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
 export const removeProductType = (productTypeId: number) => {
   return axios
     .delete(`${baseUrl}/product-types/${productTypeId}`)
@@ -155,6 +167,18 @@ export const createRole = (newRole: FormData) => {
 
 export const getRoles = () => {
   return axios(`${baseUrl}/roles`)
+    .then(function (response) {
+      console.log(response);
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
+export const getRolesSelectValues = () => {
+  return axios(`${baseUrl}/roles/select-values`)
     .then(function (response) {
       console.log(response);
       return response.data;
