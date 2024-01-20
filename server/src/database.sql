@@ -1,6 +1,6 @@
 create Table users(
     id SERIAL PRIMARY KEY,
-    login VARCHAR(255),
+    login VARCHAR(255), -- UNIQUE
     password_hash VARCHAR(255),
     role_id INTEGER,
     FOREIGN KEY (role_id) REFERENCES roles (id)
@@ -56,3 +56,8 @@ create Table product_types(
 
 -- ALTER TABLE IF EXISTS public.roles DROP COLUMN IF EXISTS privelege_id;
 -- ALTER TABLE IF EXISTS public.roles ADD COLUMN privelege_ids integer[] DEFAULT ARRAY[]::integer[];
+
+-- ALTER TABLE users ADD CONSTRAINT unique_login UNIQUE (login);
+-- ALTER TABLE IF EXISTS public.users ALTER COLUMN role_id SET NOT NULL;
+-- ALTER TABLE IF EXISTS public.users ALTER COLUMN password_hash SET NOT NULL;
+-- ALTER TABLE IF EXISTS public.users ALTER COLUMN login SET NOT NULL;

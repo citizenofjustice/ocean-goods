@@ -69,11 +69,41 @@ export const removeCatalogItem = (id: number) => {
     });
 };
 
+export const registerUser = (userData: FormData) => {
+  return axios
+    .post(`${baseUrl}/users/register`, userData, {
+      headers: { "Content-Type": "application/json" },
+    })
+    .then(function (response) {
+      console.log(response);
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
 export const getUserData = (id: number) => {
-  axios
+  return axios
     .get(`${baseUrl}/users?=${id}`)
     .then(function (response) {
       console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      return error;
+    });
+};
+
+export const authUser = (authData: FormData) => {
+  return axios
+    .post(`${baseUrl}/users/login`, authData, {
+      headers: { "Content-Type": "application/json" },
+    })
+    .then(function (response) {
+      console.log(response);
+      return response;
     })
     .catch(function (error) {
       console.log(error);

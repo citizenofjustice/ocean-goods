@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import FormCard from "./UI/FormCard";
 import LabeledInputField from "./UI/LabeledInputField";
 import DefaultButton from "./UI/DefaultButton";
 import SelectField from "./UI/SelectField";
 import { useQuery } from "@tanstack/react-query";
-import { getRolesSelectValues } from "../api";
+import { registerUser, getRolesSelectValues } from "../api";
 
 const initValues = {
   email: "",
@@ -14,6 +14,7 @@ const initValues = {
 
 const RegisterForm = () => {
   const [inputValues, setInputValues] = useState(initValues);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["roles-select"],
@@ -31,16 +32,32 @@ const RegisterForm = () => {
     setInputValues({ ...inputValues, [name]: value });
   };
 
+  const handleRegisterFormSubmission = async (
+    event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
+  ) => {
+    event.preventDefault();
+    const fData = new FormData(event.currentTarget);
+    const result = await registerUser(fData);
+    if (result.status === 201) {
+      formRef.current?.reset();
+      setInputValues(initValues);
+    } else console.log(result.response.data);
+  };
+
   if (isError) return <p>{error.message}</p>;
 
   return (
     <>
       <FormCard>
-        <form className="flex flex-col gap-4">
+        <form
+          ref={formRef}
+          onSubmit={handleRegisterFormSubmission}
+          className="flex flex-col gap-4"
+        >
           <SelectField
             title="Роль пользователя"
             inputId="register-form-role"
-            name="productTypeId"
+            name="roleId"
             onSelectChange={handleSelectChange}
             value={inputValues.roleId}
             isLoading={isLoading}
@@ -48,7 +65,7 @@ const RegisterForm = () => {
             options={data}
           />
           <LabeledInputField
-            inputId="register-form--email"
+            inputId="register-form-email"
             title="Электронная почта"
             name="email"
             inputType="email"
@@ -56,7 +73,7 @@ const RegisterForm = () => {
             onInputChange={handleValueChange}
           />
           <LabeledInputField
-            inputId="register-form--password"
+            inputId="register-form-password"
             title="Пароль"
             name="password"
             inputType="password"

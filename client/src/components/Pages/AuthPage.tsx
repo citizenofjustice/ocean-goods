@@ -2,6 +2,8 @@ import { useState } from "react";
 import DefaultButton from "../UI/DefaultButton";
 import LabeledInputField from "../UI/LabeledInputField";
 import FormCard from "../UI/FormCard";
+import { authUser } from "../../api";
+import { useNavigate } from "react-router-dom";
 
 const initValues = {
   email: "",
@@ -10,17 +12,28 @@ const initValues = {
 
 const AuthPage = () => {
   const [inputValues, setInputValues] = useState(initValues);
+  const navigate = useNavigate();
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInputValues({ ...inputValues, [name]: value });
   };
 
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const fData = new FormData(event.currentTarget);
+    const result = await authUser(fData);
+    if (result.status === 200) {
+      setInputValues(initValues);
+      navigate("/dashboard");
+    } else console.log(result.response.data);
+  };
+
   return (
     <>
       <div className="flex flex-col items-center">
         <FormCard>
-          <form className="flex flex-col gap-4">
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <LabeledInputField
               inputId="auth-form-email"
               title="Электронная почта"
