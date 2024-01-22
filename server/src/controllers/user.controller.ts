@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import db from "../db";
 import bcrypt from "bcrypt";
 import { DatabaseError } from "pg-protocol";
+import jwt from "jsonwebtoken";
 
 const userCamelCase: string = `id as "userId", login, role_id as "roleId"`;
 
@@ -38,6 +39,12 @@ class UserController {
       const passwordHash = user.password_hash;
       const isValid = await bcrypt.compare(password, passwordHash);
       if (!isValid) throw new Error("Введен неверный пароль");
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      delete user.password_hash;
+      res.cookie("token", token, { httpOnly: true, secure: true });
+      // res.status(200).json({ user });
       res.status(200).json(user);
     } catch (error) {
       if (error instanceof DatabaseError) {

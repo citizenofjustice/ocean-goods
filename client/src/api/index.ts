@@ -219,11 +219,15 @@ export const getRolesSelectValues = () => {
     });
 };
 
-export const updateRole = (updatedRole: FormData) => {
+export const updateRole = (updatedRole: FormData, token: string) => {
   const id = updatedRole.get("roleId");
   return axios
     .put(`${baseUrl}/roles/${id}`, updatedRole, {
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true, // temp fix
     })
     .then(function (response) {
       console.log(response);

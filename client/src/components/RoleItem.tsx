@@ -28,7 +28,9 @@ const RoleItem: React.FC<{
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (updatedRole: FormData) => await updateRole(updatedRole),
+    mutationFn: async (updatedRole: FormData) => {
+      await updateRole(updatedRole, "token");
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["roles"] });
       setIsInEdit(false);
