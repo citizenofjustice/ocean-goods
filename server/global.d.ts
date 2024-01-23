@@ -8,11 +8,13 @@ namespace NodeJS {
     MESSAGING_SENDER_ID: string;
     APP_ID: string;
     JWT_SECRET: string;
+    ACCESS_TOKEN_SECRET: string;
+    REFRESH_TOKEN_SECRET: string;
   }
 }
 
 namespace Express {
   interface Request {
-    payload: string | JwtPayload;
+    user: string | JwtPayload;
   }
 }
