@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPriveleges, getRoles } from "../api";
 import { Role } from "../types/Role";
 import { useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
@@ -7,20 +6,26 @@ import LoadingSpinner from "./UI/LoadingSpinner";
 import RoleAdd from "./RoleAdd";
 import RoleItem from "./RoleItem";
 import FormCard from "./UI/FormCard";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Roles = () => {
+  const axiosPrivate = useAxiosPrivate();
+
   const privelegesQuery = useQuery({
     queryKey: ["priveleges"],
     queryFn: async () => {
-      const data = await getPriveleges();
-      return data;
+      const response = await axiosPrivate.get(`/priveleges`);
+      return response.data;
     },
     refetchOnWindowFocus: false,
   });
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["roles"],
-    queryFn: async () => await getRoles(),
+    queryFn: async () => {
+      const response = await axiosPrivate.get(`/roles`);
+      return response.data;
+    },
     refetchOnWindowFocus: false,
   });
 

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProductTypes } from "../api";
 import { ProductType } from "../types/ProductType";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import ProductTypeItem from "./ProductTypeItem";
@@ -7,15 +6,17 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import ProductTypeAdd from "./ProductTypeAdd";
 import FormCard from "./UI/FormCard";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const ProductTypesList = () => {
   const [isFormShown, setIsFormShown] = useState(false);
+  const axiosPrivate = useAxiosPrivate();
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["product-type"],
     queryFn: async () => {
-      const data = await getProductTypes();
-      return data;
+      const response = await axiosPrivate.get(`/product-types`);
+      return response.data;
     },
     refetchOnWindowFocus: false,
   });

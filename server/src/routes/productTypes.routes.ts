@@ -1,16 +1,38 @@
 import { Router } from "express";
 import ProductTypesController from "../controllers/productTypes.controller";
+import { verifyRole } from "../middleware/verifyRole";
+import { verifyToken } from "../middleware/verifyToken";
 
 const router = Router();
 
-router.post("/create", ProductTypesController.createProductType);
-router.get("", ProductTypesController.getProductTypes);
+router.post(
+  "/create",
+  verifyToken,
+  verifyRole,
+  ProductTypesController.createProductType
+);
+router.get("", verifyToken, verifyRole, ProductTypesController.getProductTypes);
 router.get(
   "/select-values",
   ProductTypesController.getProductTypesSelectValues
 );
-router.get("/:id", ProductTypesController.getOneProductType);
-router.put("/:id", ProductTypesController.updateProductType);
-router.delete("/:id", ProductTypesController.deleteProductType);
+router.get(
+  "/:id",
+  verifyToken,
+  verifyRole,
+  ProductTypesController.getOneProductType
+);
+router.put(
+  "/:id",
+  verifyToken,
+  verifyRole,
+  ProductTypesController.updateProductType
+);
+router.delete(
+  "/:id",
+  verifyToken,
+  verifyRole,
+  ProductTypesController.deleteProductType
+);
 
 export default router;

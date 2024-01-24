@@ -16,5 +16,6 @@ namespace NodeJS {
 namespace Express {
   interface Request {
     user: string | JwtPayload;
+    role: string | JwtPayload;
   }
 }

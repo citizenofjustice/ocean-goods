@@ -4,7 +4,8 @@ import LabeledInputField from "./UI/LabeledInputField";
 import DefaultButton from "./UI/DefaultButton";
 import SelectField from "./UI/SelectField";
 import { useQuery } from "@tanstack/react-query";
-import { registerUser, getRolesSelectValues } from "../api";
+import { registerUser } from "../api";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const initValues = {
   email: "",
@@ -15,10 +16,14 @@ const initValues = {
 const RegisterForm = () => {
   const [inputValues, setInputValues] = useState(initValues);
   const formRef = useRef<HTMLFormElement>(null);
+  const axiosPrivate = useAxiosPrivate();
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["roles-select"],
-    queryFn: async () => await getRolesSelectValues(),
+    queryFn: async () => {
+      const response = await axiosPrivate.get(`/roles/select-values`);
+      return response.data;
+    },
     refetchOnWindowFocus: false,
   });
 

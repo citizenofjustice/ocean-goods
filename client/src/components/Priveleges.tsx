@@ -1,13 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { Privelege } from "../types/Privelege";
-import { getPriveleges } from "../api";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import FormCard from "./UI/FormCard";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Priveleges = () => {
+  const axiosPrivate = useAxiosPrivate();
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["priveleges"],
-    queryFn: async () => await getPriveleges(),
+    queryFn: async () => {
+      const response = await axiosPrivate.get(`/priveleges`);
+      return response.data;
+    },
     refetchOnWindowFocus: false,
   });
 

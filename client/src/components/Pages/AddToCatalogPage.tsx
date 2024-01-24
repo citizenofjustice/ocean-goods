@@ -3,17 +3,14 @@ import { useState } from "react";
 import ImageDropzone from "../UI/ImageDropzone";
 import LabeledInputField from "../UI/LabeledInputField";
 import { observer } from "mobx-react-lite";
-import {
-  createCatalogItem,
-  getProductTypesSelectValues,
-  updateCatalogItem,
-} from "../../api";
+import { getProductTypesSelectValues } from "../../api";
 import { CatalogItemInputs } from "../../types/form-types";
 import SelectField from "../UI/SelectField";
 import ToggleField from "../UI/ToggleField";
 import TextareaField from "../UI/TextareaField";
 import DefaultButton from "../UI/DefaultButton";
 import { useQuery } from "@tanstack/react-query";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -39,6 +36,7 @@ const AddToCatalogPage: React.FC<{
   }) => {
     const [inputValues, setInputValues] =
       useState<CatalogItemInputs>(initValues);
+    const axiosPrivate = useAxiosPrivate();
 
     const { isLoading, isError, data } = useQuery({
       queryKey: ["product-type-select"],
@@ -83,7 +81,10 @@ const AddToCatalogPage: React.FC<{
       const fData = new FormData(event.currentTarget);
       switch (actionType) {
         case "CREATE": {
-          await createCatalogItem(fData);
+          const response = await axiosPrivate.post(`/catalog/create`, fData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          console.log(response.data);
           break;
         }
         case "UPDATE": {
@@ -97,7 +98,17 @@ const AddToCatalogPage: React.FC<{
             fData.set("mainImage", `${inputValues.mainImage}`);
           }
 
-          if (editItemId) await updateCatalogItem(editItemId, fData);
+          if (!editItemId)
+            throw new Error(
+              "Не обнаружен идентификатор редактируемого продукта"
+            );
+          const response = await axiosPrivate.put(
+            `/catalog/${editItemId}`,
+            fData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
           break;
         }
         default: {

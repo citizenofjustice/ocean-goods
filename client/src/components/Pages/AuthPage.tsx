@@ -4,6 +4,7 @@ import LabeledInputField from "../UI/LabeledInputField";
 import FormCard from "../UI/FormCard";
 import { authUser } from "../../api";
 import { useNavigate } from "react-router-dom";
+import { useStore } from "../../store/root-store-context";
 
 const initValues = {
   email: "",
@@ -13,6 +14,8 @@ const initValues = {
 const AuthPage = () => {
   const [inputValues, setInputValues] = useState(initValues);
   const navigate = useNavigate();
+  const { auth } = useStore();
+  const { authData } = auth;
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,9 +27,16 @@ const AuthPage = () => {
     const fData = new FormData(event.currentTarget);
     const result = await authUser(fData);
     if (result.status === 200) {
+      const accessToken = result?.data.accessToken;
+      // const role = result?.data.roleId;
+      auth.setAuthData({ ...authData, accessToken: accessToken });
+
       setInputValues(initValues);
       navigate("/dashboard");
-    } else console.log(result.response.data);
+    } else {
+      console.log("handleLogin else: ");
+      console.log(result.response.data);
+    }
   };
 
   return (

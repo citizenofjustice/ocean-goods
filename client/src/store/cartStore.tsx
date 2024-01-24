@@ -1,4 +1,4 @@
-import { makeAutoObservable, action } from "mobx";
+import { makeAutoObservable, action, observable, computed } from "mobx";
 
 import CartItemModel from "../classes/CartItemModel";
 import CatalogItemModel from "../classes/CatalogItemModel";
@@ -27,8 +27,12 @@ class cartStore {
 
   constructor() {
     makeAutoObservable(this, {
+      cartItems: observable,
+      totalQuantity: computed,
+      totalCartPrice: computed,
       addItem: action,
       removeItem: action,
+      amountDecrease: action,
     });
   }
 

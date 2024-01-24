@@ -7,9 +7,9 @@ import CatalogItemModel from "../classes/CatalogItemModel";
 import { useStore } from "../store/root-store-context";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import CartItemModel from "../classes/CartItemModel";
-import { removeCatalogItem } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 /**
  * Renders catalog item card
@@ -20,12 +20,16 @@ const ItemCard: React.FC<{
   catalogItem: CatalogItemModel;
 }> = observer(({ catalogItem }) => {
   const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
   const { cart } = useStore();
   const { cartItems } = cart;
   const [, setCartContent] = useLocalStorage("cart", cartItems);
 
   const mutation = useMutation({
-    mutationFn: async (productId: number) => await removeCatalogItem(productId),
+    mutationFn: async (productId: number) => {
+      const response = await axiosPrivate.delete(`/catalog/${productId}`); //removeCatalogItem(productId);
+      return response.data;
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["catalog"] });
       console.log("log success");

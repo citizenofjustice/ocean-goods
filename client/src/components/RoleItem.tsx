@@ -2,9 +2,9 @@ import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Role } from "../types/Role";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { removeRole, updateRole } from "../api";
 import RoleEdit from "./RoleEdit";
 import { Privelege } from "../types/Privelege";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const RoleItem: React.FC<{
   priveleges: Privelege[];
@@ -12,13 +12,17 @@ const RoleItem: React.FC<{
 }> = ({ role, priveleges }) => {
   const [isInEdit, setIsInEdit] = useState<boolean>(false);
   const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
 
   const editModeHandler = () => {
     setIsInEdit((prevValue) => !prevValue);
   };
 
   const removeMutation = useMutation({
-    mutationFn: async (id: number) => await removeRole(id),
+    mutationFn: async (id: number) => {
+      const response = await axiosPrivate.delete(`/roles/${id}`);
+      return response.data;
+    },
     onSuccess: (_data, variables) => {
       queryClient.setQueryData(["roles"], (oldData: Role[]) => {
         const newData = oldData.filter((item) => item.roleId !== variables);
@@ -29,7 +33,11 @@ const RoleItem: React.FC<{
 
   const updateMutation = useMutation({
     mutationFn: async (updatedRole: FormData) => {
-      await updateRole(updatedRole, "token");
+      const response = await axiosPrivate.put(
+        `/roles/${role.roleId}`,
+        updatedRole
+      );
+      return response.data;
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["roles"] });

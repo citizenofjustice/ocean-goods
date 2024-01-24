@@ -6,19 +6,24 @@ import {
 } from "@heroicons/react/24/outline";
 import { ProductType } from "../types/ProductType";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { removeProductType, updateProductType } from "../api";
 import { useState } from "react";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const ProductTypeItem: React.FC<{
   productType: ProductType;
 }> = ({ productType }) => {
   const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
   const [isInEdit, setIsInEdit] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(productType.type);
 
   const removeMutation = useMutation({
-    mutationFn: async (productTypeId: number) =>
-      await removeProductType(productTypeId),
+    mutationFn: async (productTypeId: number) => {
+      const response = await axiosPrivate.delete(
+        `/product-types/${productTypeId}`
+      );
+      return response.data;
+    },
     onSuccess: (_data, variables) => {
       queryClient.setQueryData(["product-type"], (oldData: ProductType[]) => {
         const newData = oldData.filter(
@@ -30,8 +35,13 @@ const ProductTypeItem: React.FC<{
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (productType: ProductType) =>
-      await updateProductType(productType),
+    mutationFn: async (updatedProductType: ProductType) => {
+      const response = await axiosPrivate.put(
+        `/product-types/${updatedProductType.productTypeId}`,
+        updatedProductType
+      );
+      return response.data;
+    },
     onSuccess: (_data, variables) => {
       queryClient.setQueryData(["product-type"], (oldData: ProductType[]) => {
         const newData = oldData.map((item) => {

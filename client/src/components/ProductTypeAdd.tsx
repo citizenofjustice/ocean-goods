@@ -1,14 +1,15 @@
 import { useState } from "react";
 import LabeledInputField from "./UI/LabeledInputField";
-import { createProductType } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const ProductTypeAdd: React.FC<{
   onAdditionCancel: () => void;
 }> = ({ onAdditionCancel }) => {
   const [productType, setProductType] = useState<string>("");
   const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
 
   const handleProductTypeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProductType(e.target.value);
@@ -23,7 +24,13 @@ const ProductTypeAdd: React.FC<{
   };
 
   const mutation = useMutation({
-    mutationFn: async (fData: FormData) => await createProductType(fData),
+    mutationFn: async (newType: FormData) => {
+      const response = await axiosPrivate.post(
+        `/product-types/create`,
+        newType
+      );
+      return response.data;
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["product-type"] });
       setProductType("");

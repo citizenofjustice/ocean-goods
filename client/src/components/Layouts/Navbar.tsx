@@ -9,7 +9,7 @@ import {
   ArrowRightOnRectangleIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 
@@ -18,6 +18,7 @@ import MenuList from "../MenuList";
 import { MenuItem } from "../../types/MenuItem";
 import { useStore } from "../../store/root-store-context";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { logoutUser } from "../../api";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
@@ -68,10 +69,16 @@ const Navbar = observer(() => {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const tablet = useMediaQuery("(min-width: 768px)"); // media query for conditional rendering of navbar
   const { cart } = useStore();
+  const navigate = useNavigate();
 
   // additional classes for menu & cart wrappers
   const menuClasses: string =
     "w-full h-full fixed z-50 bg-white top-0 left-0 transition-all duration-300 ease-in-out";
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/");
+  };
 
   return (
     <header className="sticky z-50 top-0 bg-white border-b-2 flex items-center flex-row py-4">
@@ -82,6 +89,12 @@ const Navbar = observer(() => {
               menuItems={menuItems}
               onMenuClose={() => setIsMenuOpen(false)}
             />
+            <h1
+              className="p-4 font-bold text-red-700 hover:cursor-pointer"
+              onClick={handleLogout}
+            >
+              Logout
+            </h1>
           </div>
         )}
         {!tablet ? (

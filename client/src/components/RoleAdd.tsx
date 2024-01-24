@@ -2,11 +2,11 @@ import { useState } from "react";
 import LabeledInputField from "./UI/LabeledInputField";
 import CustomCheckbox from "./UI/CustomCheckbox";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createRole, getPriveleges } from "../api";
 import DefaultButton from "./UI/DefaultButton";
 import { RoleInputs } from "../types/form-types";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import CustomAlertMessage from "./UI/CustomAlertMessage";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const emptyInitValues: RoleInputs = {
   title: "",
@@ -19,15 +19,22 @@ const RoleAdd: React.FC<{
   const [inputValues, setInputValues] = useState(emptyInitValues);
   const [checkboxAlert, setCheckboxAlert] = useState("");
   const queryClient = useQueryClient();
+  const axiosPrivate = useAxiosPrivate();
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["priveleges"],
-    queryFn: async () => await getPriveleges(),
+    queryFn: async () => {
+      const response = await axiosPrivate.get(`/priveleges`);
+      return response.data;
+    },
     refetchOnWindowFocus: false,
   });
 
   const mutation = useMutation({
-    mutationFn: async (fData: FormData) => await createRole(fData),
+    mutationFn: async (newRole: FormData) => {
+      const response = await axiosPrivate.post(`/roles/create`, newRole);
+      return response.data;
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["roles"] });
       setInputValues(emptyInitValues);
