@@ -17,6 +17,8 @@ import ProductTypesList from "./components/ProductTypesList";
 import Roles from "./components/Roles";
 import Priveleges from "./components/Priveleges";
 import RegisterForm from "./components/RegisterForm";
+import Unauthorized from "./components/Pages/Unauthorized";
+import RequireAuth from "./components/RequireAuth";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -29,19 +31,33 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Layout />}>
+                {/* public routes */}
                 <Route index element={<CatalogPage />} />
                 <Route path="auth" element={<AuthPage />} />
-                <Route path="dashboard" element={<DashboardPage />}>
-                  <Route path="product-types" element={<ProductTypesList />} />
-                  <Route path="roles" element={<Roles />} />
-                  <Route path="priveleges" element={<Priveleges />} />
-                  <Route path="register-user" element={<RegisterForm />} />
-                </Route>
                 <Route path="item/:id" element={<ItemPage />} />
                 <Route path="search" element={<SearchPage />} />
                 <Route path="contact" element={<ContactPage />} />
-                <Route path="new-item" element={<AddToCatalogPage />} />
-                <Route path="edit-item/:id" element={<EditCatalogItemPage />} />
+                <Route path="unauthorized" element={<Unauthorized />} />
+
+                {/* protected routes */}
+                <Route element={<RequireAuth />}>
+                  <Route path="dashboard" element={<DashboardPage />}>
+                    <Route
+                      path="product-types"
+                      element={<ProductTypesList />}
+                    />
+                    <Route path="roles" element={<Roles />} />
+                    <Route path="priveleges" element={<Priveleges />} />
+                    <Route path="register-user" element={<RegisterForm />} />
+                  </Route>
+                  <Route path="new-item" element={<AddToCatalogPage />} />
+                  <Route
+                    path="edit-item/:id"
+                    element={<EditCatalogItemPage />}
+                  />
+                </Route>
+
+                {/* no route matched */}
                 <Route path="*" element={<NotFoundPage />} />
               </Route>
             </Routes>

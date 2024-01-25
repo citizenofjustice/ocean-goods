@@ -3,7 +3,7 @@ import DefaultButton from "../UI/DefaultButton";
 import LabeledInputField from "../UI/LabeledInputField";
 import FormCard from "../UI/FormCard";
 import { authUser } from "../../api";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/root-store-context";
 
 const initValues = {
@@ -14,8 +14,10 @@ const initValues = {
 const AuthPage = () => {
   const [inputValues, setInputValues] = useState(initValues);
   const navigate = useNavigate();
+  const location = useLocation();
   const { auth } = useStore();
   const { authData } = auth;
+  const from = location.state?.from.pathname || "/";
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,7 +34,7 @@ const AuthPage = () => {
       auth.setAuthData({ ...authData, accessToken: accessToken });
 
       setInputValues(initValues);
-      navigate("/dashboard");
+      navigate(from, { replace: true });
     } else {
       console.log("handleLogin else: ");
       console.log(result.response.data);
