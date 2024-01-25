@@ -52,8 +52,9 @@ export const getUserData = (id: number) => {
 
 export const authUser = (authData: FormData) => {
   return axios
-    .post(`/users/login`, authData, {
+    .post(`/login`, authData, {
       headers: { "Content-Type": "application/json" },
+      withCredentials: true,
     })
     .then(function (response) {
       return response;
@@ -64,7 +65,7 @@ export const authUser = (authData: FormData) => {
 };
 
 export const logoutUser = () => {
-  return axios(`/users/logout`)
+  return axios(`/logout`)
     .then(function (response) {
       console.log(response);
       return response;
