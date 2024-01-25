@@ -49,8 +49,8 @@ class AuthController {
       );
       delete foundUser.password_hash;
       const updateQuery = await db.query(
-        `UPDATE users SET refresh_token = $1 WHERE id = $2 RETURNING *`,
-        [refreshToken, +foundUser.id]
+        `UPDATE users SET refresh_token = $1 WHERE id = $2 RETURNING login, role_id as "roleId"`,
+        [refreshToken, foundUser.id]
       );
       const userWithToken = updateQuery.rows[0];
       res.cookie("token", refreshToken, {
@@ -59,7 +59,13 @@ class AuthController {
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res.status(200).json({ accessToken, userWithToken });
+      res
+        .status(200)
+        .json({
+          user: userWithToken.login,
+          accessToken,
+          role: userWithToken.roleId,
+        });
     } catch (error) {
       if (error instanceof DatabaseError) {
         res.status(409).json({

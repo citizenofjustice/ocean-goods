@@ -40,17 +40,27 @@ function App() {
                 <Route path="unauthorized" element={<Unauthorized />} />
 
                 {/* protected routes */}
-                <Route element={<RequireAuth />}>
-                  <Route path="dashboard" element={<DashboardPage />}>
+                <Route path="dashboard" element={<DashboardPage />}>
+                  <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
                     <Route
                       path="product-types"
                       element={<ProductTypesList />}
                     />
+                  </Route>
+                  <Route element={<RequireAuth allowedRoles={[19]} />}>
                     <Route path="roles" element={<Roles />} />
+                  </Route>
+                  <Route element={<RequireAuth allowedRoles={[19]} />}>
                     <Route path="priveleges" element={<Priveleges />} />
+                  </Route>
+                  <Route element={<RequireAuth allowedRoles={[19]} />}>
                     <Route path="register-user" element={<RegisterForm />} />
                   </Route>
+                </Route>
+                <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
                   <Route path="new-item" element={<AddToCatalogPage />} />
+                </Route>
+                <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
                   <Route
                     path="edit-item/:id"
                     element={<EditCatalogItemPage />}

@@ -23,24 +23,9 @@ export const getCatalogItem = (id: number) => {
     });
 };
 
-export const registerUser = (userData: FormData) => {
-  return axios
-    .post(`/users/register`, userData, {
-      headers: { "Content-Type": "application/json" },
-    })
-    .then(function (response) {
-      console.log(response);
-      return response;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
 export const getUserData = (id: number) => {
   return axios
-    .get(`/users?=${id}`)
+    .get(`/users?=${id}`, { withCredentials: true })
     .then(function (response) {
       console.log(response);
     })

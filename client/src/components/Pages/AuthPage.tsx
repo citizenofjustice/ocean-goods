@@ -29,14 +29,13 @@ const AuthPage = () => {
     const fData = new FormData(event.currentTarget);
     const result = await authUser(fData);
     if (result.status === 200) {
-      const accessToken = result?.data.accessToken;
-      // const role = result?.data.roleId;
-      auth.setAuthData({ ...authData, accessToken: accessToken });
+      const { user, accessToken, role } = result.data;
+
+      auth.setAuthData({ ...authData, user, accessToken, roles: [role] });
 
       setInputValues(initValues);
       navigate(from, { replace: true });
     } else {
-      console.log("handleLogin else: ");
       console.log(result.response.data);
     }
   };

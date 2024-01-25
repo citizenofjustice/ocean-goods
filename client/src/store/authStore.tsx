@@ -2,12 +2,16 @@ import { makeAutoObservable } from "mobx";
 import axios from "../api/axios";
 
 interface AuthData {
+  user: string | undefined;
   accessToken: string | undefined;
+  roles: number[];
 }
 
 class AuthStore {
   authData: AuthData = {
+    user: undefined,
     accessToken: undefined,
+    roles: [],
   };
 
   constructor() {

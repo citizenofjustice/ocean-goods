@@ -4,7 +4,6 @@ import LabeledInputField from "./UI/LabeledInputField";
 import DefaultButton from "./UI/DefaultButton";
 import SelectField from "./UI/SelectField";
 import { useQuery } from "@tanstack/react-query";
-import { registerUser } from "../api";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const initValues = {
@@ -41,12 +40,12 @@ const RegisterForm = () => {
     event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     event.preventDefault();
-    const fData = new FormData(event.currentTarget);
-    const result = await registerUser(fData);
-    if (result.status === 201) {
+    const newUserData = new FormData(event.currentTarget);
+    const response = await axiosPrivate.post(`/users/register`, newUserData);
+    if (response.status === 201) {
       formRef.current?.reset();
       setInputValues(initValues);
-    } else console.log(result.response.data);
+    } else console.log(response);
   };
 
   if (isError) return <p>{error.message}</p>;
