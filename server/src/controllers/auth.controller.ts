@@ -26,7 +26,7 @@ class AuthController {
       const accessToken = jwt.sign(
         {
           userInfo: {
-            id: foundUser.user,
+            user: foundUser.id,
             role: foundUser.role_id,
           },
         },
@@ -36,7 +36,12 @@ class AuthController {
         }
       );
       const refreshToken = jwt.sign(
-        { id: foundUser.id },
+        {
+          userInfo: {
+            user: foundUser.id,
+            role: foundUser.role_id,
+          },
+        },
         process.env.REFRESH_TOKEN_SECRET,
         {
           expiresIn: "1d",
@@ -69,6 +74,7 @@ class AuthController {
   async handleRefreshToken(req: Request, res: Response) {
     try {
       const cookies = req.cookies;
+
       if (!cookies?.token) return res.sendStatus(401);
       const refreshToken = cookies.token;
 
@@ -85,12 +91,13 @@ class AuthController {
         process.env.REFRESH_TOKEN_SECRET,
         (error: any, decoded: any) => {
           if (!decoded) return res.sendStatus(403);
-          if (error || foundUser.id !== decoded.id) return res.sendStatus(403);
+          if (error || foundUser.id !== decoded.userInfo.user)
+            return res.sendStatus(403);
           const accessToken = jwt.sign(
             {
               userInfo: {
-                id: decoded.user,
-                role: foundUser.role_id,
+                user: decoded.userInfo.user,
+                role: decoded.userInfo.role,
               },
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -104,7 +111,7 @@ class AuthController {
     } catch (error) {
       if (error instanceof DatabaseError) {
         res.status(409).json({
-          error: "authUser went wrong",
+          error: "handleRefreshToken went wrong",
         });
       } else if (error instanceof Error) {
         res.status(401).json({ error: error.message });
@@ -115,7 +122,8 @@ class AuthController {
   async logoutUser(req: Request, res: Response) {
     try {
       const cookies = req.cookies;
-      if (!cookies?.token) return res.sendStatus(204); // No content
+
+      if (!cookies?.token) throw new Error("Refresh token was not found");
       const refreshToken = cookies.token;
 
       // is refreshToken in db
@@ -147,10 +155,10 @@ class AuthController {
     } catch (error) {
       if (error instanceof DatabaseError) {
         res.status(409).json({
-          error: "authUser went wrong",
+          error: "logoutUser went wrong",
         });
       } else if (error instanceof Error) {
-        res.status(401).json({ error: error.message });
+        res.status(400).json({ error: error.message });
       }
     }
   }

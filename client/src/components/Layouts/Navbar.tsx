@@ -18,7 +18,7 @@ import MenuList from "../MenuList";
 import { MenuItem } from "../../types/MenuItem";
 import { useStore } from "../../store/root-store-context";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import { logoutUser } from "../../api";
+import { useQueryClient } from "@tanstack/react-query";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
@@ -68,16 +68,21 @@ const Navbar = observer(() => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const tablet = useMediaQuery("(min-width: 768px)"); // media query for conditional rendering of navbar
-  const { cart } = useStore();
+  const { cart, auth } = useStore();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // additional classes for menu & cart wrappers
   const menuClasses: string =
     "w-full h-full fixed z-50 bg-white top-0 left-0 transition-all duration-300 ease-in-out";
 
   const handleLogout = async () => {
-    await logoutUser();
-    navigate("/");
+    const isLoggedOut = await auth.logoutUser();
+    if (isLoggedOut) {
+      queryClient.invalidateQueries();
+      navigate("/");
+    }
+    setIsMenuOpen(false);
   };
 
   return (

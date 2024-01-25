@@ -64,18 +64,6 @@ export const authUser = (authData: FormData) => {
     });
 };
 
-export const logoutUser = () => {
-  return axios(`/logout`)
-    .then(function (response) {
-      console.log(response);
-      return response;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
 export const getProductTypesSelectValues = () => {
   return axios(`/product-types/select-values`)
     .then(function (response) {
