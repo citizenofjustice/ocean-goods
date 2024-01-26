@@ -8,8 +8,9 @@ import {
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
   PlusIcon,
+  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 
@@ -27,36 +28,35 @@ const menuItems: MenuItem[] = [
     title: "Каталог",
     path: "/",
     icon: <Squares2X2Icon className="w-6 h-6" />,
+    authRequired: false,
   },
   {
     id: nanoid(),
     title: "Поиск",
     path: "/search",
     icon: <MagnifyingGlassIcon className="w-6 h-6" />,
+    authRequired: false,
   },
   {
     id: nanoid(),
     title: "Контакты",
     path: "/contact",
     icon: <PhoneIcon className="w-6 h-6" />,
+    authRequired: false,
   },
   {
     id: nanoid(),
     title: "Создать",
     path: "/new-item",
     icon: <PlusIcon className="w-6 h-6" />,
+    authRequired: true,
   },
   {
     id: nanoid(),
     title: "Управление",
     path: "/dashboard",
     icon: <Cog6ToothIcon className="w-6 h-6" />,
-  },
-  {
-    id: nanoid(),
-    title: "Авторизация",
-    path: "/auth",
-    icon: <ArrowRightOnRectangleIcon className="w-6 h-6" />,
+    authRequired: true,
   },
 ];
 
@@ -94,12 +94,22 @@ const Navbar = observer(() => {
               menuItems={menuItems}
               onMenuClose={() => setIsMenuOpen(false)}
             />
-            <h1
-              className="p-4 font-bold text-red-700 hover:cursor-pointer"
-              onClick={handleLogout}
-            >
-              Logout
-            </h1>
+            {auth.isAuth ? (
+              <div
+                className="m-4 flex hover:cursor-pointer"
+                onClick={handleLogout}
+              >
+                <p className="mr-2">Выйти</p>
+                <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+              </div>
+            ) : (
+              <div className="m-4" onClick={() => setIsMenuOpen(false)}>
+                <NavLink to="/auth" className="flex flex-row items-center">
+                  <p className="mr-2">Авторизация</p>
+                  <ArrowRightOnRectangleIcon className="w-6 h-6" />
+                </NavLink>
+              </div>
+            )}
           </div>
         )}
         {!tablet ? (
@@ -123,7 +133,23 @@ const Navbar = observer(() => {
           <Link to="/">Ocean Goods</Link>
         ) : (
           // if screen width smaller than tablets show desktop menu
-          <MenuList menuItems={menuItems} isDesktop />
+          <>
+            <MenuList menuItems={menuItems} isDesktop />
+            {auth.isAuth ? (
+              <div
+                className="mx-4 flex hover:cursor-pointer"
+                onClick={handleLogout}
+              >
+                <p className="mr-2">Выйти</p>
+                <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+              </div>
+            ) : (
+              <NavLink to="/auth" className="mx-4 flex flex-row items-center">
+                <p className="mr-2">Авторизация</p>
+                <ArrowRightOnRectangleIcon className="w-6 h-6" />
+              </NavLink>
+            )}
+          </>
         )}
       </div>
       <div className="basis-1/12 flex justify-end">

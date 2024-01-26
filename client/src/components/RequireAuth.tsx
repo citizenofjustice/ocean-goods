@@ -1,12 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useStore } from "../store/root-store-context";
+import { observer } from "mobx-react-lite";
 
 const RequireAuth: React.FC<{
   allowedRoles: number[];
-}> = ({ allowedRoles }) => {
+}> = observer(({ allowedRoles }) => {
   const location = useLocation();
   const { auth } = useStore();
-  const { authData } = auth;
+  const { isAuth, authData } = auth;
 
   return (
     <>
@@ -14,7 +15,7 @@ const RequireAuth: React.FC<{
         <Outlet />
       ) : (
         <>
-          {authData?.user ? (
+          {isAuth ? (
             <Navigate to="/unauthorized" state={{ from: location }} replace />
           ) : (
             <Navigate to="/auth" state={{ from: location }} replace />
@@ -23,6 +24,6 @@ const RequireAuth: React.FC<{
       )}
     </>
   );
-};
+});
 
 export default RequireAuth;

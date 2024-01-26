@@ -4,8 +4,9 @@ import { useStore } from "../../store/root-store-context";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import { useEffect, useState } from "react";
 import { CatalogItemInputs } from "../../types/form-types";
+import { observer } from "mobx-react-lite";
 
-const EditCatalogItemPage = () => {
+const EditCatalogItemPage = observer(() => {
   const { id } = useParams();
   const { catalog } = useStore();
   const [beforeEditData, setBeforeEditData] = useState<CatalogItemInputs>();
@@ -43,6 +44,6 @@ const EditCatalogItemPage = () => {
       )}
     </>
   );
-};
+});
 
 export default EditCatalogItemPage;

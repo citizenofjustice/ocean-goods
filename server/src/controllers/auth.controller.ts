@@ -59,13 +59,11 @@ class AuthController {
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res
-        .status(200)
-        .json({
-          user: userWithToken.login,
-          accessToken,
-          role: userWithToken.roleId,
-        });
+      res.status(200).json({
+        user: userWithToken.login,
+        accessToken,
+        role: userWithToken.roleId,
+      });
     } catch (error) {
       if (error instanceof DatabaseError) {
         res.status(409).json({
@@ -111,7 +109,11 @@ class AuthController {
               expiresIn: "10m",
             }
           );
-          res.json({ accessToken });
+          res.json({
+            user: foundUser.login,
+            accessToken,
+            role: foundUser.role_id,
+          });
         }
       );
     } catch (error) {

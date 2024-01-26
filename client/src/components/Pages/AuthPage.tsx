@@ -5,13 +5,14 @@ import FormCard from "../UI/FormCard";
 import { authUser } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/root-store-context";
+import { observer } from "mobx-react-lite";
 
 const initValues = {
   email: "",
   password: "",
 };
 
-const AuthPage = () => {
+const AuthPage = observer(() => {
   const [inputValues, setInputValues] = useState(initValues);
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,6 +68,6 @@ const AuthPage = () => {
       </div>
     </>
   );
-};
+});
 
 export default AuthPage;

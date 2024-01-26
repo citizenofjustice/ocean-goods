@@ -19,6 +19,7 @@ import Priveleges from "./components/Priveleges";
 import RegisterForm from "./components/RegisterForm";
 import Unauthorized from "./components/Pages/Unauthorized";
 import RequireAuth from "./components/RequireAuth";
+import PersistAuth from "./components/PersistAuth";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -30,45 +31,47 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Layout />}>
-                {/* public routes */}
-                <Route index element={<CatalogPage />} />
-                <Route path="auth" element={<AuthPage />} />
-                <Route path="item/:id" element={<ItemPage />} />
-                <Route path="search" element={<SearchPage />} />
-                <Route path="contact" element={<ContactPage />} />
-                <Route path="unauthorized" element={<Unauthorized />} />
+              <Route element={<PersistAuth />}>
+                <Route path="/" element={<Layout />}>
+                  {/* public routes */}
+                  <Route index element={<CatalogPage />} />
+                  <Route path="auth" element={<AuthPage />} />
+                  <Route path="item/:id" element={<ItemPage />} />
+                  <Route path="search" element={<SearchPage />} />
+                  <Route path="contact" element={<ContactPage />} />
+                  <Route path="unauthorized" element={<Unauthorized />} />
 
-                {/* protected routes */}
-                <Route path="dashboard" element={<DashboardPage />}>
+                  {/* protected routes */}
+                  <Route path="dashboard" element={<DashboardPage />}>
+                    <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
+                      <Route
+                        path="product-types"
+                        element={<ProductTypesList />}
+                      />
+                    </Route>
+                    <Route element={<RequireAuth allowedRoles={[19]} />}>
+                      <Route path="roles" element={<Roles />} />
+                    </Route>
+                    <Route element={<RequireAuth allowedRoles={[19]} />}>
+                      <Route path="priveleges" element={<Priveleges />} />
+                    </Route>
+                    <Route element={<RequireAuth allowedRoles={[19]} />}>
+                      <Route path="register-user" element={<RegisterForm />} />
+                    </Route>
+                  </Route>
+                  <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
+                    <Route path="new-item" element={<AddToCatalogPage />} />
+                  </Route>
                   <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
                     <Route
-                      path="product-types"
-                      element={<ProductTypesList />}
+                      path="edit-item/:id"
+                      element={<EditCatalogItemPage />}
                     />
                   </Route>
-                  <Route element={<RequireAuth allowedRoles={[19]} />}>
-                    <Route path="roles" element={<Roles />} />
-                  </Route>
-                  <Route element={<RequireAuth allowedRoles={[19]} />}>
-                    <Route path="priveleges" element={<Priveleges />} />
-                  </Route>
-                  <Route element={<RequireAuth allowedRoles={[19]} />}>
-                    <Route path="register-user" element={<RegisterForm />} />
-                  </Route>
-                </Route>
-                <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
-                  <Route path="new-item" element={<AddToCatalogPage />} />
-                </Route>
-                <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
-                  <Route
-                    path="edit-item/:id"
-                    element={<EditCatalogItemPage />}
-                  />
-                </Route>
 
-                {/* no route matched */}
-                <Route path="*" element={<NotFoundPage />} />
+                  {/* no route matched */}
+                  <Route path="*" element={<NotFoundPage />} />
+                </Route>
               </Route>
             </Routes>
           </BrowserRouter>

@@ -4,15 +4,20 @@ import axios from "../api/axios";
 interface AuthData {
   user: string | undefined;
   accessToken: string | undefined;
-  roles: number[];
+  roles: number[] | undefined;
 }
 
 class AuthStore {
   authData: AuthData = {
     user: undefined,
     accessToken: undefined,
-    roles: [],
+    roles: undefined,
   };
+
+  get isAuth() {
+    const isAuth: boolean = this.authData.user !== undefined;
+    return isAuth;
+  }
 
   constructor() {
     makeAutoObservable(this);
@@ -26,7 +31,9 @@ class AuthStore {
     const response = await axios.get(`/logout`, { withCredentials: true });
     const isLoggedOut = response.status === 204;
     if (isLoggedOut) {
+      this.authData.user = undefined;
       this.authData.accessToken = undefined;
+      this.authData.roles = undefined;
     }
     return isLoggedOut;
   };
