@@ -45,12 +45,15 @@ const AddToCatalogPage: React.FC<{
     });
 
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
+      const { name, type, value } = e.target;
       if (name === "mainImage") {
         const selectedFiles = e.target.files as FileList;
         setInputValues({ ...inputValues, [name]: selectedFiles[0] });
       } else {
-        setInputValues({ ...inputValues, [name]: value });
+        setInputValues({
+          ...inputValues,
+          [name]: type === "number" ? Number(value) : value,
+        });
       }
     };
 
@@ -109,6 +112,8 @@ const AddToCatalogPage: React.FC<{
               headers: { "Content-Type": "multipart/form-data" },
             }
           );
+          console.log(response);
+
           break;
         }
         default: {
@@ -149,8 +154,10 @@ const AddToCatalogPage: React.FC<{
                 name="price"
                 value={inputValues.price}
                 onInputChange={handleValueChange}
+                attr={{
+                  min: 0,
+                }}
               />
-
               <LabeledInputField
                 title="Скидка"
                 inputId="add-to-catalog-discount"
@@ -158,8 +165,12 @@ const AddToCatalogPage: React.FC<{
                 name="discount"
                 value={inputValues.discount}
                 onInputChange={handleValueChange}
+                attr={{
+                  maxLength: 2,
+                  min: 0,
+                  max: 99,
+                }}
               />
-
               <LabeledInputField
                 title="Вес"
                 inputId="add-to-catalog-weight"
@@ -167,6 +178,9 @@ const AddToCatalogPage: React.FC<{
                 name="weight"
                 value={inputValues.weight}
                 onInputChange={handleValueChange}
+                attr={{
+                  min: 0,
+                }}
               />
               <LabeledInputField
                 title="Ккал (на 100 гр.)"
@@ -175,6 +189,9 @@ const AddToCatalogPage: React.FC<{
                 name="kcal"
                 value={inputValues.kcal}
                 onInputChange={handleValueChange}
+                attr={{
+                  min: 0,
+                }}
               />
               <ImageDropzone
                 id="add-to-catalog-image"

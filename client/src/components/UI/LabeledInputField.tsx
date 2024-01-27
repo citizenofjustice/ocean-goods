@@ -7,7 +7,8 @@ const LabeledInputField: React.FC<{
   inputType: string;
   value: string | number;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}> = ({ inputId, title, inputType, name, value, onInputChange }) => {
+  attr?: React.InputHTMLAttributes<HTMLInputElement>;
+}> = ({ inputId, title, inputType, name, value, onInputChange, attr }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const isPasswordField = inputType === "password";
 
@@ -24,6 +25,7 @@ const LabeledInputField: React.FC<{
         placeholder={title}
         value={value}
         onChange={onInputChange}
+        {...attr}
         required
       />
       {isPasswordField && (
