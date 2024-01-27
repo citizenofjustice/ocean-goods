@@ -3,7 +3,6 @@ import { useLockBodyScroll } from "@uidotdev/usehooks";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { MenuItem } from "../types/MenuItem";
-import { useStore } from "../store/root-store-context";
 import { observer } from "mobx-react-lite";
 
 /**
@@ -18,14 +17,6 @@ const MenuList: React.FC<{
   onMenuClose?: () => void;
   isDesktop?: boolean;
 }> = observer(({ menuItems, onMenuClose, isDesktop = false }) => {
-  const { auth } = useStore();
-
-  console.log(
-    menuItems.map(
-      (item) => item.authRequired === auth.isAuth || !item.authRequired
-    )
-  );
-
   return (
     <ul id="nav-menu" className={`flex ${isDesktop ? "flex-row" : "flex-col"}`}>
       {/* show only if screen is smaller than desktop */}
@@ -40,14 +31,12 @@ const MenuList: React.FC<{
       )}
       {menuItems.map((item) => (
         <div key={item.id}>
-          {(item.authRequired === auth.isAuth || auth.isAuth) && (
-            <li onClick={onMenuClose} className={isDesktop ? "mx-4" : "m-4"}>
-              <NavLink to={item.path} className="flex flex-row items-center">
-                <p className="mr-2">{item.title}</p>
-                {item.icon}
-              </NavLink>
-            </li>
-          )}
+          <li onClick={onMenuClose} className={isDesktop ? "mx-4" : "m-4"}>
+            <NavLink to={item.path} className="flex flex-row items-center">
+              <p className="mr-2">{item.title}</p>
+              {item.icon}
+            </NavLink>
+          </li>
         </div>
       ))}
     </ul>

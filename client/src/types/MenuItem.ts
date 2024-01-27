@@ -4,5 +4,4 @@ export interface MenuItem {
   title: string;
   path: string;
   icon?: JSX.Element;
-  authRequired?: boolean;
 }

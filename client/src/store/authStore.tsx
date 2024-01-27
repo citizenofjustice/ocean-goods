@@ -15,7 +15,9 @@ class AuthStore {
   };
 
   get isAuth() {
-    const isAuth: boolean = this.authData.user !== undefined;
+    const isAuth: boolean =
+      this.authData.user !== undefined &&
+      this.authData.accessToken !== undefined;
     return isAuth;
   }
 

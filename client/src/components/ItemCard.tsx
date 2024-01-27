@@ -10,6 +10,7 @@ import CartItemModel from "../classes/CartItemModel";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import CatalogItemDropdown from "./UI/CatalogItemDropdown";
 
 /**
  * Renders catalog item card
@@ -21,7 +22,7 @@ const ItemCard: React.FC<{
 }> = observer(({ catalogItem }) => {
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
-  const { cart } = useStore();
+  const { cart, auth } = useStore();
   const { cartItems } = cart;
   const [, setCartContent] = useLocalStorage("cart", cartItems);
 
@@ -57,17 +58,30 @@ const ItemCard: React.FC<{
 
   return (
     <>
-      <div className="w-full my-2 flex place-content-between">
-        <div className="w-10/12 text-center">{catalogItem.productName}</div>
-        <div className="w-2/12 text-slate-400">
-          <Link to={`edit-item/${catalogItem.productId}`}>
-            <PencilSquareIcon className="w-6 h-6 hover:cursor-pointer" />
-          </Link>
-          <TrashIcon
-            onClick={() => mutation.mutate(catalogItem.productId)}
-            className="w-6 h-6 hover:cursor-pointer"
-          />
+      <div className="w-full my-2 px-2 flex">
+        <div className={`${auth.isAuth ? "w-10/12" : "w-full"}`}>
+          <p className="text-center">{catalogItem.productName}</p>
         </div>
+        {auth.isAuth && (
+          <div className="w-2/12 text-slate-400">
+            <CatalogItemDropdown>
+              <Link
+                to={`edit-item/${catalogItem.productId}`}
+                className="py-2 p-2 flex items-center justify-between"
+              >
+                <p>Изменить</p>
+                <PencilSquareIcon className="w-6 h-6" />
+              </Link>
+              <div
+                className="py-2 p-2 flex items-center justify-between hover:cursor-pointer"
+                onClick={() => mutation.mutate(catalogItem.productId)}
+              >
+                <p>Удалить</p>
+                <TrashIcon className="w-6 h-6" />
+              </div>
+            </CatalogItemDropdown>
+          </div>
+        )}
       </div>
       <div className="flex justify-center mb">
         <div className="basis-1/12" />

@@ -5,12 +5,8 @@ import {
   Squares2X2Icon,
   MagnifyingGlassIcon,
   PhoneIcon,
-  Cog6ToothIcon,
-  ArrowRightOnRectangleIcon,
-  PlusIcon,
-  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
 
@@ -19,7 +15,8 @@ import MenuList from "../MenuList";
 import { MenuItem } from "../../types/MenuItem";
 import { useStore } from "../../store/root-store-context";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import { useQueryClient } from "@tanstack/react-query";
+import UserDropdownMenu from "../UI/UserDropdownMenu";
+import SignInSVG from "../UI/SignInSVG";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
@@ -28,35 +25,18 @@ const menuItems: MenuItem[] = [
     title: "Каталог",
     path: "/",
     icon: <Squares2X2Icon className="w-6 h-6" />,
-    authRequired: false,
   },
   {
     id: nanoid(),
     title: "Поиск",
     path: "/search",
     icon: <MagnifyingGlassIcon className="w-6 h-6" />,
-    authRequired: false,
   },
   {
     id: nanoid(),
     title: "Контакты",
     path: "/contact",
     icon: <PhoneIcon className="w-6 h-6" />,
-    authRequired: false,
-  },
-  {
-    id: nanoid(),
-    title: "Создать",
-    path: "/new-item",
-    icon: <PlusIcon className="w-6 h-6" />,
-    authRequired: true,
-  },
-  {
-    id: nanoid(),
-    title: "Управление",
-    path: "/dashboard",
-    icon: <Cog6ToothIcon className="w-6 h-6" />,
-    authRequired: true,
   },
 ];
 
@@ -69,21 +49,10 @@ const Navbar = observer(() => {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const tablet = useMediaQuery("(min-width: 768px)"); // media query for conditional rendering of navbar
   const { cart, auth } = useStore();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   // additional classes for menu & cart wrappers
   const menuClasses: string =
     "w-full h-full fixed z-50 bg-white top-0 left-0 transition-all duration-300 ease-in-out";
-
-  const handleLogout = async () => {
-    const isLoggedOut = await auth.logoutUser();
-    if (isLoggedOut) {
-      queryClient.invalidateQueries();
-      navigate("/");
-    }
-    setIsMenuOpen(false);
-  };
 
   return (
     <header className="sticky z-50 top-0 bg-white border-b-2 flex items-center flex-row py-4">
@@ -94,22 +63,6 @@ const Navbar = observer(() => {
               menuItems={menuItems}
               onMenuClose={() => setIsMenuOpen(false)}
             />
-            {auth.isAuth ? (
-              <div
-                className="m-4 flex hover:cursor-pointer"
-                onClick={handleLogout}
-              >
-                <p className="mr-2">Выйти</p>
-                <ArrowLeftOnRectangleIcon className="w-6 h-6" />
-              </div>
-            ) : (
-              <div className="m-4" onClick={() => setIsMenuOpen(false)}>
-                <NavLink to="/auth" className="flex flex-row items-center">
-                  <p className="mr-2">Авторизация</p>
-                  <ArrowRightOnRectangleIcon className="w-6 h-6" />
-                </NavLink>
-              </div>
-            )}
           </div>
         )}
         {!tablet ? (
@@ -135,28 +88,23 @@ const Navbar = observer(() => {
           // if screen width smaller than tablets show desktop menu
           <>
             <MenuList menuItems={menuItems} isDesktop />
-            {auth.isAuth ? (
-              <div
-                className="mx-4 flex hover:cursor-pointer"
-                onClick={handleLogout}
-              >
-                <p className="mr-2">Выйти</p>
-                <ArrowLeftOnRectangleIcon className="w-6 h-6" />
-              </div>
-            ) : (
-              <NavLink to="/auth" className="mx-4 flex flex-row items-center">
-                <p className="mr-2">Авторизация</p>
-                <ArrowRightOnRectangleIcon className="w-6 h-6" />
-              </NavLink>
-            )}
           </>
         )}
       </div>
-      <div className="basis-1/12 flex justify-end">
+      <div className="basis-1/12 flex items-center justify-end">
         {isCartOpen && (
           <div className={`overflow-auto ${menuClasses}`}>
             <Cart onCartClose={() => setIsCartOpen(false)} />
           </div>
+        )}
+        {auth.isAuth ? (
+          <div className="relative mr-3">
+            <UserDropdownMenu />
+          </div>
+        ) : (
+          <NavLink to="/auth" className="mx-4 flex flex-row items-center">
+            <SignInSVG className="w-6 h-6" />
+          </NavLink>
         )}
         <div
           className="flex items-center justify-start hover:cursor-pointer h-10 w-12"
