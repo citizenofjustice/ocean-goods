@@ -1,4 +1,4 @@
-import { UserIcon } from "@heroicons/react/24/outline";
+import { ListBulletIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import { MenuItem } from "../../types/MenuItem";
 import { nanoid } from "nanoid";
@@ -25,6 +25,12 @@ const menuItems: MenuItem[] = [
     title: "Управление",
     path: "/dashboard",
     icon: <Cog6ToothIcon className="w-6 h-6" />,
+  },
+  {
+    id: nanoid(),
+    title: "Заказы",
+    path: "/orders",
+    icon: <ListBulletIcon className="w-6 h-6" />,
   },
 ];
 
@@ -72,25 +78,25 @@ const UserDropdownMenu = observer(() => {
           </div>
           <ul className="py-2 text-sm text-gray-200">
             {menuItems.map((item: MenuItem) => (
-              <li className="flex items-center" key={item.id}>
+              <li className="flex items-center px-4 " key={item.id}>
+                {item.icon}
                 <Link
                   to={item.path}
-                  className="block px-4 py-2 hover:text-white"
+                  className="block px-2 py-2 hover:text-white"
                 >
                   {item.title}
                 </Link>
-                {item.icon}
               </li>
             ))}
           </ul>
-          <div className="py-2 flex items-center text-gray-200 hover:text-white">
+          <div className="py-2 px-4 flex items-center text-gray-200 hover:text-white">
+            <ArrowLeftOnRectangleIcon className="h-6 w-6" />
             <span
               onClick={handleLogout}
-              className="block px-4 py-2 text-sm  hover:cursor-pointer"
+              className="block px-2 py-2 text-sm  hover:cursor-pointer"
             >
               Выйти
             </span>
-            <ArrowLeftOnRectangleIcon className="h-6 w-6" />
           </div>
         </div>
       )}

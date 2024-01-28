@@ -33,6 +33,7 @@ class cartStore {
       addItem: action,
       removeItem: action,
       amountDecrease: action,
+      clearCart: action,
     });
   }
 
@@ -44,6 +45,7 @@ class cartStore {
   }
 
   addItem(product: CatalogItemModel) {
+    if (!product.inStock) throw new Error("Not in stock");
     const inCartProduct = this.findCartItem(product.productId);
     if (inCartProduct) {
       inCartProduct.amount++;
@@ -77,6 +79,11 @@ class cartStore {
       if (inCartProduct.amount > 0) inCartProduct.amount--;
     }
     return this.cartItems;
+  }
+
+  clearCart() {
+    localStorage.setItem("cart", "[]");
+    this.cartItems = [];
   }
 
   compare(catalogItemsProductIds: number[]) {

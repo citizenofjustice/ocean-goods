@@ -20,6 +20,7 @@ import RegisterForm from "./components/RegisterForm";
 import Unauthorized from "./components/Pages/Unauthorized";
 import RequireAuth from "./components/RequireAuth";
 import PersistAuth from "./components/PersistAuth";
+import OrdersList from "./components/OrdersList";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -67,6 +68,9 @@ function App() {
                       path="edit-item/:id"
                       element={<EditCatalogItemPage />}
                     />
+                  </Route>
+                  <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
+                    <Route path="orders" element={<OrdersList />} />
                   </Route>
 
                   {/* no route matched */}

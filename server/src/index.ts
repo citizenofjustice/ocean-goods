@@ -6,6 +6,7 @@ import rolesRouter from "./routes/roles.routes";
 import privelegesRouter from "./routes/priveleges.routes";
 import catalogRouter from "./routes/catalog.routes";
 import productTypesRouter from "./routes/productTypes.routes";
+import ordersRouter from "./routes/orders.routes";
 import { verifyToken } from "./middleware/verifyToken";
 import { verifyRole } from "./middleware/verifyRole";
 
@@ -16,6 +17,7 @@ const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 app.use("/api", authRouter);
 app.use("/api/catalog", catalogRouter);
 app.use("/api/product-types", productTypesRouter);
+app.use("/api/order", ordersRouter);
 
 app.use(verifyToken);
 app.use(verifyRole);

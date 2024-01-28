@@ -37,6 +37,18 @@ create Table product_types(
     type VARCHAR(255),
 );
 
+create Table orders(
+    id SERIAL PRIMARY KEY,
+    order_details JSONB NOT NULL,
+    -- order_price INTEGER NOT NULL,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_phone VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255),
+    contact_method VARCHAR(255),
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now()
+)
+
 -- INSERT INTO priveleges (title) VALUES ('назначение ролей');
 
 -- ALTER TABLE IF EXISTS public.product_types ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();

@@ -14,3 +14,10 @@ export type RoleInputs = {
   title: string;
   privelegeIds: number[];
 };
+
+export type CustomerDataInputs = {
+  customerName: string;
+  customerPhone: string;
+  customerEmail: string;
+  contactMethod: string;
+};

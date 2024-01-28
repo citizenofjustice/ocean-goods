@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CatalogItemDropdown from "./UI/CatalogItemDropdown";
+import TextCrossed from "./UI/TextCrossed";
 
 /**
  * Renders catalog item card
@@ -93,7 +94,19 @@ const ItemCard: React.FC<{
           <div className="flex flex-col justify-end">
             <ItemInfoCard>{`${catalogItem.weight} гр.`}</ItemInfoCard>
             <ItemInfoCard>{`${catalogItem.kcal} ккал.`}</ItemInfoCard>
-            <ItemInfoCard>{`${catalogItem.price} руб.`}</ItemInfoCard>
+            <ItemInfoCard>
+              {catalogItem.discount > 0 ? (
+                <div className="flex flex-col">
+                  <TextCrossed>{`${catalogItem.price} руб.`}</TextCrossed>
+                  <p>{`${
+                    catalogItem.price -
+                    Math.round(catalogItem.price * (catalogItem.discount / 100))
+                  } руб.`}</p>
+                </div>
+              ) : (
+                <>{`${catalogItem.price} руб.`}</>
+              )}
+            </ItemInfoCard>
           </div>
         </div>
         <div className="basis-1/12" />
@@ -103,9 +116,13 @@ const ItemCard: React.FC<{
           <button
             type="button"
             onClick={handleItemCartAddition}
-            className="transition ease-in-out transition-all text-white bg-gradient-to-br h-8 px-2 from-green-400 to-blue-600 hover:bg-gradient-to-bl font-medium rounded-lg text-sm text-center"
+            className={`${
+              catalogItem.inStock
+                ? "from-green-400 to-blue-600 hover:bg-gradient-to-bl"
+                : "from-green-300 to-blue-400 cursor-default"
+            } transition ease-in-out transition-all text-white bg-gradient-to-br h-8 px-2 font-medium rounded-lg text-sm text-center`}
           >
-            В корзину
+            {catalogItem.inStock ? "В корзину" : "Нет в наличии"}
           </button>
         )}
         {inCartProduct && (

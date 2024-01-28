@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable } from "mobx";
 import axios from "../api/axios";
 
 interface AuthData {
@@ -22,7 +22,10 @@ class AuthStore {
   }
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      setAuthData: action,
+      logoutUser: action,
+    });
   }
 
   setAuthData = (authData: AuthData) => {

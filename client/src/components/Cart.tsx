@@ -4,6 +4,9 @@ import { useLockBodyScroll } from "@uidotdev/usehooks";
 
 import CartElement from "./CartElement";
 import { useStore } from "../store/root-store-context";
+import DefaultButton from "./UI/DefaultButton";
+import { useState } from "react";
+import CustomerDataForm from "./CustomerDataForm";
 
 /**
  * Component rendering list of cart items
@@ -12,6 +15,7 @@ import { useStore } from "../store/root-store-context";
 const Cart: React.FC<{
   onCartClose: () => void;
 }> = observer(({ onCartClose }) => {
+  const [isContactFormActive, setIsContactFormActive] = useState(false);
   // getting cart state from store
   const { cart } = useStore();
   const { cartItems } = cart;
@@ -30,16 +34,28 @@ const Cart: React.FC<{
             </div>
           </div>
         </div>
-        <ul className="divide-y">
-          {cartItems &&
-            cartItems.map((item) => (
-              <CartElement key={item.cartItemId} cartItem={item} />
-            ))}
-        </ul>
-        <div className="flex place-content-between items-center py-4 px-8">
-          <p>Общая сумма заказа:</p>
-          <p>{`${cart.totalCartPrice} руб.`}</p>
-        </div>
+        {isContactFormActive ? (
+          <CustomerDataForm onOrderSend={onCartClose} />
+        ) : (
+          <>
+            <ul className="divide-y">
+              {cartItems &&
+                cartItems.map((item) => (
+                  <CartElement key={item.cartItemId} cartItem={item} />
+                ))}
+            </ul>
+            <div className="flex place-content-between items-center py-4 px-8">
+              <p>Общая сумма заказа:</p>
+              <p>{`${cart.totalCartPrice} руб.`}</p>
+              <DefaultButton
+                onClick={() => setIsContactFormActive(true)}
+                type="button"
+              >
+                Оформить заказ
+              </DefaultButton>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
