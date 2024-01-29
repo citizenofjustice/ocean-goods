@@ -10,6 +10,8 @@ namespace NodeJS {
     JWT_SECRET: string;
     ACCESS_TOKEN_SECRET: string;
     REFRESH_TOKEN_SECRET: string;
+    TELEGRAM_BOT_API_KEY: string;
+    TELEGRAM_CHAT_ID: string;
   }
 }
 

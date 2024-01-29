@@ -9,10 +9,13 @@ import productTypesRouter from "./routes/productTypes.routes";
 import ordersRouter from "./routes/orders.routes";
 import { verifyToken } from "./middleware/verifyToken";
 import { verifyRole } from "./middleware/verifyRole";
+import { Telegraf } from "telegraf";
+import LocalSession from "telegraf-session-local";
 
 const app: Application = express();
 const server: Server = new Server(app);
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
+export const bot = new Telegraf(process.env.TELEGRAM_BOT_API_KEY); // Your Bot token here
 
 app.use("/api", authRouter);
 app.use("/api/catalog", catalogRouter);
@@ -24,6 +27,8 @@ app.use(verifyRole);
 app.use("/api/users", userRouter);
 app.use("/api/roles", rolesRouter);
 app.use("/api/priveleges", privelegesRouter);
+
+bot.use(new LocalSession({ database: "example_db.json" }).middleware());
 
 app
   .listen(PORT, "localhost", function () {

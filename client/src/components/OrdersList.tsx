@@ -33,7 +33,7 @@ const OrdersList = () => {
                   <p>
                     <FormatDate createdAt={item.createdAt} />
                   </p>
-                  <p>Сумма заказа: {item.orderDetails.totalPrice}</p>
+                  <p>Сумма заказа: {item.orderDetails.totalPrice} руб.</p>
                 </div>
               </li>
             ))}
