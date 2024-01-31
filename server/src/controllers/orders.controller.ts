@@ -40,10 +40,28 @@ class OrderController {
     res.json(newOrder);
   }
   async getOrders(req: Request, res: Response) {
-    const ordersQuery = await db.query(
-      `SELECT ${orderCamelCase} FROM orders ORDER BY created_at DESC`
-    );
-    res.json(ordersQuery.rows);
+    try {
+      let orderByQuery = "ORDER BY created_at DESC";
+      let where = "";
+      const { startDate, endDate, filter, orderBy, direction } = req.query;
+      if (filter || (startDate && endDate)) {
+        where = `WHERE `;
+        if (filter) where += `customer_name ILIKE '%${filter}%'`;
+        if (filter && startDate && endDate) where += " AND ";
+        if (startDate && endDate)
+          where += `created_at BETWEEN '${startDate}' AND '${endDate}'`;
+      }
+      if (orderBy && direction) {
+        if (orderBy === "totalPrice") {
+          orderByQuery = `ORDER BY cast(order_details->>'totalPrice' as integer) ${direction}`;
+        } else orderByQuery = `ORDER BY ${orderBy} ${direction}`;
+      }
+      const query = `SELECT ${orderCamelCase} FROM orders ${where} ${orderByQuery}`;
+      const ordersQuery = await db.query(query);
+      res.json(ordersQuery.rows);
+    } catch (error) {
+      console.log(error);
+    }
   }
   async getOneOrder(req: Request, res: Response) {
     const id = Number(req.params.id);
