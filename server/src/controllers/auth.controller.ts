@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
-import db from "../db";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { DatabaseError } from "pg-protocol";
+import jwt from "jsonwebtoken";
+import { NextFunction, Request, Response } from "express";
+
+import db from "../db";
 
 class AuthController {
-  async authUser(req: Request, res: Response) {
+  async authUser(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
       if (!email || !password)
@@ -65,17 +65,11 @@ class AuthController {
         role: userWithToken.roleId,
       });
     } catch (error) {
-      if (error instanceof DatabaseError) {
-        res.status(409).json({
-          error: "authUser went wrong",
-        });
-      } else if (error instanceof Error) {
-        res.status(401).json({ error: error.message });
-      }
+      next(error);
     }
   }
 
-  async handleRefreshToken(req: Request, res: Response) {
+  async handleRefreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const cookies = req.cookies;
 
@@ -117,29 +111,32 @@ class AuthController {
         }
       );
     } catch (error) {
-      if (error instanceof DatabaseError) {
-        res.status(409).json({
-          error: "handleRefreshToken went wrong",
-        });
-      } else if (error instanceof Error) {
-        res.status(401).json({ error: error.message });
-      }
+      next(error);
     }
   }
 
-  async logoutUser(req: Request, res: Response) {
+  async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const cookies = req.cookies;
+      const { token: refreshToken } = req.cookies;
 
-      if (!cookies?.token) throw new Error("Refresh token was not found");
-      const refreshToken = cookies.token;
+      // If no refresh token, clear the cookie and return
+      if (!refreshToken) {
+        res.clearCookie("token", {
+          httpOnly: true,
+          sameSite: "none",
+          secure: true,
+        });
+        return res.sendStatus(204);
+      }
 
-      // is refreshToken in db
+      // Check if refreshToken is in db
       const selectQuery = await db.query(
         `SELECT * FROM users WHERE refresh_token = $1`,
         [refreshToken]
       );
       const foundUser = selectQuery.rows[0];
+
+      // If no user found, clear the cookie and return
       if (!foundUser) {
         res.clearCookie("token", {
           httpOnly: true,
@@ -149,11 +146,13 @@ class AuthController {
         return res.sendStatus(204);
       }
 
-      // delete refresh_token in db
-      const updateQuery = await db.query(
+      // Delete refresh_token in db
+      await db.query(
         `UPDATE users SET refresh_token = '' WHERE refresh_token = $1`,
         [refreshToken]
       );
+
+      // Clear the cookie and return
       res.clearCookie("token", {
         httpOnly: true,
         sameSite: "none",
@@ -161,13 +160,7 @@ class AuthController {
       });
       res.sendStatus(204);
     } catch (error) {
-      if (error instanceof DatabaseError) {
-        res.status(409).json({
-          error: "logoutUser went wrong",
-        });
-      } else if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-      }
+      next(error);
     }
   }
 }

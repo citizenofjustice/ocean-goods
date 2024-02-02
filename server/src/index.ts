@@ -11,15 +11,20 @@ import { verifyToken } from "./middleware/verifyToken";
 import { verifyRole } from "./middleware/verifyRole";
 import { Bot } from "./bot/index";
 import { ConfigService } from "./bot/config.service";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app: Application = express();
 const server: Server = new Server(app);
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
+export const ordersBot = new Bot(new ConfigService());
+ordersBot.bot.catch((error) => console.log(error));
+ordersBot.init();
+
 app.use("/api", authRouter);
 app.use("/api/catalog", catalogRouter);
 app.use("/api/product-types", productTypesRouter);
-app.use("/api/order", ordersRouter);
+app.use("/api/orders", ordersRouter);
 
 app.use(verifyToken);
 app.use(verifyRole);
@@ -27,9 +32,8 @@ app.use("/api/users", userRouter);
 app.use("/api/roles", rolesRouter);
 app.use("/api/priveleges", privelegesRouter);
 
-export const ordersBot = new Bot(new ConfigService());
-ordersBot.bot.catch((error) => console.log(error));
-ordersBot.init();
+// last middleware should be error handler
+app.use(errorHandler);
 
 app
   .listen(PORT, "localhost", function () {

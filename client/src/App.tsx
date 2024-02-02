@@ -21,6 +21,7 @@ import Unauthorized from "./components/Pages/Unauthorized";
 import RequireAuth from "./components/RequireAuth";
 import PersistAuth from "./components/PersistAuth";
 import OrdersList from "./components/OrdersList";
+import OrderPage from "./components/Pages/OrderPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -71,6 +72,7 @@ function App() {
                   </Route>
                   <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
                     <Route path="orders" element={<OrdersList />} />
+                    <Route path="orders/:id" element={<OrderPage />} />
                   </Route>
 
                   {/* no route matched */}
