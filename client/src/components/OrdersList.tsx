@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import { Order } from "../types/Order";
-import { useState } from "react";
-import { useDebounce } from "usehooks-ts";
+import { useEffect, useRef, useState } from "react";
+import { useDebounce, useIntersectionObserver } from "usehooks-ts";
 import ReactDatePicker, { registerLocale } from "react-datepicker";
 import ru from "date-fns/locale/ru";
 import "react-datepicker/dist/react-datepicker.css";
@@ -36,14 +36,38 @@ const OrdersList = () => {
   const [startDate, endDate] = dateRange;
   const [filterBy, setFilterBy] = useState<string>("");
   const [sortBy, setSortBy] = useState(initSortValues);
+  const ref = useRef<HTMLDivElement>(null);
   const debounceFilter = useDebounce(filterBy, 750);
   const debounceSort = useDebounce(sortBy, 750);
+  const entry = useIntersectionObserver(ref, { threshold: 0.5 });
+  const [pageNum, setPageNum] = useState<number>(1);
+  const isVisible = !!entry?.isIntersecting;
+  const [orders, setOrders] = useState<Order[]>([]);
 
-  const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["orders", debounceFilter, debounceSort, endDate, filterProp],
+  useEffect(() => {
+    if (!isVisible) return () => {};
+
+    const interval = setInterval(() => {
+      if (isVisible) {
+        setPageNum((prev) => (prev += 1));
+      }
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, [isVisible]);
+
+  const { isLoading, isError, error } = useQuery({
+    queryKey: [
+      "orders",
+      debounceFilter,
+      debounceSort,
+      endDate,
+      filterProp,
+      pageNum,
+    ],
     queryFn: async () => {
       const params = new URLSearchParams([]);
-
+      params.append("page", pageNum.toString());
       // Add parameters to the URL search parameters if they exist
       if (startDate && endDate) {
         params.append("startDate", startDate.toISOString());
@@ -61,6 +85,7 @@ const OrdersList = () => {
       try {
         // Make the API call and return the data
         const response = await axiosPrivate.get(`/orders/all`, { params });
+        setOrders([...orders, ...response.data]);
         return response.data;
       } catch (error) {
         // Handle any errors
@@ -210,36 +235,36 @@ const OrdersList = () => {
           </span>
         )}
       </div>
-      {isLoading && <LoadingSpinner />}
-      {!isLoading && !isError && (
-        <div className="flex justify-center">
+      {!isError && (
+        <div className="flex flex-col items-center justify-center">
           <ul className="bg-gray-200 rounded-xl mx-4 w-full max-w-lg divide-y-2 divide-solid divide-white">
-            {data &&
-              data.map((item: Order) => (
-                <li
-                  className="p-3 grid vsm:gap-x-6 vsm:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2 items-center"
-                  key={item.orderId}
+            {orders.map((item: Order) => (
+              <li
+                className="p-3 grid vsm:gap-x-6 vsm:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2 items-center"
+                key={item.orderId}
+              >
+                <p className="font-bold">Заказ №{item.orderId}</p>
+                <p className="">
+                  от <FormatDate createdAt={item.createdAt} />
+                </p>
+                <p className="">Имя заказчика: {item.customerName}</p>
+                <p>Тел.: {item.customerPhone}</p>
+                <p className="border w-fit rounded-xl p-1 border-gray-700 text-center">
+                  Сумма заказа: {item.orderDetails.totalPrice} руб.
+                </p>
+                <Link
+                  className="underline place-self-end"
+                  to={`/orders/${item.orderId}`}
                 >
-                  <p className="font-bold">Заказ №{item.orderId}</p>
-                  <p className="">
-                    от <FormatDate createdAt={item.createdAt} />
-                  </p>
-                  <p className="">Имя заказчика: {item.customerName}</p>
-                  <p>Тел.: {item.customerPhone}</p>
-                  <p className="border w-fit rounded-xl p-1 border-gray-700 text-center">
-                    Сумма заказа: {item.orderDetails.totalPrice} руб.
-                  </p>
-                  <Link
-                    className="underline place-self-end"
-                    to={`/orders/${item.orderId}`}
-                  >
-                    подробнее...
-                  </Link>
-                </li>
-              ))}
+                  подробнее...
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       )}
+      {isLoading && <LoadingSpinner />}
+      {orders && <div className="h-4 w-full bg-red-500" ref={ref} />}
     </>
   );
 };

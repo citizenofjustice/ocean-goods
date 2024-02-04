@@ -90,8 +90,16 @@ class OrderController {
   async getOrders(req: Request, res: Response, next: NextFunction) {
     try {
       // Destructure the query parameters from the request
-      const { startDate, endDate, filterType, filter, orderBy, direction } =
-        req.query;
+      const {
+        startDate,
+        endDate,
+        filterType,
+        filter,
+        orderBy,
+        direction,
+        page = 1,
+        limit = 10,
+      } = req.query;
       // Initialize an array to hold our WHERE clauses
       let whereClauses = [];
       // If a filter and filterType are provided, add a WHERE clause for the filter
@@ -124,8 +132,11 @@ class OrderController {
         }
       }
 
+      // Calculate the offset for pagination
+      const offset = (Number(page) - 1) * Number(limit);
+
       // Construct the final query
-      const query = `SELECT ${orderCamelCase} FROM orders ${where} ${orderByQuery}`;
+      const query = `SELECT ${orderCamelCase} FROM orders ${where} ${orderByQuery} LIMIT ${limit} OFFSET ${offset}`;
       const ordersQuery = await db.query(query);
       res.json(ordersQuery.rows);
     } catch (error) {
