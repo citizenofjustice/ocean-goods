@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import LoadingSpinner from "./UI/LoadingSpinner";
+// import LoadingSpinner from "./UI/LoadingSpinner";
 import { Order } from "../types/Order";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useDebounce, useIntersectionObserver } from "usehooks-ts";
 import ReactDatePicker, { registerLocale } from "react-datepicker";
 import ru from "date-fns/locale/ru";
@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import FormatDate from "./FormatDate";
+import LoadingSpinner from "./UI/LoadingSpinner";
 registerLocale("ru", ru);
 
 interface SortBy {
@@ -36,65 +37,68 @@ const OrdersList = () => {
   const [startDate, endDate] = dateRange;
   const [filterBy, setFilterBy] = useState<string>("");
   const [sortBy, setSortBy] = useState(initSortValues);
+  const limit = 10;
   const ref = useRef<HTMLDivElement>(null);
   const debounceFilter = useDebounce(filterBy, 750);
   const debounceSort = useDebounce(sortBy, 750);
   const entry = useIntersectionObserver(ref, { threshold: 0.5 });
-  const [pageNum, setPageNum] = useState<number>(1);
   const isVisible = !!entry?.isIntersecting;
-  const [orders, setOrders] = useState<Order[]>([]);
+
+  const sendReq = async ({ pageParam = 0 }) => {
+    const params = new URLSearchParams([]);
+    params.append("page", pageParam.toString());
+    params.append("limit", limit.toString());
+
+    // Add parameters to the URL search parameters if they exist
+    if (startDate && endDate) {
+      params.append("startDate", startDate.toISOString());
+      params.append("endDate", endDate.toISOString());
+    }
+    if (debounceFilter) {
+      params.append("filterType", filterProp.fieldName);
+      params.append("filter", debounceFilter);
+    }
+    if (debounceSort.orderBy && debounceSort.direction) {
+      params.append("orderBy", debounceSort.orderBy);
+      params.append("direction", debounceSort.direction);
+    }
+
+    try {
+      // Make the API call and return the data
+      const response = await axiosPrivate.get(`/orders/all`, { params });
+      return response.data;
+    } catch (error) {
+      // Handle any errors
+      console.error(error);
+      throw new Error("An error occurred while fetching the orders.");
+    }
+  };
+
+  const { data, error, fetchNextPage, hasNextPage, isFetching, status } =
+    useInfiniteQuery({
+      queryKey: ["orders", debounceFilter, debounceSort, endDate, filterProp],
+      queryFn: sendReq,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+        if (lastPage.totalRows > lastPageParam * limit)
+          return lastPage.nextPage;
+        else return undefined;
+      },
+      refetchOnWindowFocus: false,
+    });
 
   useEffect(() => {
-    if (!isVisible) return () => {};
+    if (!isVisible || isFetching || !hasNextPage) return () => {};
 
     const interval = setInterval(() => {
       if (isVisible) {
-        setPageNum((prev) => (prev += 1));
+        fetchNextPage();
       }
     }, 250);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
-
-  const { isLoading, isError, error } = useQuery({
-    queryKey: [
-      "orders",
-      debounceFilter,
-      debounceSort,
-      endDate,
-      filterProp,
-      pageNum,
-    ],
-    queryFn: async () => {
-      const params = new URLSearchParams([]);
-      params.append("page", pageNum.toString());
-      // Add parameters to the URL search parameters if they exist
-      if (startDate && endDate) {
-        params.append("startDate", startDate.toISOString());
-        params.append("endDate", endDate.toISOString());
-      }
-      if (debounceFilter) {
-        params.append("filterType", filterProp.fieldName);
-        params.append("filter", debounceFilter);
-      }
-      if (debounceSort.orderBy && debounceSort.direction) {
-        params.append("orderBy", debounceSort.orderBy);
-        params.append("direction", debounceSort.direction);
-      }
-
-      try {
-        // Make the API call and return the data
-        const response = await axiosPrivate.get(`/orders/all`, { params });
-        setOrders([...orders, ...response.data]);
-        return response.data;
-      } catch (error) {
-        // Handle any errors
-        console.error(error);
-        throw new Error("An error occurred while fetching the orders.");
-      }
-    },
-    refetchOnWindowFocus: false,
-  });
 
   const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
@@ -119,153 +123,161 @@ const OrdersList = () => {
     }
   };
 
-  if (isError) return <div>{error.message}</div>;
-
   return (
-    <>
-      <div className="flex flex-col items-center justify-center mb-4">
-        {isFiltersShown ? (
-          <>
-            <div className="mb-4">
-              <ChevronUpIcon
-                onClick={() => setIsFiltersShown(false)}
-                className="w-6 h-6 hover:cursor-pointer"
-              />
-            </div>
-            <form className="flex lg:flex-row flex-col lg:gap-8 gap-4 mx-4">
-              <div className="flex lg:flex-col vsm:flex-row flex-col gap-2 items-center">
-                <label
-                  className="align-middle h-fit basis-1/2"
-                  htmlFor="order-customer-filter"
-                >
-                  Сортировать по:
-                </label>
-                <select
-                  name="sortSelect"
-                  defaultValue="по дате (убыв.)"
-                  className="basis-1/2 lowercase border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block sm:min-w-[120px] p-2.5"
-                  onChange={handleSelect}
-                >
-                  <option value="created_at/DESC">
-                    по дате (убыв.) &#8595;
-                  </option>
-                  <option value="created_at/ASC">
-                    по дате (возр.) &#8593;
-                  </option>
-                  <option value="customer_name/DESC">
-                    по имени (убыв.) &#8595;
-                  </option>
-                  <option value="customer_name/ASC">
-                    по имени (возр.) &#8593;
-                  </option>
-                  <option value="totalPrice/DESC">
-                    по цене (убыв.) &#8595;
-                  </option>
-                  <option value="totalPrice/ASC">
-                    по цене (возр.) &#8593;
-                  </option>
-                </select>
-              </div>
-              <div className="flex lg:flex-col vsm:flex-row flex-col gap-2 items-center">
-                <label className="basis-1/2" htmlFor="order-datepicker">
-                  Фильтр по дате:
-                </label>
-                <ReactDatePicker
-                  id="order-datepicker"
-                  className="basis-1/2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block min-w-[200px] p-2.5"
-                  locale={ru}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Укажите временной период"
-                  selectsRange={true}
-                  startDate={startDate}
-                  endDate={endDate}
-                  onChange={(update: [Date, Date]) => {
-                    setDateRange(update);
-                  }}
-                  isClearable={true}
-                />
-              </div>
-              <div className="flex vsm:flex-row flex-col gap-2 items-center vsm:items-end">
-                <label className="basis-1/2" htmlFor="order-filter">
-                  <div>Фильтрация по:</div>
-                  <div className="grid grid-cols-6">
-                    <input
-                      id="order-filter-id"
-                      type="checkbox"
-                      checked={filterProp.fieldName === "id"}
-                      onChange={handleCheckboxChange}
-                      className="w-fit col-span-1"
-                    />
-                    <label htmlFor="order-filter-id" className="col-span-5">
-                      по номеру заказа
-                    </label>
-                    <input
-                      id="order-filter-customer"
-                      type="checkbox"
-                      checked={filterProp.fieldName === "customer_name"}
-                      onChange={handleCheckboxChange}
-                      className="w-fit col-span-1"
-                    />
+    <Fragment>
+      {status === "pending" ? (
+        <LoadingSpinner />
+      ) : status === "error" ? (
+        <p>Error: {error.message}</p>
+      ) : (
+        <>
+          <div className="flex flex-col items-center justify-center mb-4">
+            {isFiltersShown ? (
+              <>
+                <div className="mb-4">
+                  <ChevronUpIcon
+                    onClick={() => setIsFiltersShown(false)}
+                    className="w-6 h-6 hover:cursor-pointer"
+                  />
+                </div>
+                <form className="flex lg:flex-row flex-col lg:gap-8 gap-4 mx-4">
+                  <div className="flex lg:flex-col vsm:flex-row flex-col gap-2 items-center">
                     <label
-                      htmlFor="order-filter-customer"
-                      className="col-span-5"
+                      className="align-middle h-fit basis-1/2"
+                      htmlFor="order-customer-filter"
                     >
-                      по имени заказчика
+                      Сортировать по:
                     </label>
+                    <select
+                      name="sortSelect"
+                      defaultValue="по дате (убыв.)"
+                      className="basis-1/2 lowercase border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block sm:min-w-[120px] p-2.5"
+                      onChange={handleSelect}
+                    >
+                      <option value="created_at/DESC">
+                        по дате (убыв.) &#8595;
+                      </option>
+                      <option value="created_at/ASC">
+                        по дате (возр.) &#8593;
+                      </option>
+                      <option value="customer_name/DESC">
+                        по имени (убыв.) &#8595;
+                      </option>
+                      <option value="customer_name/ASC">
+                        по имени (возр.) &#8593;
+                      </option>
+                      <option value="totalPrice/DESC">
+                        по цене (убыв.) &#8595;
+                      </option>
+                      <option value="totalPrice/ASC">
+                        по цене (возр.) &#8593;
+                      </option>
+                    </select>
                   </div>
-                </label>
-                <input
-                  id="order-filter"
-                  name="filter"
-                  className="basis-1/2 h-fit border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block sm:min-w-[120px] p-2.5"
-                  placeholder="Введите искомое значение"
-                  value={filterBy}
-                  onChange={(e) => setFilterBy(e.target.value)}
-                />
-              </div>
-            </form>
-          </>
-        ) : (
-          <span
-            onClick={() => setIsFiltersShown(true)}
-            className="flex gap-2  hover:cursor-pointer"
-          >
-            <p>Сортировка и поиск</p>
-            <ChevronDownIcon className="w-6 h-6" />
-          </span>
-        )}
-      </div>
-      {!isError && (
-        <div className="flex flex-col items-center justify-center">
-          <ul className="bg-gray-200 rounded-xl mx-4 w-full max-w-lg divide-y-2 divide-solid divide-white">
-            {orders.map((item: Order) => (
-              <li
-                className="p-3 grid vsm:gap-x-6 vsm:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2 items-center"
-                key={item.orderId}
+                  <div className="flex lg:flex-col vsm:flex-row flex-col gap-2 items-center">
+                    <label className="basis-1/2" htmlFor="order-datepicker">
+                      Фильтр по дате:
+                    </label>
+                    <ReactDatePicker
+                      id="order-datepicker"
+                      className="basis-1/2 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block min-w-[200px] p-2.5"
+                      locale={ru}
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="Укажите временной период"
+                      selectsRange={true}
+                      startDate={startDate}
+                      endDate={endDate}
+                      onChange={(update: [Date, Date]) => {
+                        setDateRange(update);
+                      }}
+                      isClearable={true}
+                    />
+                  </div>
+                  <div className="flex vsm:flex-row flex-col gap-2 items-center vsm:items-end">
+                    <label className="basis-1/2" htmlFor="order-filter">
+                      <div>Фильтрация по:</div>
+                      <div className="grid grid-cols-6">
+                        <input
+                          id="order-filter-id"
+                          type="checkbox"
+                          checked={filterProp.fieldName === "id"}
+                          onChange={handleCheckboxChange}
+                          className="w-fit col-span-1"
+                        />
+                        <label htmlFor="order-filter-id" className="col-span-5">
+                          по номеру заказа
+                        </label>
+                        <input
+                          id="order-filter-customer"
+                          type="checkbox"
+                          checked={filterProp.fieldName === "customer_name"}
+                          onChange={handleCheckboxChange}
+                          className="w-fit col-span-1"
+                        />
+                        <label
+                          htmlFor="order-filter-customer"
+                          className="col-span-5"
+                        >
+                          по имени заказчика
+                        </label>
+                      </div>
+                    </label>
+                    <input
+                      id="order-filter"
+                      name="filter"
+                      className="basis-1/2 h-fit border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block sm:min-w-[120px] p-2.5"
+                      placeholder="Введите искомое значение"
+                      value={filterBy}
+                      onChange={(e) => setFilterBy(e.target.value)}
+                    />
+                  </div>
+                </form>
+              </>
+            ) : (
+              <span
+                onClick={() => setIsFiltersShown(true)}
+                className="flex gap-2  hover:cursor-pointer"
               >
-                <p className="font-bold">Заказ №{item.orderId}</p>
-                <p className="">
-                  от <FormatDate createdAt={item.createdAt} />
-                </p>
-                <p className="">Имя заказчика: {item.customerName}</p>
-                <p>Тел.: {item.customerPhone}</p>
-                <p className="border w-fit rounded-xl p-1 border-gray-700 text-center">
-                  Сумма заказа: {item.orderDetails.totalPrice} руб.
-                </p>
-                <Link
-                  className="underline place-self-end"
-                  to={`/orders/${item.orderId}`}
-                >
-                  подробнее...
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+                <p>Сортировка и поиск</p>
+                <ChevronDownIcon className="w-6 h-6" />
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col items-center justify-center">
+            <ul className="bg-gray-200 rounded-xl mx-4 w-full max-w-lg divide-y-2 divide-solid divide-white">
+              {data &&
+                data.pages.map((group, i) => (
+                  <Fragment key={i}>
+                    {group.orders.map((item: Order) => (
+                      <li
+                        className="p-3 grid vsm:gap-x-6 vsm:grid-cols-2 grid-cols-1 gap-x-2 gap-y-2 items-center"
+                        key={item.orderId}
+                      >
+                        <p className="font-bold">Заказ №{item.orderId}</p>
+                        <p className="">
+                          от <FormatDate createdAt={item.createdAt} />
+                        </p>
+                        <p className="">Имя заказчика: {item.customerName}</p>
+                        <p>Тел.: {item.customerPhone}</p>
+                        <p className="border w-fit rounded-xl p-1 border-gray-700 text-center">
+                          Сумма заказа: {item.orderDetails.totalPrice} руб.
+                        </p>
+                        <Link
+                          className="underline place-self-end"
+                          to={`/orders/${item.orderId}`}
+                        >
+                          подробнее...
+                        </Link>
+                      </li>
+                    ))}
+                  </Fragment>
+                ))}
+            </ul>
+          </div>
+        </>
       )}
-      {isLoading && <LoadingSpinner />}
-      {orders && <div className="h-4 w-full bg-red-500" ref={ref} />}
-    </>
+      <div className="h-4 w-full" ref={ref} />
+    </Fragment>
   );
 };
 

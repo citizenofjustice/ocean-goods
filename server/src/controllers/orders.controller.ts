@@ -136,9 +136,23 @@ class OrderController {
       const offset = (Number(page) - 1) * Number(limit);
 
       // Construct the final query
-      const query = `SELECT ${orderCamelCase} FROM orders ${where} ${orderByQuery} LIMIT ${limit} OFFSET ${offset}`;
+      const query = `SELECT COUNT(*) OVER() as total, ${orderCamelCase} FROM orders ${where} ${orderByQuery} LIMIT ${limit} OFFSET ${offset}`;
       const ordersQuery = await db.query(query);
-      res.json(ordersQuery.rows);
+
+      // Extract the totalRows and orders from the result set
+      const totalRows = ordersQuery.rows[0]
+        ? Number(ordersQuery.rows[0].total)
+        : 0;
+      const orders = ordersQuery.rows.map((row) => {
+        delete row.total;
+        return row;
+      });
+
+      // Calculate the cursor for the next page
+      const nextPage = Number(page) + 1;
+
+      // Include the cursor for the next page in the response
+      res.json({ totalRows, orders, nextPage });
     } catch (error) {
       next(error);
     }
