@@ -11,9 +11,30 @@ const orderCamelCase: string =
 // Function to get order by ID
 export async function getOrderById(orderId: number) {
   try {
-    // Query the database for the order
+    // Query the database for the order (join with product types)
     const orderData = await db.query(
-      `SELECT ${orderCamelCase} FROM orders WHERE id = $1`,
+      `SELECT 
+        orders.id as "orderId", orders.customer_name as "customerName", orders.customer_phone as "customerPhone",
+        orders.customer_email as "customerEmail", orders.contact_method as "contactMethod", orders.created_at as "createdAt",
+        json_build_object(
+          'orderItems', json_agg(
+            jsonb_set(
+              elems::jsonb, 
+              '{type}', 
+              to_jsonb(product_types.type)
+            )
+          ),
+          'totalPrice', orders.order_details->'totalPrice'
+        ) AS "orderDetails"
+      FROM 
+        orders
+      JOIN 
+        jsonb_array_elements(orders.order_details->'orderItems') AS elems ON TRUE
+      JOIN 
+        product_types ON product_types.id = (elems->'productTypeId')::text::integer
+      WHERE orders.id = $1
+      GROUP BY 
+        orders.id`,
       [orderId]
     );
     // Extract the order from the query result
@@ -38,6 +59,9 @@ class OrderController {
         customerEmail,
         contactMethod,
       } = req.body;
+
+      if (JSON.parse(orderDetails).orderItems.length === 0)
+        return res.status(422).json({ error: "Order details is empty" });
 
       // Prepare the SQL query
       const sqlQuery = `

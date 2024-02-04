@@ -9,6 +9,7 @@ import ru from "date-fns/locale/ru";
 import "react-datepicker/dist/react-datepicker.css";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import FormatDate from "./FormatDate";
 registerLocale("ru", ru);
 
 interface SortBy {
@@ -244,15 +245,3 @@ const OrdersList = () => {
 };
 
 export default OrdersList;
-
-const FormatDate: React.FC<{
-  createdAt: string;
-}> = ({ createdAt }) => {
-  const date = new Date(createdAt);
-  const dateWithTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString(
-    [],
-    { hour: "2-digit", minute: "2-digit" }
-  )}`;
-
-  return <>{dateWithTime}</>;
-};

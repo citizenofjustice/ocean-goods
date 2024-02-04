@@ -44,7 +44,7 @@ const CustomerDataForm: React.FC<{
     });
     const orderDetails = { orderItems, totalPrice: cart.totalCartPrice };
     fData.append("orderDetails", JSON.stringify(orderDetails));
-    const response = await axios.post(`/order`, fData, {
+    const response = await axios.post(`/orders`, fData, {
       headers: { "Content-Type": "application/json" },
     });
     if (response.status === 200) {
