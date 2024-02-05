@@ -55,7 +55,7 @@ const Navbar = observer(() => {
     "w-full h-full fixed z-50 bg-white top-0 left-0 transition-all duration-300 ease-in-out";
 
   return (
-    <header className="sticky z-50 top-0 bg-white border-b-2 flex items-center flex-row py-4">
+    <header className="hearer-sticky h-[4.5rem] z-50 bg-white border-b-2 flex items-center flex-row py-4">
       <nav className="basis-1/12 flex justify-start">
         {isMenuOpen && (
           <div className={menuClasses}>

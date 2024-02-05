@@ -28,7 +28,7 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <>
+    <div className="app">
       <RootStoreContext.Provider value={new RootStore()}>
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
@@ -83,7 +83,7 @@ function App() {
           </BrowserRouter>
         </QueryClientProvider>
       </RootStoreContext.Provider>
-    </>
+    </div>
   );
 }
 
