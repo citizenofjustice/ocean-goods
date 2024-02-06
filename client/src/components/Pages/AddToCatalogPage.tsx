@@ -11,6 +11,7 @@ import TextareaField from "../UI/TextareaField";
 import DefaultButton from "../UI/DefaultButton";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useNavigate } from "react-router-dom";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -37,6 +38,7 @@ const AddToCatalogPage: React.FC<{
     const [inputValues, setInputValues] =
       useState<CatalogItemInputs>(initValues);
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
 
     const { isLoading, isError, data } = useQuery({
       queryKey: ["product-type-select"],
@@ -122,6 +124,7 @@ const AddToCatalogPage: React.FC<{
         }
       }
       setInputValues(emptyInitValues);
+      navigate("/");
     };
 
     return (
