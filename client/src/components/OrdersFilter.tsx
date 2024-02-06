@@ -1,7 +1,7 @@
 import { FilterProp } from "./OrdersList";
 
-const inputStyles = `focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-500
-disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none
+const inputStyles = `focus:outline-none focus:border-accent-700 focus:ring-1 focus:ring-accent-700 hover:border-accent-700
+disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none
 invalid:border-red-500 invalid:text-text-600 focus:invalid:border-red-500 focus:invalid:ring-red-500`;
 
 const OrdersFilter: React.FC<{
@@ -48,7 +48,7 @@ const OrdersFilter: React.FC<{
         id="order-filter"
         name="filter"
         type={filterProp.fieldName === "id" ? "number" : "text"}
-        className={`${inputStyles} basis-1/2 vsm:basis-3/5 lg:basis-1/2 truncate h-fit border border-gray-300 text-sm rounded-lg block sm:min-w-[120px] p-2.5`}
+        className={`${inputStyles} appearance-none text-text-700 py-3 px-4 pr-8 rounded leading-tight truncate basis-1/2 vsm:basis-3/5 lg:basis-1/2 h-fit border border-gray-300 block sm:min-w-[120px] p-2.5`}
         placeholder="Введите искомое значение"
         value={filterBy}
         onChange={handleFilterInput}

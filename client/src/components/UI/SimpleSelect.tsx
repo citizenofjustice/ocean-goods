@@ -9,12 +9,15 @@ const SimpleSelect: React.FC<{
   onOptionSelect: (value: string) => void;
 }> = ({ options, selectedOption, onOptionSelect }) => {
   return (
-    <div className="w-full max-w-xs mx-auto">
+    <div className="basis-1/2 vsm:basis-3/5 lg:basis-1/2">
       <div className="relative">
         <select
           value={selectedOption}
           onChange={(e) => onOptionSelect(e.target.value)}
-          className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-accent-500 focus:border-2 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="block appearance-none py-3 px-4 pr-8 rounded leading-tight w-full bg-white border border-gray-200 text-text-700
+          focus:outline-none focus:bg-white focus:border-accent-700 focus:border-2
+          hover:border-accent-700
+          disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none"
         >
           {options.map((option, index) => (
             <option key={index} value={option.value}>

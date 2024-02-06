@@ -3,8 +3,8 @@ registerLocale("ru", ru);
 import ru from "date-fns/locale/ru";
 import "react-datepicker/dist/react-datepicker.css";
 
-const inputStyles = `focus:outline-none focus:border-accent-500 focus:ring-1 focus:ring-accent-500
-  disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none
+const inputStyles = `focus:outline-none focus:border-accent-700 focus:ring-1 focus:ring-accent-700 hover:border-accent-700
+  disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none
   invalid:border-red-500 invalid:text-text-600 focus:invalid:border-red-500 focus:invalid:ring-red-500`;
 
 const InputDateRange: React.FC<{
@@ -23,7 +23,7 @@ const InputDateRange: React.FC<{
       <div className="datepicker-w-full basis-1/2 vsm:basis-3/5 lg:basis-1/2">
         <ReactDatePicker
           id="order-datepicker"
-          className={`${inputStyles} truncate border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-max p-2.5`}
+          className={`${inputStyles} appearance-none text-text-700 py-3 px-4 pr-8 rounded leading-tight truncate border border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full`}
           locale={ru}
           dateFormat="dd/MM/yyyy"
           placeholderText="Укажите временной период"

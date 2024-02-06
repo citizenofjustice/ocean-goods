@@ -11,6 +11,7 @@ import OrdersListItem from "./OrdersListItem";
 import SortComponent from "./SortComponent";
 import InputDateRange from "./UI/InputDateRange";
 import OrdersFilter from "./OrdersFilter";
+import OrdersListHeader from "./OrdersListHeader";
 
 interface SortBy {
   orderBy: string;
@@ -157,21 +158,21 @@ const OrdersList = () => {
   };
 
   return (
-    <div className="px-4 flex flex-col items-center">
+    <>
       <div
         className={`sticky top-0 ${
-          isFiltersShown ? "lg:h-[150px]" : "lg:h-[60px]"
+          isFiltersShown ? "lg:h-[155px]" : "lg:h-[65px]"
         } z-40 flex flex-col bg-background-0 items-center justify-center p-4 w-full text-text-800`}
       >
         {isFiltersShown ? (
           <>
-            <div className="mb-4 rounded-full p-2 bg-primary-200">
+            <div className="mb-4 rounded-full p-2 border-2 bg-primary-100 border-accent-700">
               <ChevronUpIcon
                 onClick={() => setIsFiltersShown(false)}
                 className="w-6 h-6 hover:cursor-pointer"
               />
             </div>
-            <form className="mb-4 flex lg:flex-row flex-col lg:gap-8 gap-4 mx-4 sm:w-4/5 sm:justify-center">
+            <form className="mb-4 flex lg:flex-row flex-col lg:gap-8 gap-4 mx-4 vsm:w-4/5 sm:justify-center">
               <SortComponent
                 sortOptions={sortOptions}
                 selectedOption={selectedOption}
@@ -198,53 +199,37 @@ const OrdersList = () => {
         ) : (
           <span
             onClick={() => setIsFiltersShown(true)}
-            className="mb-4 flex gap-2 hover:cursor-pointer rounded-full p-2 bg-primary-200"
+            className="mb-4 flex gap-2 hover:cursor-pointer rounded-full p-2 border-2 bg-primary-100 border-accent-700 text-text-800 font-medium"
           >
             <p>Сортировка и поиск</p>
             <ChevronDownIcon className="w-6 h-6" />
           </span>
         )}
       </div>
-      {status === "pending" ? (
-        <LoadingSpinner />
-      ) : status === "error" ? (
-        <p className="text-center">Error: {error.message}</p>
-      ) : (
-        <>
-          <div
-            className={`hidden lg:grid max-w-screen-xl sticky ${
-              isFiltersShown ? "top-[150px]" : "top-[60px]"
-            } bg-background-700 border-2 border-background-700 text-text-800 gap-x-2 gap-y-1 vsm:gap-x-[2px] grid-cols-1 vsm:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,500px))_minmax(5rem,9rem)] items-center`}
-          >
-            <span className="bg-background-300 h-full py-2 px-4">
-              Номер заказа и дата
-            </span>
-            <span className="bg-background-300 h-full py-2 px-4">
-              Имя заказчика
-            </span>
-            <span className="bg-background-300 h-full py-2 px-4">Телефон</span>
-            <span className="bg-background-300 h-full py-2 px-4">
-              Сумма заказа
-            </span>
-            <span className="bg-background-300 h-full py-2 px-4">
-              Детали заказа
-            </span>
+      <div className="px-4 flex flex-col items-center">
+        {status === "pending" ? (
+          <LoadingSpinner />
+        ) : status === "error" ? (
+          <p className="text-center">Error: {error.message}</p>
+        ) : (
+          <div className="bg-background-200 p-4 lg:p-0 lg:pb-4 rounded-xl">
+            <OrdersListHeader isFiltersShown={isFiltersShown} />
+            {data.pages[0].totalRows > 0 && (
+              <ul className="lg:mt-1 flex flex-col gap-y-4 lg:gap-y-1 max-w-screen-xl">
+                {data.pages.map((group, i) => (
+                  <Fragment key={i}>
+                    {group.orders.map((item: Order) => (
+                      <OrdersListItem key={item.orderId} order={item} />
+                    ))}
+                  </Fragment>
+                ))}
+              </ul>
+            )}
           </div>
-          {data.pages[0].totalRows > 0 && (
-            <ul className="bg-background-50 border-t-2 lg:border-t-0 border-r-2 border-l-2 border-b-2 border-background-700 max-w-screen-xl divide-y-2 divide-solid divide-background-700">
-              {data.pages.map((group, i) => (
-                <Fragment key={i}>
-                  {group.orders.map((item: Order) => (
-                    <OrdersListItem key={item.orderId} order={item} />
-                  ))}
-                </Fragment>
-              ))}
-            </ul>
-          )}
-        </>
-      )}
-      <div className="h-4 w-full" ref={ref} />
-    </div>
+        )}
+        <div className="h-4 w-full" ref={ref} />
+      </div>
+    </>
   );
 };
 
