@@ -1,4 +1,5 @@
 import { CloudArrowUpIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useRef } from "react";
 
 const ImageDropzone: React.FC<{
   id: string;
@@ -8,24 +9,31 @@ const ImageDropzone: React.FC<{
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemove: () => void;
 }> = ({ id, type, name, previewImage, onInputChange, onRemove }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageRemoval = () => {
+    if (fileInputRef.current?.value) fileInputRef.current.value = "";
+    onRemove();
+  };
+
   const labelClass =
-    "flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50";
+    "flex flex-col items-center justify-center w-full border border-accent-700 border-dashed rounded-lg cursor-pointer bg-background-50";
   return (
     <div className="flex flex-col w-full">
-      <p className="block mb-2 text-sm font-medium">Изображение</p>
+      <p className="block mb-2 font-medium">Изображение</p>
       <label
         htmlFor={id}
         className={`${previewImage && "hidden"} ${labelClass}`}
       >
         <div className="flex flex-col items-center justify-center h-44">
-          <CloudArrowUpIcon className="w-10 h-10 text-gray-500" />
-          <p className="mb-2 px-4 text-center text-sm text-gray-500">
-            <span className="font-semibold">Нажмите чтобы загрузить</span> или
-            перетащите сюда файл
+          <CloudArrowUpIcon className="w-10 h-10 text-text-500" />
+          <p className="mb-2 px-4 text-center text-text-500">
+            <span className="font-semibold">Нажмите чтобы загрузить файл</span>
           </p>
         </div>
         <input
           id={id}
+          ref={fileInputRef}
           type={type}
           name={name}
           onChange={onInputChange}
@@ -43,7 +51,10 @@ const ImageDropzone: React.FC<{
                 : URL.createObjectURL(previewImage)
             }
           />
-          <div onClick={onRemove} className="w-6 h-6 hover:cursor-pointer">
+          <div
+            onClick={handleImageRemoval}
+            className="w-6 h-6 hover:cursor-pointer"
+          >
             <XMarkIcon className="w-6 h-6" />
           </div>
         </div>

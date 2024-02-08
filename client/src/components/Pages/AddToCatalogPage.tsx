@@ -129,9 +129,12 @@ const AddToCatalogPage: React.FC<{
 
     return (
       <>
-        <div className="p-4">
-          <form onSubmit={handleFormSubmittion}>
-            <div className="grid gap-6 md:grid-cols-2">
+        <div className="p-4 flex justify-center">
+          <form
+            className="vsm:w-4/5 max-w-screen-lg bg-background-200 rounded-xl p-4"
+            onSubmit={handleFormSubmittion}
+          >
+            <div className="grid gap-6 md:grid-cols-2 mb-4">
               <LabeledInputField
                 title="Название"
                 inputId="add-to-catalog-name"

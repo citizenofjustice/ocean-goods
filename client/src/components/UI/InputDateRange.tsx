@@ -23,7 +23,7 @@ const InputDateRange: React.FC<{
       <div className="datepicker-w-full basis-1/2 vsm:basis-3/5 lg:basis-1/2">
         <ReactDatePicker
           id="order-datepicker"
-          className={`${inputStyles} appearance-none text-text-700 py-3 px-4 pr-8 rounded leading-tight truncate border border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full`}
+          className={`appearance-none ${inputStyles} text-text-700 py-3 px-4 pr-8 rounded leading-tight truncate border border-gray-300 block w-full`}
           locale={ru}
           dateFormat="dd/MM/yyyy"
           placeholderText="Укажите временной период"

@@ -40,7 +40,7 @@ const Roles = () => {
         {!isLoading && !isError && (
           <>
             <div className="w-full flex justify-center relative mb-4">
-              <p className="font-bold">Список ролей:</p>
+              <p className="font-medium">Список ролей:</p>
               {!isFormShown && (
                 <div className="absolute right-0">
                   <PlusCircleIcon

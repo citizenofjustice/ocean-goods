@@ -48,7 +48,7 @@ const OrdersFilter: React.FC<{
         id="order-filter"
         name="filter"
         type={filterProp.fieldName === "id" ? "number" : "text"}
-        className={`${inputStyles} appearance-none text-text-700 py-3 px-4 pr-8 rounded leading-tight truncate basis-1/2 vsm:basis-3/5 lg:basis-1/2 h-fit border border-gray-300 block sm:min-w-[120px] p-2.5`}
+        className={`${inputStyles} appearance-none text-text-700 py-3 px-4 rounded leading-tight truncate basis-1/2 vsm:basis-3/5 lg:basis-1/2 h-fit border border-gray-300 block sm:min-w-[120px] p-2.5`}
         placeholder="Введите искомое значение"
         value={filterBy}
         onChange={handleFilterInput}

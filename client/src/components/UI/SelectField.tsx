@@ -25,26 +25,40 @@ const SelectField: React.FC<{
       {isLoading && <LoadingSpinner />}
       {!isLoading && !isError && (
         <div className="flex flex-col w-full">
-          <label htmlFor={inputId} className="block mb-2 text-sm font-medium">
+          <label htmlFor={inputId} className="block mb-2 font-medium">
             {title}
           </label>
-          <select
-            name={name}
-            id={inputId}
-            onChange={onSelectChange}
-            defaultValue={value}
-            className="lowercase border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            required
-          >
-            <option value="" disabled>
-              {`--- Выберите ${title} ---`}
-            </option>
-            {options.map((item) => (
-              <option key={item.id} className="text-black" value={item.id}>
-                {item.optionValue}
+          <div className="relative">
+            <select
+              name={name}
+              id={inputId}
+              onChange={onSelectChange}
+              defaultValue={value}
+              className="block appearance-none py-3 px-4 pr-8 rounded leading-tight w-full bg-white border border-gray-500 text-text-700
+              focus:outline-none focus:bg-white focus:border-accent-700 focus:border-2
+              hover:border-accent-700
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none"
+              required
+            >
+              <option value="" disabled>
+                {` Выберите ${title.toLowerCase()} `}
               </option>
-            ))}
-          </select>
+              {options.map((item) => (
+                <option key={item.id} className="text-black" value={item.id}>
+                  {item.optionValue}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M10 12l-6-6h12" />
+              </svg>
+            </div>
+          </div>
         </div>
       )}
     </>

@@ -214,7 +214,7 @@ const OrdersList = () => {
         ) : (
           <div className="bg-background-200 p-4 lg:p-0 lg:pb-4 rounded-xl">
             <OrdersListHeader isFiltersShown={isFiltersShown} />
-            {data.pages[0].totalRows > 0 && (
+            {data.pages[0].totalRows > 0 ? (
               <ul className="lg:mt-1 flex flex-col gap-y-4 lg:gap-y-1 max-w-screen-xl">
                 {data.pages.map((group, i) => (
                   <Fragment key={i}>
@@ -224,6 +224,12 @@ const OrdersList = () => {
                   </Fragment>
                 ))}
               </ul>
+            ) : (
+              <div>
+                {filterBy || endDate
+                  ? "Заказы c указанными параметрами не обнаружены"
+                  : "Заказы не обнаружены"}
+              </div>
             )}
           </div>
         )}

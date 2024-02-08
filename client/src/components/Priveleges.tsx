@@ -23,7 +23,7 @@ const Priveleges = () => {
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
-            <p className="font-bold">Перечень полномочий:</p>
+            <p className="font-medium">Перечень полномочий:</p>
             <ul>
               {data.length !== 0 ? (
                 data.map((item: Privelege) => (

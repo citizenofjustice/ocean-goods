@@ -58,45 +58,47 @@ const UserDropdownMenu = observer(() => {
   return (
     <>
       <button
-        className="flex text-sm bg-gray-600 rounded-full p-2 h-fit"
+        className="flex text-sm bg-primary-800 rounded-full p-2 h-fit"
         type="button"
         onClick={() => setIsShown(true)}
       >
         <span className="sr-only">Открыть меню пользователя</span>
-        <UserIcon className="text-white h-4 w-4" />
+        <UserIcon className="text-text-50 h-4 w-4" />
       </button>
 
       {isShown && (
         <div
           ref={dropdownRef}
-          className="absolute top-10 left-[-6rem] z-10 divide-y divide-gray-100 rounded-lg shadow-lg w-44 bg-gray-600 divide-gray-500"
+          className="absolute top-[2.5rem] left-[-6.5rem] z-10 rounded-lg shadow-lg w-44 bg-primary-800 px-2"
         >
-          <div className="px-4 py-3 text-sm flex items-center text-gray-200 hover:text-white">
-            <p className="font-medium truncate first-letter:capitalize">
-              {auth.authData.user}
-            </p>
-          </div>
-          <ul className="py-2 text-sm text-gray-200">
-            {menuItems.map((item: MenuItem) => (
-              <li className="flex items-center px-4 " key={item.id}>
-                {item.icon}
-                <Link
-                  to={item.path}
-                  className="block px-2 py-2 hover:text-white"
-                >
-                  {item.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <div className="py-2 px-4 flex items-center text-gray-200 hover:text-white">
-            <ArrowLeftOnRectangleIcon className="h-6 w-6" />
-            <span
-              onClick={handleLogout}
-              className="block px-2 py-2 text-sm  hover:cursor-pointer"
-            >
-              Выйти
-            </span>
+          <div className="divide-y divide-secondary-50">
+            <div className="px-4 py-3 text-sm flex items-center text-text-100">
+              <p className="font-medium truncate first-letter:capitalize">
+                {auth.authData.user}
+              </p>
+            </div>
+            <ul className="py-2 text-sm text-text-100">
+              {menuItems.map((item: MenuItem) => (
+                <li className="flex items-center px-4 " key={item.id}>
+                  {item.icon}
+                  <Link
+                    to={item.path}
+                    className="block px-2 py-2 hover:text-white"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="py-2 px-4 flex items-center text-text-100 hover:text-white">
+              <ArrowLeftOnRectangleIcon className="h-6 w-6" />
+              <span
+                onClick={handleLogout}
+                className="block px-2 py-2 text-sm  hover:cursor-pointer"
+              >
+                Выйти
+              </span>
+            </div>
           </div>
         </div>
       )}

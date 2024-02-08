@@ -30,7 +30,7 @@ const ProductTypesList = () => {
         {!isLoading && !isError && (
           <>
             <div className="w-full flex justify-center relative">
-              <p className="font-bold">Список типов продуктов:</p>
+              <p className="font-medium">Список типов продуктов:</p>
               {!isFormShown && (
                 <div className="absolute right-0">
                   <PlusCircleIcon
