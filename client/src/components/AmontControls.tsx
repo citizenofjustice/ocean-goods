@@ -3,19 +3,31 @@ import AmountContolButton from "./UI/AmountContolButton";
 /**
  * Component for setting amount of item user whats to buy
  * @param currentValue - current amount of added items
- * @param additonalStyle - optional / for tweaking style of controls wrapper
+ * @param isVertical - optional / for tweaking style of controls wrapper
  * @returns
  */
 const AmountControls: React.FC<{
   currentValue: number;
-  additonalStyle?: string;
+  isVertical?: boolean;
   onDecrement: () => void;
   onIncrement: () => void;
-}> = ({ currentValue, additonalStyle, onDecrement, onIncrement }) => {
+}> = ({ currentValue, isVertical = false, onDecrement, onIncrement }) => {
   return (
-    <div className={`flex ${additonalStyle} items-center h-8`}>
+    <div
+      className={`flex ${
+        isVertical
+          ? "flex-col-reverse justify-end w-8"
+          : "flex-row justify-between h-8"
+      } rounded items-center`}
+    >
       <AmountContolButton buttonText="-" buttonAction={onDecrement} />
-      <span className="px-4">{currentValue}</span>
+      <span
+        className={`rounded bg-background-0 mx-1 px-2 font-medium ${
+          isVertical ? "h-10 flex items-center" : "w-10 text-center"
+        }`}
+      >
+        {currentValue}
+      </span>
       <AmountContolButton buttonText="+" buttonAction={onIncrement} />
     </div>
   );

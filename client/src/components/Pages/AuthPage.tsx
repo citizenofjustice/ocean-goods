@@ -6,6 +6,7 @@ import { authUser } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/root-store-context";
 import { observer } from "mobx-react-lite";
+import PasswordInputField from "../UI/PasswordInputField";
 
 const initValues = {
   email: "",
@@ -54,11 +55,10 @@ const AuthPage = observer(() => {
               value={inputValues.email}
               onInputChange={handleValueChange}
             />
-            <LabeledInputField
+            <PasswordInputField
               inputId="auth-form-password"
               title="Пароль"
               name="password"
-              inputType="password"
               value={inputValues.password}
               onInputChange={handleValueChange}
             />

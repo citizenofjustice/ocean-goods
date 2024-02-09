@@ -39,13 +39,13 @@ const Roles = () => {
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
-            <div className="w-full flex justify-center relative mb-4">
+            <div className="w-full flex justify-center items-center relative mb-4">
               <p className="font-medium">Список ролей:</p>
               {!isFormShown && (
                 <div className="absolute right-0">
                   <PlusCircleIcon
                     onClick={() => setIsFormShown(true)}
-                    className="w-6 h-6 hover:cursor-pointer"
+                    className="w-8 h-8 text-primary-800 hover:cursor-pointer"
                   />
                 </div>
               )}

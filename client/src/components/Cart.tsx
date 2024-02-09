@@ -37,8 +37,8 @@ const Cart: React.FC<{
         {isContactFormActive ? (
           <CustomerDataForm onOrderSend={onCartClose} />
         ) : (
-          <>
-            <ul className="divide-y">
+          <div className="m-4 grid gap-2 justify-center">
+            <ul className="flex flex-col gap-2 divide-y bg-background-50 p-4 rounded-xl max-w-lg">
               {cartItems &&
                 cartItems.map((item) => (
                   <CartElement key={item.cartItemId} cartItem={item} />
@@ -54,7 +54,7 @@ const Cart: React.FC<{
                 Оформить заказ
               </DefaultButton>
             </div>
-          </>
+          </div>
         )}
       </div>
     </>

@@ -10,7 +10,7 @@ const AmountContolButton: React.FC<{
   return (
     <button
       type="button"
-      className="border-solid border-2 rounded w-6 bg-gray-200"
+      className="bg-background-600 text-text-50 font-medium rounded w-6"
       onClick={buttonAction}
     >
       {buttonText}

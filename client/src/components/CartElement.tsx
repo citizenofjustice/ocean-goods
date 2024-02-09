@@ -20,7 +20,7 @@ const CartElement: React.FC<{
 
   return (
     <>
-      <li className="flex flex-row place-content-between items-align h-fit mx-4 py-4">
+      <li className="bg-background-200 flex flex-row place-content-between items-align h-fit rounded-xl mx-4 p-4">
         <div className="basis-2/6 rounded overflow-hidden mr-4 min-w-[80px]">
           {cartItem.mainImage && <img src={cartItem.mainImage} />}
         </div>
@@ -34,7 +34,7 @@ const CartElement: React.FC<{
         <div className="basis-1/8">
           <AmountControls
             currentValue={cartItem.amount}
-            additonalStyle="flex-col-reverse justify-end"
+            isVertical={true}
             onDecrement={action(() => {
               const filteredItems: CartItemModel[] =
                 cart.amountDecrease(cartItem);

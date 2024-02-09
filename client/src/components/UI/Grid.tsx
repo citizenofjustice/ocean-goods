@@ -26,7 +26,7 @@ const Grid: React.FC<{
           smallMobile ? xCount : "1"
         }, minmax(0, 1fr))`,
         gridTemplateRows: `repeat(${yCount}, minmax(0, 1fr))`,
-        gap: mobile ? "1rem" : "0.5rem",
+        gap: mobile ? "1rem" : "1.5rem",
         padding: desktop ? "0 18%" : `${tablet ? "0 6%" : "0"}`,
       }}
     >

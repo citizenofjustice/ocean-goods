@@ -3,7 +3,7 @@ const CustomAlertMessage: React.FC<{
 }> = ({ message }) => {
   return (
     <>
-      <p className="text-center text-red-500 font-bold p-4">{message}</p>
+      <p className="text-center text-red-500 font-medium p-4">{message}</p>
     </>
   );
 };

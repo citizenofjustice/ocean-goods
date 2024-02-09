@@ -5,6 +5,7 @@ import DefaultButton from "./UI/DefaultButton";
 import SelectField from "./UI/SelectField";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import PasswordInputField from "./UI/PasswordInputField";
 
 const initValues = {
   email: "",
@@ -76,11 +77,10 @@ const RegisterForm = () => {
             value={inputValues.email}
             onInputChange={handleValueChange}
           />
-          <LabeledInputField
+          <PasswordInputField
             inputId="register-form-password"
             title="Пароль"
             name="password"
-            inputType="password"
             value={inputValues.password}
             onInputChange={handleValueChange}
           />

@@ -72,7 +72,7 @@ const RoleAdd: React.FC<{
   return (
     <>
       <form onSubmit={handleRoleSubmission}>
-        <div className="flex flex-col items-center bg-amber-50 p-4 rounded-lg">
+        <div className="flex flex-col items-center bg-background-50 p-4 rounded-lg">
           <div className="w-4/5">
             <LabeledInputField
               inputId="user-role-title"

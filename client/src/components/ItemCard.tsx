@@ -61,7 +61,7 @@ const ItemCard: React.FC<{
     <>
       <div className="w-full my-2 px-2 flex">
         <div className={`${auth.isAuth ? "w-10/12" : "w-full"}`}>
-          <p className="text-center">{catalogItem.productName}</p>
+          <p className="text-center font-medium">{catalogItem.productName}</p>
         </div>
         {auth.isAuth && (
           <div className="w-2/12 text-slate-400">
@@ -84,10 +84,12 @@ const ItemCard: React.FC<{
           </div>
         )}
       </div>
-      <div className="flex justify-center mb">
+      <div className="flex justify-center">
         <div className="basis-1/12" />
-        <div className="grow rounded overflow-hidden flex items-center">
-          {catalogItem.mainImage && <img src={catalogItem.mainImage} />}
+        <div className="grow rounded overflow-hidden flex items-center p-2">
+          {catalogItem.mainImage && (
+            <img className="rounded" src={catalogItem.mainImage} />
+          )}
         </div>
         <div className="basis-1/12" />
         <div className="basis-2/12 flex items-center">

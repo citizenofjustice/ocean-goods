@@ -29,13 +29,13 @@ const ProductTypesList = () => {
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
-            <div className="w-full flex justify-center relative">
-              <p className="font-medium">Список типов продуктов:</p>
+            <div className="w-full flex justify-center items-center relative">
+              <p className="font-medium w-3/5">Список типов продуктов:</p>
               {!isFormShown && (
                 <div className="absolute right-0">
                   <PlusCircleIcon
                     onClick={() => setIsFormShown(true)}
-                    className="w-6 h-6 hover:cursor-pointer "
+                    className="w-8 h-8 text-primary-800 hover:cursor-pointer "
                   />
                 </div>
               )}

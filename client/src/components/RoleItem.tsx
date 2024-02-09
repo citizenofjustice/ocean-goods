@@ -48,20 +48,20 @@ const RoleItem: React.FC<{
   return (
     <>
       {!isInEdit && (
-        <li className="flex bg-amber-50 rounded-lg items-center py-4 px-2 h-16 w-full gap-2">
+        <li className="flex bg-background-50 rounded-lg items-center py-4 px-2 h-16 w-full gap-2">
           <p className="text-start justify-items-start basis-10/12 px-2">
             {role.title}
           </p>
           <div className="flex items-center basis-2/12 justify-center">
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-row items-center justify-center gap-1">
               <div onClick={editModeHandler}>
-                <PencilSquareIcon className="w-6 h-6 hover:cursor-pointer" />
+                <PencilSquareIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
               </div>
+              <TrashIcon
+                onClick={() => removeMutation.mutate(role.roleId)}
+                className="w-6 h-6 text-primary-800 hover:cursor-pointer"
+              />
             </div>
-            <TrashIcon
-              onClick={() => removeMutation.mutate(role.roleId)}
-              className="w-6 h-6 hover:cursor-pointer"
-            />
           </div>
         </li>
       )}

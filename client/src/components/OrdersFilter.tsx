@@ -24,7 +24,7 @@ const OrdersFilter: React.FC<{
               type="checkbox"
               checked={filterProp.fieldName === "id"}
               onChange={handleCheckboxChange}
-              className="w-fit col-span-1 accent-accent-600 mr-2"
+              className="w-fit col-span-1 accent-primary-600 mr-2"
             />
             <label htmlFor="order-filter-id" className="col-span-5">
               по номеру заказа
@@ -36,7 +36,7 @@ const OrdersFilter: React.FC<{
               type="checkbox"
               checked={filterProp.fieldName === "customer_name"}
               onChange={handleCheckboxChange}
-              className="w-fit col-span-1 accent-accent-600 mr-2"
+              className="w-fit col-span-1 accent-primary-600 mr-2"
             />
             <label htmlFor="order-filter-customer" className="col-span-5">
               по имени заказчика

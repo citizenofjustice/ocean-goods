@@ -2,12 +2,16 @@ import {
   CheckCircleIcon,
   PencilSquareIcon,
   TrashIcon,
-  XMarkIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { ProductType } from "../types/ProductType";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+
+const inputStyles = `focus:outline-none focus:border-accent-700 focus:ring-1 focus:ring-accent-700 hover:border-accent-700
+disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none
+invalid:border-red-500 invalid:text-text-600 focus:invalid:border-red-500 focus:invalid:ring-red-500`;
 
 const ProductTypeItem: React.FC<{
   productType: ProductType;
@@ -69,13 +73,13 @@ const ProductTypeItem: React.FC<{
 
   return (
     <>
-      <li className="flex bg-amber-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2">
+      <li className="flex bg-background-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2">
         {isInEdit ? (
           <div className="basis-10/12">
             <input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 h-10"
+              className={`${inputStyles} appearance-none text-text-700 py-3 px-4 rounded leading-tight truncate border border-gray-400 block w-full`}
             />
           </div>
         ) : (
@@ -83,27 +87,25 @@ const ProductTypeItem: React.FC<{
             {productType.type}
           </p>
         )}
-        <div className="flex items-center basis-2/12 justify-center">
-          <div className="flex flex-col items-center justify-center">
+        <div className="flex items-center basis-2/12 justify-center gap-1">
+          <div className="flex flex-col items-center justify-center gap-1">
             {isInEdit && (
-              <div className="border border-black border-svg rounded-full hover:cursor-pointer">
-                <XMarkIcon
-                  onClick={() => setIsInEdit(false)}
-                  className="w-4 h-4"
-                />
-              </div>
+              <XCircleIcon
+                onClick={() => setIsInEdit(false)}
+                className="w-6 h-6 text-primary-800 hover:cursor-pointer"
+              />
             )}
             <div onClick={editModeHandler}>
               {isInEdit ? (
-                <CheckCircleIcon className="w-6 h-6 hover:cursor-pointer" />
+                <CheckCircleIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
               ) : (
-                <PencilSquareIcon className="w-6 h-6 hover:cursor-pointer" />
+                <PencilSquareIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
               )}
             </div>
           </div>
           <TrashIcon
             onClick={() => removeMutation.mutate(productType.productTypeId)}
-            className="w-6 h-6 hover:cursor-pointer"
+            className="w-6 h-6 text-primary-800 hover:cursor-pointer"
           />
         </div>
       </li>
