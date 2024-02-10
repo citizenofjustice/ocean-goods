@@ -52,7 +52,7 @@ const ItemCard: React.FC<{
     setCartContent(cartItems);
   };
 
-  const handleItemCartRemoval = (inCartProduct: CartItemModel) => {
+  const handleItemDecrement = (inCartProduct: CartItemModel) => {
     const filteredItems: CartItemModel[] = cart.amountDecrease(inCartProduct);
     setCartContent(filteredItems);
   };
@@ -130,7 +130,7 @@ const ItemCard: React.FC<{
         {inCartProduct && (
           <AmountControls
             currentValue={inCartProduct.amount}
-            onDecrement={() => handleItemCartRemoval(inCartProduct)}
+            onDecrement={() => handleItemDecrement(inCartProduct)}
             onIncrement={handleItemCartAddition}
           />
         )}

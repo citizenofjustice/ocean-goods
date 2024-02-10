@@ -19,13 +19,30 @@ class cartStore {
     const initialValue = 0;
     const summedPrice: number = this.cartItems.reduce(
       (accumulator: number, currentValue: CartItemModel) =>
-        accumulator + currentValue.totalProductPrice,
+        accumulator +
+        (typeof currentValue.totalProductPrice === "number"
+          ? currentValue.totalProductPrice
+          : 0),
       initialValue
     );
     return summedPrice;
   }
 
   constructor() {
+    this.cartItems = cartItemsFromLStorage.map(
+      (item) =>
+        new CartItemModel(
+          item.productId,
+          item.productName,
+          item.productTypeId,
+          item.weight,
+          item.price,
+          item.discount,
+          item.kcal,
+          item.mainImage
+        )
+    );
+
     makeAutoObservable(this, {
       cartItems: observable,
       totalQuantity: computed,
@@ -50,31 +67,31 @@ class cartStore {
     if (inCartProduct) {
       inCartProduct.amount++;
     } else {
-      this.cartItems.push(
-        new CartItemModel(
-          product.productId,
-          product.productName,
-          product.productTypeId,
-          product.weight,
-          product.price,
-          product.discount,
-          product.kcal,
-          product.mainImage
-        )
+      const newItem = new CartItemModel(
+        product.productId,
+        product.productName,
+        product.productTypeId,
+        product.weight,
+        product.price,
+        product.discount,
+        product.kcal,
+        product.mainImage
       );
+      this.cartItems.push(newItem);
     }
   }
 
-  removeItem(cartItem: CartItemModel) {
+  removeItem(cartItemId: string) {
     const filteredItems = this.cartItems.filter(
-      (item) => item.cartItemId !== cartItem.cartItemId
+      (item) => item.cartItemId !== cartItemId
     );
     this.cartItems = filteredItems;
+    return this.cartItems;
   }
 
   amountDecrease(inCartProduct: CartItemModel) {
     if (inCartProduct.amount === 1) {
-      this.removeItem(inCartProduct);
+      this.removeItem(inCartProduct.cartItemId);
     } else {
       if (inCartProduct.amount > 0) inCartProduct.amount--;
     }
@@ -92,7 +109,7 @@ class cartStore {
       (el) => catalogItemsProductIds.indexOf(el.productId) === -1
     );
     removedFromCatalog.map((item) => {
-      this.removeItem(item);
+      this.removeItem(item.cartItemId);
     });
     localStorage.setItem("cart", JSON.stringify(this.cartItems));
   }

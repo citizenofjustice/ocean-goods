@@ -22,8 +22,10 @@ const AmountControls: React.FC<{
     >
       <AmountContolButton buttonText="-" buttonAction={onDecrement} />
       <span
-        className={`rounded bg-background-0 mx-1 px-2 font-medium ${
-          isVertical ? "h-10 flex items-center" : "w-10 text-center"
+        className={`rounded bg-background-0 font-medium ${
+          isVertical
+            ? "h-10 flex items-center justify-center my-1 w-full"
+            : "w-10 text-center mx-1 px-2"
         }`}
       >
         {currentValue}

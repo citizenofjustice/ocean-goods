@@ -32,7 +32,10 @@ const MenuList: React.FC<{
       {menuItems.map((item) => (
         <div key={item.id}>
           <li onClick={onMenuClose} className={isDesktop ? "mx-4" : "m-4"}>
-            <NavLink to={item.path} className="flex flex-row items-center">
+            <NavLink
+              to={item.path}
+              className="flex flex-row items-center text-primary-800"
+            >
               <p className="mr-2">{item.title}</p>
               {item.icon}
             </NavLink>
@@ -51,5 +54,5 @@ export default MenuList;
  */
 const CloseMenuIcon = () => {
   useLockBodyScroll(); // disable body scroll
-  return <XMarkIcon className="w-6 h-6" />;
+  return <XMarkIcon className="w-6 h-6 text-primary-800" />;
 };

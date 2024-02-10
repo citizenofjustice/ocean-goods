@@ -10,6 +10,11 @@
   height: 100vh;
 }
 
+.logo-filter {
+  filter: invert(38%) sepia(75%) saturate(442%) hue-rotate(138deg)
+    brightness(86%) contrast(84%);
+}
+
 .hearer-sticky {
   position: sticky;
   top: 0;
@@ -17,7 +22,7 @@
 
 .main-abs {
   position: absolute;
-  inset: 4.5rem 0px 0px;
+  inset: 4.5rem 0px 0px 0px;
   overflow: auto;
 }
 

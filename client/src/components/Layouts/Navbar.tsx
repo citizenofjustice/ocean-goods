@@ -17,6 +17,7 @@ import { useStore } from "../../store/root-store-context";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import UserDropdownMenu from "../UI/UserDropdownMenu";
 import SignInSVG from "../UI/SignInSVG";
+import Logo from "../../assets/images/Logo.svg";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
@@ -55,8 +56,8 @@ const Navbar = observer(() => {
     "w-full h-full fixed z-50 bg-white top-0 left-0 transition-all duration-300 ease-in-out";
 
   return (
-    <header className="hearer-sticky h-[4.5rem] z-50 bg-white border-b-2 flex items-center flex-row py-4">
-      <nav className="basis-1/12 flex justify-start">
+    <header className="hearer-sticky h-[4.5rem] z-50 bg-background-0 border-b-2 border-background-200 flex items-center flex-row py-4">
+      <nav className="basis-2/12 flex justify-start">
         {isMenuOpen && (
           <div className={menuClasses}>
             <MenuList
@@ -71,19 +72,19 @@ const Navbar = observer(() => {
             onClick={() => setIsMenuOpen(true)}
             className="flex items-center justify-end h-10 w-12 hover:cursor-pointer"
           >
-            <Bars3Icon className="w-6 h-6" />
+            <Bars3Icon className="w-6 h-6 text-primary-800" />
           </div>
         ) : (
           // if screen width bigger than tablets show app name
           <div className="flex items-center justify-end h-10 ml-[1.625rem] whitespace-nowrap">
-            <Link to="/">Ocean Goods</Link>
+            <WebAppLogo />
           </div>
         )}
       </nav>
-      <div className="basis-10/12 flex justify-center">
+      <div className="basis-8/12 flex justify-center">
         {!tablet ? (
           // if screen width smaller than tablets show app name
-          <Link to="/">Ocean Goods</Link>
+          <WebAppLogo />
         ) : (
           // if screen width smaller than tablets show desktop menu
           <>
@@ -91,7 +92,7 @@ const Navbar = observer(() => {
           </>
         )}
       </div>
-      <div className="basis-1/12 flex items-center justify-end">
+      <div className="basis-2/12 flex items-center justify-end">
         {isCartOpen && (
           <div className={`overflow-auto ${menuClasses}`}>
             <Cart onCartClose={() => setIsCartOpen(false)} />
@@ -102,7 +103,10 @@ const Navbar = observer(() => {
             <UserDropdownMenu />
           </div>
         ) : (
-          <NavLink to="/auth" className="mx-4 flex flex-row items-center">
+          <NavLink
+            to="/auth"
+            className="mx-4 flex flex-row items-center text-primary-800"
+          >
             <SignInSVG className="w-6 h-6" />
           </NavLink>
         )}
@@ -110,7 +114,7 @@ const Navbar = observer(() => {
           className="flex items-center justify-start hover:cursor-pointer h-10 w-12"
           onClick={() => setIsCartOpen(true)}
         >
-          <ShoppingCartIcon className="h-6 w-6" />
+          <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
           {/* small highlight with counter if cart is not empty */}
           {cart.totalQuantity > 0 && (
             <div className="relative top-[-10px] right-[10px] bg-red-500 rounded-full min-w-[16px] min-h-[16px] px-[3px] outline outline-white outline-2">
@@ -124,5 +128,19 @@ const Navbar = observer(() => {
     </header>
   );
 });
+
+const WebAppLogo = () => {
+  return (
+    <Link to="/">
+      <div className="logo-filter w-20 h-16">
+        <img
+          src={Logo}
+          className="w-fit h-fit"
+          alt="website logo Ocean Goods"
+        />
+      </div>
+    </Link>
+  );
+};
 
 export default Navbar;

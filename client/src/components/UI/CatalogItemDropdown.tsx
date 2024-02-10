@@ -14,12 +14,12 @@ const CatalogItemDropdown: React.FC<{
     <>
       <div className="relative">
         <button
-          className="flex text-sm hover:bg-gray-200 rounded-full p-1 h-fit"
+          className="flex text-sm hover:bg-background-300 rounded-full p-1 h-fit text-text-600 hover:text-text-50"
           type="button"
           onClick={() => setIsShown(true)}
         >
           <span className="sr-only">Открыть меню пользователя</span>
-          <EllipsisHorizontalIcon className="h-6 w-6" />
+          <EllipsisHorizontalIcon className="h-6 w-6 " />
         </button>
         {isShown && (
           <div
