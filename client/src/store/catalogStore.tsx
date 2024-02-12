@@ -14,7 +14,17 @@ class CatalogStore {
   }
 
   get catalogItemsProductIds(): Array<number> {
-    const ids = this.catalogItems.map((item) => item.productId);
+    if (!Array.isArray(this.catalogItems)) {
+      throw new Error("catalogItems is not an array");
+    }
+
+    const ids = this.catalogItems.map((item) => {
+      if (typeof item.productId !== "number") {
+        throw new Error("productId is not a number");
+      }
+      return item.productId;
+    });
+
     return ids;
   }
 
