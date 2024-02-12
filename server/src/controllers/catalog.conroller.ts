@@ -38,7 +38,7 @@ class CatalogController {
   async getCatalogItem(req: Request, res: Response) {
     const id = req.params.id;
     const catalogItem = await db.query(
-      `SELECT ${catalogCamelCase} FROM catalog WHERE id = $1`,
+      `SELECT catalog.id as "productId", catalog.product_name as "productName", catalog.product_type_id as "productTypeId", catalog.in_stoke as "inStock", catalog.description, catalog.price, catalog.discount, catalog.weight, catalog.kcal, catalog.main_image as "mainImage", catalog.created_at as "createdAt", catalog.updated_at as "updatedAt", product_types.type FROM catalog JOIN product_types ON catalog.product_type_id = product_types.id WHERE catalog.id = $1`,
       [id]
     );
     res.json(catalogItem.rows[0]);

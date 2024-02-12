@@ -9,7 +9,7 @@ const DefaultButton: React.FC<{
         <button
           type={type}
           onClick={onClick}
-          className="text-white bg-background-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-500 font-medium rounded-lg sm:w-auto px-5 py-3 text-center"
+          className="text-white bg-background-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-500 font-medium rounded-lg sm:w-auto px-5 py-2 text-center"
         >
           {children}
         </button>

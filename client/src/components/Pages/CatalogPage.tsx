@@ -43,7 +43,7 @@ const CatalogPage = observer(() => {
   if (isError) return <div>{error.message}</div>;
 
   return (
-    <div className="px-2 vsm:px-4">
+    <div className="px-2 vsm:p-4">
       {isLoading && <LoadingSpinner />}
       {!isLoading && !isError && (
         <Grid xCount="2">

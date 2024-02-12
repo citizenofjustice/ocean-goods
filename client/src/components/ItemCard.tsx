@@ -2,16 +2,14 @@ import { observer } from "mobx-react-lite";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 import ItemInfoCard from "./UI/ItemInfoCard";
-import AmountControls from "./AmontControls";
 import CatalogItemModel from "../classes/CatalogItemModel";
 import { useStore } from "../store/root-store-context";
-import { useLocalStorage } from "@uidotdev/usehooks";
-import CartItemModel from "../classes/CartItemModel";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CatalogItemDropdown from "./UI/CatalogItemDropdown";
 import TextCrossed from "./UI/TextCrossed";
+import AddToCart from "./AddToCart";
 
 /**
  * Renders catalog item card
@@ -23,9 +21,7 @@ const ItemCard: React.FC<{
 }> = observer(({ catalogItem }) => {
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
-  const { cart, auth } = useStore();
-  const { cartItems } = cart;
-  const [, setCartContent] = useLocalStorage("cart", cartItems);
+  const { auth } = useStore();
 
   const mutation = useMutation({
     mutationFn: async (productId: number) => {
@@ -44,24 +40,15 @@ const ItemCard: React.FC<{
     },
   });
 
-  // check if item is in cart (if there display amount controls)
-  const inCartProduct = cart.findCartItem(catalogItem.productId);
-
-  const handleItemCartAddition = () => {
-    cart.addItem(catalogItem);
-    setCartContent(cartItems);
-  };
-
-  const handleItemDecrement = (inCartProduct: CartItemModel) => {
-    const filteredItems: CartItemModel[] = cart.amountDecrease(inCartProduct);
-    setCartContent(filteredItems);
-  };
-
   return (
     <>
       <div className="w-full my-2 px-2 flex">
         <div className={`${auth.isAuth ? "w-10/12" : "w-full"}`}>
-          <p className="text-center font-medium">{catalogItem.productName}</p>
+          <p className="text-center font-medium">
+            <Link to={`item/${catalogItem.productId}`}>
+              {catalogItem.productName}
+            </Link>
+          </p>
         </div>
         {auth.isAuth && (
           <div className="w-2/12 text-slate-400">
@@ -113,27 +100,11 @@ const ItemCard: React.FC<{
         </div>
         <div className="basis-1/12" />
       </div>
-      <div className="py-2">
-        {!inCartProduct && (
-          <button
-            type="button"
-            onClick={handleItemCartAddition}
-            className={`${
-              catalogItem.inStock
-                ? "from-green-400 to-blue-600 hover:bg-gradient-to-bl"
-                : "from-green-300 to-blue-400 cursor-default"
-            } transition ease-in-out transition-all text-white bg-gradient-to-br h-8 px-2 font-medium rounded-lg text-sm text-center`}
-          >
-            {catalogItem.inStock ? "В корзину" : "Нет в наличии"}
-          </button>
-        )}
-        {inCartProduct && (
-          <AmountControls
-            currentValue={inCartProduct.amount}
-            onDecrement={() => handleItemDecrement(inCartProduct)}
-            onIncrement={handleItemCartAddition}
-          />
-        )}
+      <div className="py-2 h-14 flex items-center">
+        <AddToCart
+          productId={catalogItem.productId}
+          catalogItem={catalogItem}
+        />
       </div>
     </>
   );
