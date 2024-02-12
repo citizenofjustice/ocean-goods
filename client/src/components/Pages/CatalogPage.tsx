@@ -1,9 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../store/root-store-context";
 
-import Grid from "../UI/Grid";
 import ItemCard from "../ItemCard";
-import GridElement from "../UI/GridElement";
 import { useQuery } from "@tanstack/react-query";
 import { getCatalog } from "../../api";
 import CatalogItemModel from "../../classes/CatalogItemModel";
