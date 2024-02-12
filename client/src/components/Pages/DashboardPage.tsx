@@ -1,20 +1,38 @@
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 const DashboardPage = () => {
   return (
     <>
-      <div className="flex flex-col items-center">
-        <h1 className="mb-4">Панель управления</h1>
-        <nav className="flex flex-row gap-4 mb-4">
-          <Link className="border border-2 rounded-lg p-2" to="product-types">
+      <div className="flex flex-col items-center mx-2 vsm:mx-4">
+        <p className="mb-4 font-medium text-lg">Панель управления</p>
+        <nav
+          id="dashboard-nav"
+          className="grid grid-cols-none vsm:grid-cols-2 sm:grid-flow-col sm:auto-cols-max gap-4 mb-4"
+        >
+          <NavLink
+            className="border border-2 border-background-500 rounded-lg p-2 text-center"
+            to="product-types"
+          >
             Типы продуктов
-          </Link>
-          <Link className="border border-2 rounded-lg p-2" to="roles">
+          </NavLink>
+          <NavLink
+            className="border border-2 border-background-500 rounded-lg p-2 text-center"
+            to="roles"
+          >
             Роли
-          </Link>
-          <Link className="border border-2 rounded-lg p-2" to="priveleges">
+          </NavLink>
+          <NavLink
+            className="border border-2 border-background-500 rounded-lg p-2 text-center"
+            to="priveleges"
+          >
             Привелегии
-          </Link>
+          </NavLink>
+          <NavLink
+            className="border border-2 border-background-500 rounded-lg p-2 text-center"
+            to="register-user"
+          >
+            Создание пользователя
+          </NavLink>
         </nav>
         <Outlet />
       </div>

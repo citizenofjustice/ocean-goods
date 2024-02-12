@@ -48,7 +48,7 @@ const CustomCheckbox: React.FC<{
             key={item.privelegeId}
           >
             <input
-              className="flex-none w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded"
+              className="flex-none w-4 h-4 accent-primary-600 border-gray-400 rounded"
               type="checkbox"
               id={`${nameForIds}-checkbox-${index}`}
               name={item.title}

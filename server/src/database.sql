@@ -1,21 +1,29 @@
 create Table users(
     id SERIAL PRIMARY KEY,
-    login VARCHAR(255),
-    password_hash VARCHAR(255),
-    role_id INTEGER,
-    FOREIGN KEY (role_id) REFERENCES roles (id)
+    login VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES roles (id),
+    refresh_token VARCHAR(255),
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now()
 );
 
 create Table roles(
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
     privelege_id INTEGER,
-    FOREIGN KEY (privelege_id) REFERENCES priveleges (id)
+    FOREIGN KEY (privelege_id) REFERENCES priveleges (id),
+    privelege_ids integer[] DEFAULT ARRAY[]::integer[],
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now()
 );
 
 create Table priveleges(
     id SERIAL PRIMARY KEY,
-    title VARCHAR
+    title VARCHAR,
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now()
 );
 
 create Table catalog(
@@ -30,12 +38,27 @@ create Table catalog(
     weight INTEGER,
     kcal INTEGER,
     main_image VARCHAR(255),
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now()
 );
 
 create Table product_types(
     id SERIAL PRIMARY KEY,
     type VARCHAR(255),
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now()
 );
+
+create Table orders(
+    id SERIAL PRIMARY KEY,
+    order_details JSONB NOT NULL,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_phone VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255),
+    contact_method VARCHAR(255),
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now()
+)
 
 -- INSERT INTO priveleges (title) VALUES ('назначение ролей');
 
@@ -54,5 +77,12 @@ create Table product_types(
 -- ALTER TABLE IF EXISTS public.priveleges ADD COLUMN created_at timestamp with time zone NOT NULL DEFAULT now();
 -- ALTER TABLE IF EXISTS public.priveleges ADD COLUMN updated_at timestamp with time zone NOT NULL DEFAULT now();
 
+
+
 -- ALTER TABLE IF EXISTS public.roles DROP COLUMN IF EXISTS privelege_id;
 -- ALTER TABLE IF EXISTS public.roles ADD COLUMN privelege_ids integer[] DEFAULT ARRAY[]::integer[];
+
+-- ALTER TABLE users ADD CONSTRAINT unique_login UNIQUE (login);
+-- ALTER TABLE IF EXISTS public.users ALTER COLUMN role_id SET NOT NULL;
+-- ALTER TABLE IF EXISTS public.users ALTER COLUMN password_hash SET NOT NULL;
+-- ALTER TABLE IF EXISTS public.users ALTER COLUMN login SET NOT NULL;

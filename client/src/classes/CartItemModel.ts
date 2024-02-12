@@ -39,7 +39,7 @@ class CartItemModel implements CartItem {
     this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;
-    this.price = price;
+    this.price = price - Math.round(price * (discount / 100));
     this.discount = discount;
     this.weight = weight;
     this.kcal = kcal;

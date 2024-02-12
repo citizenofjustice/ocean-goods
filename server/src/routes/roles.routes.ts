@@ -3,10 +3,11 @@ import RolesController from "../controllers/roles.controller";
 
 const router = Router();
 
-router.post("/create", RolesController.createRole);
-router.get("", RolesController.getRoles);
+router.get("/select-values", RolesController.getRolesSelectValues);
 router.get("/:id", RolesController.getOneRole);
 router.put("/:id", RolesController.updateRole);
 router.delete("/:id", RolesController.deleteRole);
+router.get("", RolesController.getRoles);
+router.post("/create", RolesController.createRole);
 
 export default router;

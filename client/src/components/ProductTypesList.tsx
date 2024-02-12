@@ -1,20 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProductTypes } from "../api";
 import { ProductType } from "../types/ProductType";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import ProductTypeItem from "./ProductTypeItem";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import ProductTypeAdd from "./ProductTypeAdd";
+import FormCard from "./UI/FormCard";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const ProductTypesList = () => {
   const [isFormShown, setIsFormShown] = useState(false);
+  const axiosPrivate = useAxiosPrivate();
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["product-type"],
     queryFn: async () => {
-      const data = await getProductTypes();
-      return data;
+      const response = await axiosPrivate.get(`/product-types`);
+      return response.data;
     },
     refetchOnWindowFocus: false,
   });
@@ -23,17 +25,17 @@ const ProductTypesList = () => {
 
   return (
     <>
-      <div className="text-center vvsm:w-4/5 min-w-56 max-w-md bg-gray-200 rounded-lg p-4">
+      <FormCard>
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
-            <div className="w-full flex justify-center relative">
-              <p className="font-bold">Список типов продуктов:</p>
+            <div className="w-full flex justify-center items-center relative">
+              <p className="font-medium w-3/5">Список типов продуктов:</p>
               {!isFormShown && (
                 <div className="absolute right-0">
                   <PlusCircleIcon
                     onClick={() => setIsFormShown(true)}
-                    className="w-6 h-6 hover:cursor-pointer "
+                    className="w-8 h-8 text-primary-800 hover:cursor-pointer "
                   />
                 </div>
               )}
@@ -59,7 +61,7 @@ const ProductTypesList = () => {
             </ul>
           </>
         )}
-      </div>
+      </FormCard>
     </>
   );
 };

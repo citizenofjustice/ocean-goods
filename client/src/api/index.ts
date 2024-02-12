@@ -1,27 +1,7 @@
-import axios from "axios";
-import { CatalogItem } from "../types/CatalogItem";
-import { ProductType } from "../types/ProductType";
-
-const baseUrl: string = "http://localhost:8080/api";
-
-export const createCatalogItem = (newItem: FormData) => {
-  return axios
-    .post(`${baseUrl}/catalog/create`, newItem, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-    .then(function (response) {
-      console.log(response);
-      if (response.status === 200) return response.data;
-    })
-    .then((res: CatalogItem) => res)
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
+import axios from "./axios";
 
 export const getCatalog = () => {
-  return axios(`${baseUrl}/catalog`)
+  return axios("/catalog")
     .then(function (response) {
       if (response.status === 200) return response.data;
     })
@@ -32,36 +12,10 @@ export const getCatalog = () => {
 };
 
 export const getCatalogItem = (id: number) => {
-  axios(`${baseUrl}/catalog?=${id}`)
+  axios(`/catalog?=${id}`)
     .then(function (response) {
       console.log(response);
       return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const updateCatalogItem = (id: number, updatedItem: FormData) => {
-  return axios
-    .put(`${baseUrl}/catalog/${id}`, updatedItem, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const removeCatalogItem = (id: number) => {
-  return axios
-    .delete(`${baseUrl}/catalog/${id}`)
-    .then(function (response) {
-      console.log(response);
     })
     .catch(function (error) {
       console.log(error);
@@ -70,8 +24,8 @@ export const removeCatalogItem = (id: number) => {
 };
 
 export const getUserData = (id: number) => {
-  axios
-    .get(`${baseUrl}/users?=${id}`)
+  return axios
+    .get(`/users?=${id}`, { withCredentials: true })
     .then(function (response) {
       console.log(response);
     })
@@ -81,120 +35,22 @@ export const getUserData = (id: number) => {
     });
 };
 
-export const createProductType = (type: FormData) => {
+export const authUser = (authData: FormData) => {
   return axios
-    .post(`${baseUrl}/product-types/create`, type, {
+    .post(`/login`, authData, {
       headers: { "Content-Type": "application/json" },
+      withCredentials: true,
     })
     .then(function (response) {
-      console.log(response);
-      if (response.status === 200) return response.data;
+      return response;
     })
     .catch(function (error) {
-      console.log(error);
       return error;
     });
 };
 
-export const getProductTypes = () => {
-  return axios(`${baseUrl}/product-types`)
-    .then(function (response) {
-      console.log(response);
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const removeProductType = (productTypeId: number) => {
-  return axios
-    .delete(`${baseUrl}/product-types/${productTypeId}`)
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const updateProductType = (updatedProductType: ProductType) => {
-  return axios
-    .put(
-      `${baseUrl}/product-types/${updatedProductType.productTypeId}`,
-      updatedProductType,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    )
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const createRole = (newRole: FormData) => {
-  return axios
-    .post(`${baseUrl}/roles/create`, newRole, {
-      headers: { "Content-Type": "application/json" },
-    })
-    .then(function (response) {
-      console.log(response);
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const getRoles = () => {
-  return axios(`${baseUrl}/roles`)
-    .then(function (response) {
-      console.log(response);
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const updateRole = (updatedRole: FormData) => {
-  const id = updatedRole.get("roleId");
-  return axios
-    .put(`${baseUrl}/roles/${id}`, updatedRole, {
-      headers: { "Content-Type": "application/json" },
-    })
-    .then(function (response) {
-      console.log(response);
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const removeRole = (roleId: number) => {
-  return axios
-    .delete(`${baseUrl}/roles/${roleId}`)
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const getPriveleges = () => {
-  return axios(`${baseUrl}/priveleges`)
+export const getProductTypesSelectValues = () => {
+  return axios(`/product-types/select-values`)
     .then(function (response) {
       console.log(response);
       return response.data;

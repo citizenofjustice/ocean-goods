@@ -1,12 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { Privelege } from "../types/Privelege";
-import { getPriveleges } from "../api";
 import LoadingSpinner from "./UI/LoadingSpinner";
+import FormCard from "./UI/FormCard";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Priveleges = () => {
+  const axiosPrivate = useAxiosPrivate();
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["priveleges"],
-    queryFn: async () => await getPriveleges(),
+    queryFn: async () => {
+      const response = await axiosPrivate.get(`/priveleges`);
+      return response.data;
+    },
     refetchOnWindowFocus: false,
   });
 
@@ -14,16 +19,16 @@ const Priveleges = () => {
 
   return (
     <>
-      <div className="text-center vvsm:w-4/5 min-w-56 max-w-md bg-gray-200 rounded-lg p-4">
+      <FormCard>
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (
           <>
-            <h1>Перечень полномочий:</h1>
+            <p className="font-medium">Перечень полномочий:</p>
             <ul>
               {data.length !== 0 ? (
                 data.map((item: Privelege) => (
                   <li
-                    className="flex bg-amber-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2"
+                    className="flex bg-background-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2"
                     key={item.privelegeId}
                   >
                     <p className="text-start justify-items-start basis-10/12 px-2 first-letter:capitalize">
@@ -37,7 +42,7 @@ const Priveleges = () => {
             </ul>
           </>
         )}
-      </div>
+      </FormCard>
     </>
   );
 };

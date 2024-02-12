@@ -5,7 +5,7 @@ const Layout = () => {
   return (
     <>
       <Navbar />
-      <main className="my-4">
+      <main className="content-scroll main-abs">
         <Outlet />
       </main>
     </>

@@ -5,6 +5,7 @@ import AmountControls from "./AmontControls";
 import CartItemModel from "../classes/CartItemModel";
 import { useStore } from "../store/root-store-context";
 import { useLocalStorage } from "@uidotdev/usehooks";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 /**
  * Component for rendering each cart element
@@ -18,32 +19,47 @@ const CartElement: React.FC<{
   const { cartItems } = cart;
   const [, setCartContent] = useLocalStorage("cart", cartItems);
 
+  const handleCartItemRemoval = () => {
+    const cartItemsKept = cart.removeItem(cartItem.cartItemId);
+    setCartContent(cartItemsKept);
+  };
+
   return (
     <>
-      <li className="flex flex-row place-content-between items-align h-fit mx-4 py-4">
-        <div className="basis-2/6 rounded overflow-hidden mr-4 min-w-[80px]">
-          {cartItem.mainImage && <img src={cartItem.mainImage} />}
+      <li className="flex flex-row">
+        <div className="flex flex-row place-content-between bg-background-200 h-fit rounded-xl mx-4 p-4">
+          <div className="basis-2/6 rounded overflow-hidden mr-4 min-w-[80px]">
+            {cartItem.mainImage && (
+              <img className="rounded" src={cartItem.mainImage} />
+            )}
+          </div>
+          <div className="grow flex flex-col justify-start items-start mr-4">
+            <div>{cartItem.productName}</div>
+            <div>{`${cartItem.kcal} ккал., ${cartItem.weight} гр.`}</div>
+          </div>
+          <div className="basis-1/8 text-right mr-4">
+            {cartItem.totalProductPrice}
+          </div>
+          <div className="basis-1/8 flex items-center">
+            <AmountControls
+              currentValue={cartItem.amount}
+              isVertical={true}
+              onDecrement={action(() => {
+                const filteredItems: CartItemModel[] =
+                  cart.amountDecrease(cartItem);
+                setCartContent(filteredItems);
+              })}
+              onIncrement={action(() => {
+                cartItem.amount++;
+                setCartContent(cartItems);
+              })}
+            />
+          </div>
         </div>
-        <div className="grow flex flex-col justify-start items-start mr-4">
-          <div>{cartItem.productName}</div>
-          <div>{`${cartItem.kcal} ккал., ${cartItem.weight} гр.`}</div>
-        </div>
-        <div className="basis-1/8 text-right mr-4">
-          {cartItem.totalProductPrice}
-        </div>
-        <div className="basis-1/8">
-          <AmountControls
-            currentValue={cartItem.amount}
-            additonalStyle="flex-col-reverse justify-end"
-            onDecrement={action(() => {
-              const filteredItems: CartItemModel[] =
-                cart.amountDecrease(cartItem);
-              setCartContent(filteredItems);
-            })}
-            onIncrement={action(() => {
-              cartItem.amount++;
-              setCartContent(cartItems);
-            })}
+        <div className="flex items-center">
+          <TrashIcon
+            onClick={handleCartItemRemoval}
+            className="w-6 h-6 text-primary-800 hover:cursor-pointer"
           />
         </div>
       </li>

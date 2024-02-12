@@ -3,6 +3,7 @@ import { useLockBodyScroll } from "@uidotdev/usehooks";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { MenuItem } from "../types/MenuItem";
+import { observer } from "mobx-react-lite";
 
 /**
  * Component for rendering menu list
@@ -15,7 +16,7 @@ const MenuList: React.FC<{
   menuItems: MenuItem[];
   onMenuClose?: () => void;
   isDesktop?: boolean;
-}> = ({ menuItems, onMenuClose, isDesktop = false }) => {
+}> = observer(({ menuItems, onMenuClose, isDesktop = false }) => {
   return (
     <ul id="nav-menu" className={`flex ${isDesktop ? "flex-row" : "flex-col"}`}>
       {/* show only if screen is smaller than desktop */}
@@ -29,20 +30,21 @@ const MenuList: React.FC<{
         </li>
       )}
       {menuItems.map((item) => (
-        <li
-          key={item.id}
-          onClick={onMenuClose}
-          className={isDesktop ? "mx-4" : "m-4"}
-        >
-          <NavLink to={item.path} className="flex flex-row items-center">
-            <p className="mr-2">{item.title}</p>
-            {item.icon}
-          </NavLink>
-        </li>
+        <div key={item.id}>
+          <li onClick={onMenuClose} className={isDesktop ? "mx-4" : "m-4"}>
+            <NavLink
+              to={item.path}
+              className="flex flex-row items-center text-primary-800"
+            >
+              <p className="mr-2">{item.title}</p>
+              {item.icon}
+            </NavLink>
+          </li>
+        </div>
       ))}
     </ul>
   );
-};
+});
 
 export default MenuList;
 
@@ -52,5 +54,5 @@ export default MenuList;
  */
 const CloseMenuIcon = () => {
   useLockBodyScroll(); // disable body scroll
-  return <XMarkIcon className="w-6 h-6" />;
+  return <XMarkIcon className="w-6 h-6 text-primary-800" />;
 };
