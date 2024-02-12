@@ -12,6 +12,15 @@ namespace NodeJS {
     REFRESH_TOKEN_SECRET: string;
     TELEGRAM_BOT_API_KEY: string;
     TELEGRAM_CHAT_ID: string;
+    IS_DB_LOCAL: string;
+    POSTGRES_URL_NON_POOLING: string;
+    POSTGRES_URL_NO_SSL: string;
+    POSTGRES_PRISMA_URL: string;
+    POSTGRES_USER: string;
+    POSTGRES_PASSWORD: string;
+    POSTGRES_HOST: string;
+    POSTGRES_DATABASE: string;
+    POSTGRES_URL: string;
   }
 }
 

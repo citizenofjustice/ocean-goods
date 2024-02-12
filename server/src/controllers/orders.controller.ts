@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import db from "../db";
+import db, { dbQuery } from "../db";
 import { ordersBot } from "../index";
 import { Order } from "../types/Order";
 import { handleOrderMessage } from "../bot/commands/orderMessage";
@@ -12,8 +12,8 @@ const orderCamelCase: string =
 export async function getOrderById(orderId: number) {
   try {
     // Query the database for the order (join with product types)
-    const orderData = await db.query(
-      `SELECT 
+    const orderData = await dbQuery({
+      text: `SELECT 
         orders.id as "orderId", orders.customer_name as "customerName", orders.customer_phone as "customerPhone",
         orders.customer_email as "customerEmail", orders.contact_method as "contactMethod", orders.created_at as "createdAt",
         json_build_object(
@@ -35,8 +35,8 @@ export async function getOrderById(orderId: number) {
       WHERE orders.id = $1
       GROUP BY 
         orders.id`,
-      [orderId]
-    );
+      values: [orderId],
+    });
     // Extract the order from the query result
     const foundOrder = orderData.rows[0];
     // Return the order
@@ -69,13 +69,16 @@ class OrderController {
         VALUES ($1, $2, $3, $4, $5) RETURNING ${orderCamelCase}
       `;
       // Execute the query and get the result
-      const createOrderQuery = await db.query(sqlQuery, [
-        orderDetails,
-        customerName,
-        customerPhone,
-        customerEmail,
-        contactMethod,
-      ]);
+      const createOrderQuery = await dbQuery({
+        text: sqlQuery,
+        values: [
+          orderDetails,
+          customerName,
+          customerPhone,
+          customerEmail,
+          contactMethod,
+        ],
+      });
 
       // Extract the new order from the result
       const newOrder: Order = createOrderQuery.rows[0];
@@ -137,7 +140,7 @@ class OrderController {
 
       // Construct the final query
       const query = `SELECT COUNT(*) OVER() as total, ${orderCamelCase} FROM orders ${where} ${orderByQuery} LIMIT ${limit} OFFSET ${offset}`;
-      const ordersQuery = await db.query(query);
+      const ordersQuery = await dbQuery({ text: query });
 
       // Extract the totalRows and orders from the result set
       const totalRows = ordersQuery.rows[0]

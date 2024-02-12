@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import db from "../db";
+import db, { dbQuery } from "../db";
 import bcrypt from "bcrypt";
 import { DatabaseError } from "pg-protocol";
 
@@ -17,10 +17,10 @@ class UserController {
       // encrypt the password
       const passwordHash = await bcrypt.hash(password, 13);
       // create new user
-      const newPerson = await db.query(
-        `INSERT INTO users (login, password_hash, role_id) values ($1, $2, $3) RETURNING *`,
-        [email, passwordHash, roleId]
-      );
+      const newPerson = await dbQuery({
+        text: `INSERT INTO users (login, password_hash, role_id) values ($1, $2, $3) RETURNING *`,
+        values: [email, passwordHash, roleId],
+      });
 
       res.status(201).json(newPerson.rows[0]);
     } catch (error) {
@@ -35,28 +35,34 @@ class UserController {
   }
 
   async getUsers(req: Request, res: Response) {
-    const users = await db.query(`SELECT ${userCamelCase} FROM users`);
+    const users = await dbQuery({ text: `SELECT ${userCamelCase} FROM users` });
     res.json(users.rows);
   }
 
   async getOneUser(req: Request, res: Response) {
     const id = req.params.id;
-    const user = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
+    const user = await dbQuery({
+      text: `SELECT * FROM users WHERE id = $1`,
+      values: [id],
+    });
     res.json(user.rows[0]);
   }
 
   async updateUser(req: Request, res: Response) {
     const { id, login, password } = req.body;
-    const user = await db.query(
-      `UPDATE users SET login = $1, password_hash = $2 WHERE id = $3 RETURNING *`,
-      [login, password, id]
-    );
+    const user = await dbQuery({
+      text: `UPDATE users SET login = $1, password_hash = $2 WHERE id = $3 RETURNING *`,
+      values: [login, password, id],
+    });
     res.json(user.rows[0]);
   }
 
   async deleteUser(req: Request, res: Response) {
     const id = req.params.id;
-    const user = await db.query(`DELETE FROM users WHERE id = $1`, [id]);
+    const user = await dbQuery({
+      text: `DELETE FROM users WHERE id = $1`,
+      values: [id],
+    });
     res.json(user.rows[0]);
   }
 }

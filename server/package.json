@@ -27,6 +27,7 @@
     "@types/express-session": "^1.17.10",
     "@types/http-errors": "^2.0.4",
     "@types/jsonwebtoken": "^9.0.5",
+    "@vercel/postgres": "^0.7.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "concurrently": "^8.2.2",

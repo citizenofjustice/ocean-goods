@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-import db from "../db";
+import db, { dbQuery } from "../db";
 
 class AuthController {
   async authUser(req: Request, res: Response, next: NextFunction) {
@@ -12,10 +12,10 @@ class AuthController {
         res
           .status(400)
           .json({ message: "Одно из полей формы авторизации осталось пустым" });
-      const selectQuery = await db.query(
-        `SELECT * FROM users WHERE login = $1`,
-        [email]
-      );
+      const selectQuery = await dbQuery({
+        text: `SELECT * FROM users WHERE login = $1`,
+        values: [email],
+      });
       const foundUser = selectQuery.rows[0];
       if (!foundUser) throw new Error("Введена неверная эл. почта");
       const passwordHash = foundUser.password_hash;
@@ -48,10 +48,10 @@ class AuthController {
         }
       );
       delete foundUser.password_hash;
-      const updateQuery = await db.query(
-        `UPDATE users SET refresh_token = $1 WHERE id = $2 RETURNING login, role_id as "roleId"`,
-        [refreshToken, foundUser.id]
-      );
+      const updateQuery = await dbQuery({
+        text: `UPDATE users SET refresh_token = $1 WHERE id = $2 RETURNING login, role_id as "roleId"`,
+        values: [refreshToken, foundUser.id],
+      });
       const userWithToken = updateQuery.rows[0];
       res.cookie("token", refreshToken, {
         httpOnly: true,
@@ -76,10 +76,10 @@ class AuthController {
       if (!cookies?.token) return res.sendStatus(401);
       const refreshToken = cookies.token;
 
-      const selectQuery = await db.query(
-        `SELECT * FROM users WHERE refresh_token = $1`,
-        [refreshToken]
-      );
+      const selectQuery = await dbQuery({
+        text: `SELECT * FROM users WHERE refresh_token = $1`,
+        values: [refreshToken],
+      });
       const foundUser = selectQuery.rows[0];
       if (!foundUser) return res.sendStatus(403);
 
@@ -130,10 +130,10 @@ class AuthController {
       }
 
       // Check if refreshToken is in db
-      const selectQuery = await db.query(
-        `SELECT * FROM users WHERE refresh_token = $1`,
-        [refreshToken]
-      );
+      const selectQuery = await dbQuery({
+        text: `SELECT * FROM users WHERE refresh_token = $1`,
+        values: [refreshToken],
+      });
       const foundUser = selectQuery.rows[0];
 
       // If no user found, clear the cookie and return
@@ -147,10 +147,10 @@ class AuthController {
       }
 
       // Delete refresh_token in db
-      await db.query(
-        `UPDATE users SET refresh_token = '' WHERE refresh_token = $1`,
-        [refreshToken]
-      );
+      await dbQuery({
+        text: `UPDATE users SET refresh_token = '' WHERE refresh_token = $1`,
+        values: [refreshToken],
+      });
 
       // Clear the cookie and return
       res.clearCookie("token", {
