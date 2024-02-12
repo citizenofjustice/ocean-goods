@@ -28,7 +28,7 @@ const ItemPage = observer(() => {
       {isLoading && <LoadingSpinner />}
       {!isLoading && !isError && (
         <>
-          <div className="fixed top-[4.5rem] bottom-[4rem] sm:bottom-0 overflow-y-auto content-scroll grid gap-4 sm:gap-0 grid-cols-none sm:grid-cols-12 items-center justify-center mt-0 sm:mt-4">
+          <div className="fixed top-[4.5rem] bottom-[4rem] sm:bottom-0 overflow-y-auto content-scroll grid gap-4 sm:gap-0 grid-cols-none sm:grid-cols-12 items-center justify-center w-full mt-0 sm:mt-4 pb-4">
             <div className="col-span-1 sm:col-start-1 sm:col-span-6 lg:col-start-2 lg:col-span-4 px-4 place-self-center">
               <img
                 className="w-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
@@ -36,7 +36,7 @@ const ItemPage = observer(() => {
                 alt={data.productName}
               />
             </div>
-            <div className="sm:col-span-6 grid grid-flow-row auto-rows-auto h-full gap-4 px-4">
+            <div className="sm:col-span-6 flex flex-col gap-6 px-4">
               <div className="w-full flex items-center">
                 <p className="text-2xl sm:text-3xl font-serif font-bold first-letter:capitalize first-letter:text-primary-600">
                   {data.productName}
@@ -81,7 +81,7 @@ const ItemPage = observer(() => {
             </div>
           </div>
           {!matches && (
-            <div className="fixed bottom-0 h-[4rem] w-full bg-background-100 flex justify-center items-center">
+            <div className="fixed bottom-0 h-[4rem] w-full bg-background-100 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex justify-center items-center">
               <AddToCart productId={Number(id)} catalogItem={data} />
             </div>
           )}

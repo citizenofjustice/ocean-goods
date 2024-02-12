@@ -18,7 +18,7 @@ const TextareaField: React.FC<{
       <textarea
         name={name}
         value={value}
-        className={`${inputStyles} text-text-700 py-3 px-4 rounded leading-tight border border-gray-500 block w-full h-44 max-h-44 resize-none`}
+        className={`${inputStyles} content-scroll cursor-auto text-text-700 py-3 px-4 rounded leading-tight border border-gray-500 block w-full h-44 max-h-44 resize-none`}
         id={inputId}
         rows={8}
         placeholder="Описание продукта"

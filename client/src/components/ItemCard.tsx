@@ -44,7 +44,7 @@ const ItemCard: React.FC<{
     <>
       <div className="w-full my-2 px-2 flex">
         <div className={`${auth.isAuth ? "w-10/12" : "w-full"}`}>
-          <p className="text-center font-medium">
+          <p className="text-center font-medium px-3">
             <Link to={`item/${catalogItem.productId}`}>
               {catalogItem.productName}
             </Link>
@@ -58,14 +58,14 @@ const ItemCard: React.FC<{
                 className="py-2 p-2 flex items-center justify-between"
               >
                 <p>Изменить</p>
-                <PencilSquareIcon className="w-6 h-6" />
+                <PencilSquareIcon className="w-6 h-6 text-primary-800" />
               </Link>
               <div
                 className="py-2 p-2 flex items-center justify-between hover:cursor-pointer"
                 onClick={() => mutation.mutate(catalogItem.productId)}
               >
                 <p>Удалить</p>
-                <TrashIcon className="w-6 h-6" />
+                <TrashIcon className="w-6 h-6 text-primary-800" />
               </div>
             </CatalogItemDropdown>
           </div>

@@ -24,9 +24,9 @@ const CatalogItemDropdown: React.FC<{
         {isShown && (
           <div
             ref={dropdownRef}
-            className="absolute top-0 left-[-5rem] w-28 z-10 bg-white border border-gray-200 rounded shadow-lg"
+            className="absolute drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] top-0 left-[-5rem] w-28 z-10 bg-white border border-gray-200 rounded shadow-lg"
           >
-            <div className="divide-y divide-solid divide-gray-200 text-sm text-gray-600">
+            <div className="divide-y divide-solid divide-gray-200 text-sm font-medium text-gray-800">
               {children}
             </div>
           </div>

@@ -162,7 +162,7 @@ const OrdersList = () => {
       <div
         className={`sticky top-0 ${
           isFiltersShown ? "lg:h-[155px]" : "lg:h-[65px]"
-        } z-40 flex flex-col bg-background-0 items-center justify-center p-4 w-full text-text-800`}
+        } z-40 flex flex-col bg-background-0 items-center justify-center pt-4 mb-4 w-full text-text-800`}
       >
         {isFiltersShown ? (
           <>

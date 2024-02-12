@@ -43,17 +43,20 @@ const CatalogPage = observer(() => {
   if (isError) return <div>{error.message}</div>;
 
   return (
-    <div className="px-2 vsm:p-4">
+    <div className="p-4">
       {isLoading && <LoadingSpinner />}
       {!isLoading && !isError && (
-        <Grid xCount="2">
+        <div className="grid gap-4 vsm:grid-cols-2 sm:grid-cols-3 sm:max-w-screen-lg m-auto">
           {catalogItems.length > 0 &&
             catalogItems.map((item: CatalogItemModel) => (
-              <GridElement key={item.productId}>
+              <div
+                key={item.productId}
+                className="flex flex-col items-center justify-between bg-background-100 border-background-200 border-2 rounded-lg"
+              >
                 <ItemCard catalogItem={item} />
-              </GridElement>
+              </div>
             ))}
-        </Grid>
+        </div>
       )}
     </div>
   );
