@@ -13,6 +13,7 @@ namespace NodeJS {
     TELEGRAM_BOT_API_KEY: string;
     TELEGRAM_CHAT_ID: string;
     IS_DB_LOCAL: string;
+    IS_HOSTED_LOCALLY: string;
     POSTGRES_URL_NON_POOLING: string;
     POSTGRES_URL_NO_SSL: string;
     POSTGRES_PRISMA_URL: string;

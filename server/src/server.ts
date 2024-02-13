@@ -11,10 +11,10 @@ export default class Server {
 
   private config(app: Application): void {
     const corsOptions: CorsOptions = {
-      origin: [
-        "http://localhost:5173",
-        "https://ocean-goods-client.vercel.app",
-      ],
+      origin:
+        process.env.IS_HOSTED_LOCALLY === "true"
+          ? "http://localhost:5173"
+          : "https://ocean-goods-client.vercel.app",
       credentials: true,
     };
 
