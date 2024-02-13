@@ -55,8 +55,8 @@ const CustomerDataForm: React.FC<{
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="my-4">
+    <div className="flex flex-col items-center p-4">
+      <div className="my-4 text-center">
         Чтобы завершить оформление введите контактные данные:
       </div>
       <FormCard>

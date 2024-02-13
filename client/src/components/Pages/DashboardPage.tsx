@@ -3,7 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 const DashboardPage = () => {
   return (
     <>
-      <div className="flex flex-col items-center mx-2 vsm:mx-4">
+      <div className="flex flex-col items-center pb-4 m-4">
         <p className="mb-4 font-medium text-lg">Панель управления</p>
         <nav
           id="dashboard-nav"

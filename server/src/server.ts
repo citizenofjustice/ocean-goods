@@ -10,6 +10,8 @@ export default class Server {
   }
 
   private config(app: Application): void {
+    dotenv.config();
+
     const corsOptions: CorsOptions = {
       origin:
         process.env.IS_HOSTED_LOCALLY === "true"
@@ -18,7 +20,6 @@ export default class Server {
       credentials: true,
     };
 
-    dotenv.config();
     app.use(cors(corsOptions));
     app.use(express.json());
     app.use(cookieParser());

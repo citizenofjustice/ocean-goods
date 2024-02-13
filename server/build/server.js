@@ -13,13 +13,13 @@ class Server {
         this.config(app);
     }
     config(app) {
+        dotenv_1.default.config();
         const corsOptions = {
             origin: process.env.IS_HOSTED_LOCALLY === "true"
                 ? "http://localhost:5173"
                 : "https://ocean-goods-client.vercel.app",
             credentials: true,
         };
-        dotenv_1.default.config();
         app.use((0, cors_1.default)(corsOptions));
         app.use(express_1.default.json());
         app.use((0, cookie_parser_1.default)());
