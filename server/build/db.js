@@ -19,14 +19,14 @@ const pool = new pg_1.Pool({
     port: 5432,
     database: "ocean_goods_db",
 });
-const dbQuery = (queryStream, values = []) => __awaiter(void 0, void 0, void 0, function* () {
+const dbQuery = (queryStream) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let res;
         if (process.env.IS_DB_LOCAL === "true") {
-            res = yield pool.query(queryStream, values);
+            res = yield pool.query(queryStream);
         }
         else {
-            res = yield postgres_1.db.query(queryStream, values);
+            res = yield postgres_1.db.query(queryStream);
         }
         return res;
     }

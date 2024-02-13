@@ -45,32 +45,32 @@ function App() {
 
                   {/* protected routes */}
                   <Route path="dashboard" element={<DashboardPage />}>
-                    <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
+                    <Route element={<RequireAuth allowedRoles={[1]} />}>
                       <Route
                         path="product-types"
                         element={<ProductTypesList />}
                       />
                     </Route>
-                    <Route element={<RequireAuth allowedRoles={[19]} />}>
+                    <Route element={<RequireAuth allowedRoles={[1]} />}>
                       <Route path="roles" element={<Roles />} />
                     </Route>
-                    <Route element={<RequireAuth allowedRoles={[19]} />}>
+                    <Route element={<RequireAuth allowedRoles={[1]} />}>
                       <Route path="priveleges" element={<Priveleges />} />
                     </Route>
-                    <Route element={<RequireAuth allowedRoles={[19]} />}>
+                    <Route element={<RequireAuth allowedRoles={[1]} />}>
                       <Route path="register-user" element={<RegisterForm />} />
                     </Route>
                   </Route>
-                  <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
+                  <Route element={<RequireAuth allowedRoles={[1]} />}>
                     <Route path="new-item" element={<AddToCatalogPage />} />
                   </Route>
-                  <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
+                  <Route element={<RequireAuth allowedRoles={[1]} />}>
                     <Route
                       path="edit-item/:id"
                       element={<EditCatalogItemPage />}
                     />
                   </Route>
-                  <Route element={<RequireAuth allowedRoles={[19, 20]} />}>
+                  <Route element={<RequireAuth allowedRoles={[1]} />}>
                     <Route path="orders" element={<OrdersList />} />
                     <Route path="orders/:id" element={<OrderPage />} />
                   </Route>

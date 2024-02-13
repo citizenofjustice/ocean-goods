@@ -12,8 +12,6 @@ create Table users(
 create Table roles(
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
-    privelege_id INTEGER,
-    FOREIGN KEY (privelege_id) REFERENCES priveleges (id),
     privelege_ids integer[] DEFAULT ARRAY[]::integer[],
     created_at timestamp with time zone NOT NULL DEFAULT now(),
     updated_at timestamp with time zone NOT NULL DEFAULT now()

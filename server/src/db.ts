@@ -10,15 +10,14 @@ const pool = new Pool({
 });
 
 export const dbQuery = async (
-  queryStream: QueryConfig,
-  values: any[] = []
+  queryStream: QueryConfig
 ): Promise<QueryResult> => {
   try {
     let res: QueryResult;
     if (process.env.IS_DB_LOCAL === "true") {
-      res = await pool.query(queryStream, values);
+      res = await pool.query(queryStream);
     } else {
-      res = await db.query(queryStream, values);
+      res = await db.query(queryStream);
     }
     return res;
   } catch (err) {
