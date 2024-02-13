@@ -1,24 +1,18 @@
-import { config, DotenvParseOutput } from "dotenv";
+import { config } from "dotenv";
 import { IConfigService } from "./config.interface";
 
 export class ConfigService implements IConfigService {
-  private config: DotenvParseOutput;
+  private config: Record<string, string | undefined>;
 
   constructor() {
-    const { error, parsed } = config();
-    if (error) {
-      throw new Error("Not found .env file");
-    }
-    if (!parsed) {
-      throw new Error("Empty .env file");
-    }
-    this.config = parsed;
+    const { parsed } = config();
+    this.config = parsed || process.env;
   }
 
   get(key: string): string {
     const res = this.config[key];
     if (!res) {
-      throw new Error("Key not exists");
+      throw new Error(`Key ${key} not exists`);
     }
     return res;
   }
