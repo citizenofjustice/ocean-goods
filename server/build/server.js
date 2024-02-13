@@ -14,7 +14,10 @@ class Server {
     }
     config(app) {
         const corsOptions = {
-            origin: "http://localhost:5173",
+            origin: [
+                "http://localhost:5173",
+                "https://ocean-goods-client.vercel.app",
+            ],
             credentials: true,
         };
         dotenv_1.default.config();
