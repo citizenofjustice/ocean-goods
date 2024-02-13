@@ -84,7 +84,7 @@ class OrderController {
                 // Extract the new order from the result
                 const newOrder = createOrderQuery.rows[0];
                 // Pass new order to a telegram bot message
-                (0, orderMessage_1.handleOrderMessage)(index_1.ordersBot.bot, newOrder);
+                yield (0, orderMessage_1.handleOrderMessage)(index_1.ordersBot.bot, newOrder);
                 // Send the response
                 res.json(newOrder);
             }

@@ -13,9 +13,11 @@ export class Bot {
     this.bot.use(session());
   }
 
-  init() {
+  async init() {
     const command = new SendCommand(this.bot);
     command.handle();
-    this.bot.launch().catch((error) => console.log("Error on launch: ", error));
+    await this.bot
+      .launch()
+      .catch((error) => console.log("Error on launch: ", error));
   }
 }

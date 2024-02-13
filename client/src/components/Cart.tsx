@@ -36,12 +36,16 @@ const Cart: React.FC<{
             </div>
           </div>
         </div>
-        <div className="fixed top-[4.5rem] bottom-[4.5rem] overflow-y-auto w-full content-scroll">
+        <div
+          className={`fixed top-[4.5rem] ${
+            isContactFormActive ? "bottom-0" : "bottom-[4.5rem]"
+          } overflow-y-auto w-full px-4 content-scroll`}
+        >
           {isContactFormActive ? (
             <CustomerDataForm onOrderSend={onCartClose} />
           ) : (
             <>
-              <div className="m-4 grid h-max gap-2 justify-center">
+              <div className="my-4 grid h-max gap-2 justify-center">
                 <ul className="flex flex-col gap-2 bg-background-50 p-4 rounded-xl max-w-lg">
                   {cartItems.length > 0 ? (
                     cartItems.map((item) => (
@@ -57,17 +61,25 @@ const Cart: React.FC<{
             </>
           )}
         </div>
-        <div className="fixed bottom-0 w-full bg-background-0 m-auto drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex place-content-between items-center h-[4.5rem] py-3 px-8">
-          <p className="font-medium text-text-700">
-            Общая сумма заказа: {cart.totalCartPrice} руб.
-          </p>
-          <DefaultButton
-            onClick={() => setIsContactFormActive(true)}
-            type="button"
-          >
-            Оформить заказ
-          </DefaultButton>
-        </div>
+        {!isContactFormActive && (
+          <div className="fixed bottom-0 w-full bg-background-0 m-auto drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex place-content-between items-center h-[4.5rem] py-3 px-8 gap-2">
+            <p className="font-medium text-text-700">
+              Общая сумма заказа: {cart.totalCartPrice}&nbsp;руб.
+            </p>
+            <DefaultButton
+              onClick={() => setIsContactFormActive(true)}
+              type="button"
+              attr={{
+                disabled: cartItems.length === 0,
+                style: {
+                  opacity: cartItems.length === 0 ? "50%" : "100%",
+                },
+              }}
+            >
+              Оформить
+            </DefaultButton>
+          </div>
+        )}
       </div>
     </>
   );
