@@ -10,11 +10,21 @@
   "headers": [
     {
       "source": "/(.*)",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "http://localhost:5173"
+        }
+      ]
     },
     {
       "source": "/ocean-goods-server.vercel.app/(.*)",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://ocean-goods-client.vercel.app"
+        }
+      ]
     }
   ]
 }
