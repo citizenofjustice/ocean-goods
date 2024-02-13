@@ -5,7 +5,7 @@ import AmountControls from "./AmontControls";
 import CartItemModel from "../classes/CartItemModel";
 import { useStore } from "../store/root-store-context";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { TrashIcon } from "@heroicons/react/24/outline";
+// import { TrashIcon } from "@heroicons/react/24/outline";
 
 /**
  * Component for rendering each cart element
@@ -19,10 +19,10 @@ const CartElement: React.FC<{
   const { cartItems } = cart;
   const [, setCartContent] = useLocalStorage("cart", cartItems);
 
-  const handleCartItemRemoval = () => {
-    const cartItemsKept = cart.removeItem(cartItem.cartItemId);
-    setCartContent(cartItemsKept);
-  };
+  // const handleCartItemRemoval = () => {
+  //   const cartItemsKept = cart.removeItem(cartItem.cartItemId);
+  //   setCartContent(cartItemsKept);
+  // };
 
   return (
     <>
