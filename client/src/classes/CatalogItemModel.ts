@@ -15,6 +15,10 @@ class CatalogItemModel implements CatalogItem {
   kcal: number;
   mainImage?: string;
 
+  get finalPrice(): number {
+    return this.price - Math.round(this.price * (this.discount / 100));
+  }
+
   constructor(
     productId: number,
     productName: string,
