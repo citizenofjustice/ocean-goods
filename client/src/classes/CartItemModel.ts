@@ -18,9 +18,13 @@ class CartItemModel implements CartItem {
   kcal: number;
   mainImage?: string;
 
+  get finalPrice(): number {
+    return this.price - Math.round(this.price * (this.discount / 100));
+  }
+
   // calc cart item total price
   get totalProductPrice(): number {
-    const totalProductPrice = this.amount * this.price;
+    const totalProductPrice = this.amount * this.finalPrice;
     return totalProductPrice;
   }
 
@@ -39,7 +43,7 @@ class CartItemModel implements CartItem {
     this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;
-    this.price = price - Math.round(price * (discount / 100));
+    this.price = price;
     this.discount = discount;
     this.weight = weight;
     this.kcal = kcal;

@@ -16,16 +16,16 @@ const AmountControls: React.FC<{
     <div
       className={`flex ${
         isVertical
-          ? "flex-col-reverse justify-end w-8"
-          : "flex-row justify-between h-8"
-      } rounded items-center`}
+          ? "flex-col-reverse justify-end w-4 vsm:w-6 "
+          : "flex-row justify-between h-4 vsm:h-6"
+      } rounded items-center text-sm vsm:text-base`}
     >
       <AmountContolButton buttonText="-" buttonAction={onDecrement} />
       <span
         className={`rounded bg-background-0 font-medium ${
           isVertical
-            ? "h-10 flex items-center justify-center my-1 w-full"
-            : "w-10 text-center mx-1 px-2"
+            ? "h-8 vsm:h-10 flex items-center justify-center my-1 w-full"
+            : "w-8 vsm:w-10 text-center mx-1 px-2"
         }`}
       >
         {currentValue}

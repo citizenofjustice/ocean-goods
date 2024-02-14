@@ -46,7 +46,7 @@ const Cart: React.FC<{
           ) : (
             <>
               <div className="my-4 grid h-max gap-2 justify-center">
-                <ul className="flex flex-col gap-2 bg-background-50 p-4 rounded-xl max-w-lg">
+                <ul className="flex flex-col gap-2 rounded-xl max-w-lg">
                   {cartItems.length > 0 ? (
                     cartItems.map((item) => (
                       <CartElement key={item.cartItemId} cartItem={item} />
@@ -62,9 +62,9 @@ const Cart: React.FC<{
           )}
         </div>
         {!isContactFormActive && (
-          <div className="fixed bottom-0 w-full bg-background-0 m-auto drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex place-content-between items-center h-[4.5rem] py-3 px-8 gap-2">
+          <div className="fixed bottom-0 w-full bg-background-0 m-auto drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex place-content-around items-center h-[4.5rem] py-3 px-4 gap-2 text-sm vsm:text-base">
             <p className="font-medium text-text-700">
-              Общая сумма заказа: {cart.totalCartPrice}&nbsp;руб.
+              Cумма заказа: {cart.totalCartPrice}&nbsp;руб.
             </p>
             <DefaultButton
               onClick={() => setIsContactFormActive(true)}

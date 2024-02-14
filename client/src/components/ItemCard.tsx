@@ -87,10 +87,7 @@ const ItemCard: React.FC<{
               {catalogItem.discount > 0 ? (
                 <div className="flex flex-col">
                   <TextCrossed>{`${catalogItem.price} руб.`}</TextCrossed>
-                  <p>{`${
-                    catalogItem.price -
-                    Math.round(catalogItem.price * (catalogItem.discount / 100))
-                  } руб.`}</p>
+                  <p>{catalogItem.finalPrice} руб.</p>
                 </div>
               ) : (
                 <>{`${catalogItem.price} руб.`}</>

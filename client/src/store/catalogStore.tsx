@@ -2,12 +2,8 @@ import { makeAutoObservable, action, observable, computed } from "mobx";
 import CatalogItemModel from "../classes/CatalogItemModel";
 import { CatalogItem } from "../types/CatalogItem";
 
-const cartItemsFromLStorage: CatalogItemModel[] = JSON.parse(
-  localStorage.getItem("catalog") || "[]"
-);
-
 class CatalogStore {
-  catalogItems: CatalogItemModel[] = cartItemsFromLStorage;
+  catalogItems: CatalogItemModel[] = [];
 
   get itemCounter(): number {
     return this.catalogItems.length;

@@ -6,8 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getCatalog } from "../../api";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import { useEffect } from "react";
-import { useLocalStorage } from "@uidotdev/usehooks";
 import LoadingSpinner from "../UI/LoadingSpinner";
+import { CatalogItem } from "../../types/CatalogItem";
 
 /**
  * Component for rendering Catalog page dividided into grid
@@ -16,14 +16,26 @@ import LoadingSpinner from "../UI/LoadingSpinner";
 const CatalogPage = observer(() => {
   const { catalog, cart } = useStore();
   const { catalogItems } = catalog;
-  const [, setCatalogStorage] = useLocalStorage("catalog", catalogItems);
-
   const { isFetching, isLoading, isError, error } = useQuery({
     queryKey: ["catalog"],
     queryFn: async () => {
       const data = await getCatalog();
-      catalog.setCatalogItems(data);
-      setCatalogStorage(data);
+      const fetchedCatalogItems = data.map(
+        (item: CatalogItem) =>
+          new CatalogItemModel(
+            item.productId,
+            item.productName,
+            item.productTypeId,
+            item.inStock,
+            item.description,
+            item.price,
+            item.discount,
+            item.weight,
+            item.kcal,
+            item.mainImage
+          )
+      );
+      catalog.setCatalogItems(fetchedCatalogItems);
       return data;
     },
     refetchOnWindowFocus: false,
