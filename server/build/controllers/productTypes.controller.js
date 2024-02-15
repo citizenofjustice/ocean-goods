@@ -30,12 +30,17 @@ class ProductTypesController {
             res.json(productTypes.rows);
         });
     }
-    getProductTypesSelectValues(req, res) {
+    getProductTypesSelectValues(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const selectValues = yield (0, db_1.dbQuery)({
-                text: `SELECT id, type as "optionValue" FROM product_types ORDER BY type ASC`,
-            });
-            res.json(selectValues.rows);
+            try {
+                const selectValues = yield (0, db_1.dbQuery)({
+                    text: `SELECT id, type as "optionValue" FROM product_types ORDER BY type ASC`,
+                });
+                res.status(200).json(selectValues.rows);
+            }
+            catch (error) {
+                next(error);
+            }
         });
     }
     getOneProductType(req, res) {

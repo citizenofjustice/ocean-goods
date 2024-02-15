@@ -44,6 +44,14 @@
   width: 100%;
 }
 
+.success {
+  background-color: rgb(97, 174, 97);
+}
+
+.error {
+  background-color: rgb(230, 75, 75);
+}
+
 /* Track */
 .content-scroll::-webkit-scrollbar-track {
   margin-top: 0.25rem;

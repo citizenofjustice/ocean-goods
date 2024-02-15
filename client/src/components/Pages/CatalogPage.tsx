@@ -61,7 +61,7 @@ const CatalogPage = observer(() => {
             catalogItems.map((item: CatalogItemModel) => (
               <div
                 key={item.productId}
-                className="flex flex-col items-center justify-between bg-background-100 border-background-200 border-2 rounded-lg"
+                className="flex flex-col gap-1 items-center justify-between bg-background-100 border-background-200 border-2 rounded-lg"
               >
                 <ItemCard catalogItem={item} />
               </div>

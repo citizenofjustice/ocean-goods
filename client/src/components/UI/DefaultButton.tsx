@@ -13,7 +13,7 @@ const DefaultButton: React.FC<{
         <button
           type={type}
           onClick={onClick}
-          className={`text-white bg-background-600 hover:bg-primary-700 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-500 font-medium rounded-lg sm:w-auto px-4 py-2 text-center`}
+          className={`text-white bg-background-600 hover:bg-primary-700 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-500 font-medium text-sm vsm:text-base rounded-lg sm:w-auto px-3 py-1 text-center`}
           {...attr}
           disabled={isPending} // Disable the button when isPending is true
         >

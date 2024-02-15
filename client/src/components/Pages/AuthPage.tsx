@@ -18,7 +18,7 @@ const AuthPage = observer(() => {
   const navigate = useNavigate();
   const [isPending, setIsPending] = useState(false);
   const location = useLocation();
-  const { auth } = useStore();
+  const { auth, alert } = useStore();
   const { authData } = auth;
   const from = location.state?.from.pathname || "/";
 
@@ -41,7 +41,10 @@ const AuthPage = observer(() => {
       setInputValues(initValues);
       navigate(from, { replace: true });
     } else {
-      console.log(result.response.data);
+      alert.setPopup({
+        message: result.response.data.error.message,
+        type: "error",
+      });
     }
   };
 

@@ -44,7 +44,7 @@ const ItemCard: React.FC<{
     <>
       <div className="w-full my-2 px-2 flex">
         <div className={`${auth.isAuth ? "w-10/12" : "w-full"}`}>
-          <p className="text-center font-medium px-3">
+          <p className="text-center font-medium px-1 vsm:px-3">
             <Link to={`item/${catalogItem.productId}`}>
               {catalogItem.productName}
             </Link>
@@ -71,15 +71,13 @@ const ItemCard: React.FC<{
           </div>
         )}
       </div>
-      <div className="flex justify-center">
-        <div className="basis-1/12" />
-        <div className="grow rounded overflow-hidden flex items-center p-2">
+      <div className="flex px-3 vsm:px-4 gap-3 vsm:gap-4 justify-center">
+        <div className="rounded overflow-hidden min-w-[60px] flex items-center ">
           {catalogItem.mainImage && (
             <img className="rounded" src={catalogItem.mainImage} />
           )}
         </div>
-        <div className="basis-1/12" />
-        <div className="basis-2/12 flex items-center">
+        <div className="flex items-center">
           <div className="flex flex-col justify-end">
             <ItemInfoCard>{`${catalogItem.weight} гр.`}</ItemInfoCard>
             <ItemInfoCard>{`${catalogItem.kcal} ккал.`}</ItemInfoCard>
@@ -95,9 +93,8 @@ const ItemCard: React.FC<{
             </ItemInfoCard>
           </div>
         </div>
-        <div className="basis-1/12" />
       </div>
-      <div className="py-2 h-14 flex items-center">
+      <div className="my-2 vsm:my-3 h-8 flex items-center">
         <AddToCart
           productId={catalogItem.productId}
           catalogItem={catalogItem}

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import db, { dbQuery } from "../db";
 
 const productTypesCamelCase: string = `id as "productTypeId", type, created_at as "createdAt", updated_at as "updatedAt"`;
@@ -18,11 +18,19 @@ class ProductTypesController {
     });
     res.json(productTypes.rows);
   }
-  async getProductTypesSelectValues(req: Request, res: Response) {
-    const selectValues = await dbQuery({
-      text: `SELECT id, type as "optionValue" FROM product_types ORDER BY type ASC`,
-    });
-    res.json(selectValues.rows);
+  async getProductTypesSelectValues(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const selectValues = await dbQuery({
+        text: `SELECT id, type as "optionValue" FROM product_types ORDER BY type ASC`,
+      });
+      res.status(200).json(selectValues.rows);
+    } catch (error) {
+      next(error);
+    }
   }
   async getOneProductType(req: Request, res: Response) {
     const { id } = req.params;

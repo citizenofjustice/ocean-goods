@@ -52,11 +52,9 @@ export const authUser = (authData: FormData) => {
 export const getProductTypesSelectValues = () => {
   return axios(`/product-types/select-values`)
     .then(function (response) {
-      console.log(response);
       return response.data;
     })
     .catch(function (error) {
-      console.log(error);
       return error;
     });
 };
