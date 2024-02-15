@@ -96,7 +96,9 @@ const RoleAdd: React.FC<{
             <DefaultButton type="button" onClick={onFormClose}>
               Отмена
             </DefaultButton>
-            <DefaultButton type="submit">Сохранить</DefaultButton>
+            <DefaultButton type="submit" isPending={mutation.isPending}>
+              Сохранить
+            </DefaultButton>
           </div>
         </div>
       </form>

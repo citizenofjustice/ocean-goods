@@ -38,6 +38,10 @@ export const errorHandler = (
     statusCode = err.statusCode;
     errorMessage = err.message;
   }
+  // If the error is a generic error, use its message
+  else if (err instanceof Error) {
+    errorMessage = err.message;
+  }
 
   // Send the error response
   res.status(statusCode).json({ error: { message: errorMessage } });

@@ -77,6 +77,7 @@ const RoleItem: React.FC<{
           onFormSubmit={(updatedRole: FormData) =>
             updateMutation.mutate(updatedRole)
           }
+          isPending={updateMutation.isPending}
         />
       )}
     </>

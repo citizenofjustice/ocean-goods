@@ -16,6 +16,7 @@ const initValues = {
 const AuthPage = observer(() => {
   const [inputValues, setInputValues] = useState(initValues);
   const navigate = useNavigate();
+  const [isPending, setIsPending] = useState(false);
   const location = useLocation();
   const { auth } = useStore();
   const { authData } = auth;
@@ -28,8 +29,10 @@ const AuthPage = observer(() => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsPending(true);
     const fData = new FormData(event.currentTarget);
     const result = await authUser(fData);
+    setIsPending(false);
     if (result.status === 200) {
       const { user, accessToken, role } = result.data;
 
@@ -62,7 +65,9 @@ const AuthPage = observer(() => {
               value={inputValues.password}
               onInputChange={handleValueChange}
             />
-            <DefaultButton type="submit">Войти</DefaultButton>
+            <DefaultButton type="submit" isPending={isPending}>
+              Войти
+            </DefaultButton>
           </form>
         </FormCard>
       </div>

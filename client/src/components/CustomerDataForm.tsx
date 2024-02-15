@@ -22,6 +22,7 @@ const CustomerDataForm: React.FC<{
     useState<CustomerDataInputs>(emptyInitValues);
   const { cart } = useStore();
   const { cartItems } = cart;
+  const [isPending, setIsPending] = useState(false);
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,6 +31,7 @@ const CustomerDataForm: React.FC<{
 
   const handleOrder = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsPending(true);
     const fData = new FormData(event.currentTarget);
     const orderItems: OrderItem[] = cartItems.map((item) => {
       const orderItem: OrderItem = {
@@ -52,6 +54,7 @@ const CustomerDataForm: React.FC<{
       cart.clearCart();
       onOrderSend();
     } else console.log(response);
+    setIsPending(false);
   };
 
   return (
@@ -93,7 +96,9 @@ const CustomerDataForm: React.FC<{
             value={inputValues.contactMethod}
             onInputChange={handleValueChange}
           />
-          <DefaultButton type="submit">Заказать</DefaultButton>
+          <DefaultButton isPending={isPending} type="submit">
+            Заказать
+          </DefaultButton>
         </form>
       </FormCard>
     </div>

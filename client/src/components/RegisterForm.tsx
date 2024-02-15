@@ -17,6 +17,7 @@ const RegisterForm = () => {
   const [inputValues, setInputValues] = useState(initValues);
   const formRef = useRef<HTMLFormElement>(null);
   const axiosPrivate = useAxiosPrivate();
+  const [isPending, setIsPendind] = useState(false);
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["roles-select"],
@@ -41,8 +42,10 @@ const RegisterForm = () => {
     event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     event.preventDefault();
+    setIsPendind(true);
     const newUserData = new FormData(event.currentTarget);
     const response = await axiosPrivate.post(`/users/register`, newUserData);
+    setIsPendind(false);
     if (response.status === 201) {
       formRef.current?.reset();
       setInputValues(initValues);
@@ -85,7 +88,9 @@ const RegisterForm = () => {
             onInputChange={handleValueChange}
           />
 
-          <DefaultButton type="submit">Зарегистрировать</DefaultButton>
+          <DefaultButton type="submit" isPending={isPending}>
+            Зарегистрировать
+          </DefaultButton>
         </form>
       </FormCard>
     </>

@@ -38,6 +38,7 @@ const AddToCatalogPage: React.FC<{
     const [inputValues, setInputValues] =
       useState<CatalogItemInputs>(initValues);
     const axiosPrivate = useAxiosPrivate();
+    const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
 
     const { isLoading, isError, data } = useQuery({
@@ -83,6 +84,7 @@ const AddToCatalogPage: React.FC<{
       event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
     ) => {
       event.preventDefault();
+      setIsPending(true);
       const fData = new FormData(event.currentTarget);
       switch (actionType) {
         case "CREATE": {
@@ -123,6 +125,7 @@ const AddToCatalogPage: React.FC<{
           break;
         }
       }
+      setIsPending(false);
       setInputValues(emptyInitValues);
       navigate("/");
     };
@@ -223,7 +226,9 @@ const AddToCatalogPage: React.FC<{
                 checked={initValues.inStock}
               />
             </div>
-            <DefaultButton type="submit">Cохранить</DefaultButton>
+            <DefaultButton type="submit" isPending={isPending}>
+              Cохранить
+            </DefaultButton>
           </form>
         </div>
       </>

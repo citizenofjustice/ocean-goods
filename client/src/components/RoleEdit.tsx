@@ -16,7 +16,8 @@ const RoleEdit: React.FC<{
   priveleges: Privelege[];
   onFormClose: () => void;
   onFormSubmit: (updatedRole: FormData) => void;
-}> = ({ initValues, priveleges, onFormClose, onFormSubmit }) => {
+  isPending: boolean;
+}> = ({ initValues, priveleges, onFormClose, onFormSubmit, isPending }) => {
   const [inputValues, setInputValues] = useState(initValues);
   const [checkboxAlert, setCheckboxAlert] = useState("");
 
@@ -71,7 +72,9 @@ const RoleEdit: React.FC<{
             <DefaultButton type="button" onClick={onFormClose}>
               Отмена
             </DefaultButton>
-            <DefaultButton type="submit">Сохранить</DefaultButton>
+            <DefaultButton type="submit" isPending={isPending}>
+              Сохранить
+            </DefaultButton>
           </div>
         </div>
       </form>
