@@ -1,11 +1,14 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeAutoObservable } from "mobx";
 import { PopupMessage } from "../types/Popup";
 
 class PopupStore {
   popup: PopupMessage | null = null;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {
+      setPopup: action,
+      clearPopup: action,
+    });
   }
 
   setPopup = (popup: PopupMessage) => {

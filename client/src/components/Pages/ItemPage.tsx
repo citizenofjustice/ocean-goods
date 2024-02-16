@@ -8,6 +8,8 @@ import AddToCart from "../AddToCart";
 import { useMediaQuery } from "usehooks-ts";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import { useState } from "react";
+import ErrorPage from "./ErrorPage";
+import { AxiosError } from "axios";
 
 const ItemPage = observer(() => {
   const params = useParams();
@@ -19,7 +21,9 @@ const ItemPage = observer(() => {
     queryKey: ["catalog-item"],
     queryFn: async () => {
       const response = await axios.get(`/catalog/${id}`);
-      if (response.data) {
+      if (response instanceof AxiosError) {
+        //
+      } else {
         const { data } = response;
         const item = new CatalogItemModel(
           data.productId,
@@ -39,8 +43,6 @@ const ItemPage = observer(() => {
     },
     refetchOnWindowFocus: false,
   });
-
-  if (isError) return <h1>{error.message}</h1>;
 
   return (
     <>
@@ -109,6 +111,14 @@ const ItemPage = observer(() => {
             </>
           )}
         </>
+      )}
+      {isError && (
+        <div className="p-4">
+          <ErrorPage
+            error={error}
+            customMessage="При загрузке продукта произошла ошибка"
+          />
+        </div>
       )}
     </>
   );

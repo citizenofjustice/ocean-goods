@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import db, { dbQuery } from "../db";
+import { dbQuery } from "../db";
 import { uploadPictureAndGetUrl } from "../upload";
 
 const catalogCamelCase: string = `id as "productId", product_name as "productName", product_type_id as "productTypeId", in_stoke as "inStock", description, price, discount, weight, kcal, main_image as "mainImage", created_at as "createdAt", updated_at as "updatedAt"`;

@@ -10,6 +10,7 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CatalogItemDropdown from "./UI/CatalogItemDropdown";
 import TextCrossed from "./UI/TextCrossed";
 import AddToCart from "./AddToCart";
+import { AxiosError } from "axios";
 
 /**
  * Renders catalog item card
@@ -21,22 +22,23 @@ const ItemCard: React.FC<{
 }> = observer(({ catalogItem }) => {
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
-  const { auth } = useStore();
+  const { auth, alert } = useStore();
 
   const mutation = useMutation({
     mutationFn: async (productId: number) => {
-      const response = await axiosPrivate.delete(`/catalog/${productId}`); //removeCatalogItem(productId);
+      const response = await axiosPrivate.delete(`/catalog/${productId}`);
       return response.data;
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["catalog"] });
-      console.log("log success");
+      alert.setPopup({ message: "Запись успешно удалена", type: "success" });
     },
-    onError: () => {
-      console.log("log error");
-    },
-    onSettled: () => {
-      console.log("log settled");
+    onError: (error) => {
+      if (error instanceof AxiosError)
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
     },
   });
 
