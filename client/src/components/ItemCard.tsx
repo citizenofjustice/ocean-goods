@@ -1,16 +1,16 @@
+import { AxiosError } from "axios";
+import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
-import ItemInfoCard from "./UI/ItemInfoCard";
-import CatalogItemModel from "../classes/CatalogItemModel";
-import { useStore } from "../store/root-store-context";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import CatalogItemDropdown from "./UI/CatalogItemDropdown";
-import TextCrossed from "./UI/TextCrossed";
 import AddToCart from "./AddToCart";
-import { AxiosError } from "axios";
+import TextCrossed from "./UI/TextCrossed";
+import ItemInfoCard from "./UI/ItemInfoCard";
+import { useStore } from "../store/root-store-context";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import CatalogItemModel from "../classes/CatalogItemModel";
+import CatalogItemDropdown from "./UI/CatalogItemDropdown";
 
 /**
  * Renders catalog item card
@@ -21,18 +21,24 @@ const ItemCard: React.FC<{
   catalogItem: CatalogItemModel;
 }> = observer(({ catalogItem }) => {
   const queryClient = useQueryClient();
+  // Calling a custom axios hook
   const axiosPrivate = useAxiosPrivate();
+  // Using store context
   const { auth, alert } = useStore();
 
+  // Defining mutation for deleting a product
   const mutation = useMutation({
+    // Function to delete a product
     mutationFn: async (productId: number) => {
       const response = await axiosPrivate.delete(`/catalog/${productId}`);
       return response.data;
     },
+    // Function to execute on successful deletion
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["catalog"] });
       alert.setPopup({ message: "Запись успешно удалена", type: "success" });
     },
+    // Function to execute on error
     onError: (error) => {
       if (error instanceof AxiosError)
         alert.setPopup({

@@ -1,32 +1,38 @@
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { Order } from "../types/Order";
+import { AxiosError } from "axios";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useDebounce, useIntersectionObserver } from "usehooks-ts";
-
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import LoadingSpinner from "./UI/LoadingSpinner";
-import { SelectOptions } from "./UI/SimpleSelect";
-import OrdersListItem from "./OrdersListItem";
-import SortComponent from "./SortComponent";
-import InputDateRange from "./UI/InputDateRange";
-import OrdersFilter from "./OrdersFilter";
-import OrdersListHeader from "./OrdersListHeader";
 
+import { Order } from "../types/Order";
+import ErrorPage from "./Pages/ErrorPage";
+import OrdersFilter from "./OrdersFilter";
+import SortComponent from "./SortComponent";
+import OrdersListItem from "./OrdersListItem";
+import LoadingSpinner from "./UI/LoadingSpinner";
+import InputDateRange from "./UI/InputDateRange";
+import OrdersListHeader from "./OrdersListHeader";
+import { SelectOptions } from "./UI/SimpleSelect";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+
+// Interface for sorting
 interface SortBy {
   orderBy: string;
   direction: string;
 }
 
+// Initial values for sorting
 const initSortValues: SortBy = {
   orderBy: "",
   direction: "",
 };
 
+// interface for filtering
 export interface FilterProp {
   fieldName: "id" | "customer_name";
 }
 
+// Options for sorting
 const sortOptions: SelectOptions[] = [
   {
     value: "created_at/DESC",
@@ -49,23 +55,27 @@ const sortOptions: SelectOptions[] = [
 ];
 
 const OrdersList = () => {
+  const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
+  const ref = useRef<HTMLDivElement>(null);
   const [isFiltersShown, setIsFiltersShown] = useState<boolean>(false);
   const [filterProp, setFilterProp] = useState<FilterProp>({
     fieldName: "id",
   });
+  const [filterBy, setFilterBy] = useState<string>("");
   const [dateRange, setDateRange] = useState<Date[] | null[]>([null, null]);
   const [startDate, endDate] = dateRange;
-  const [filterBy, setFilterBy] = useState<string>("");
+  const debounceFilter = useDebounce(filterBy, 750);
   const [sortBy, setSortBy] = useState(initSortValues);
   const [selectedOption, setSelectedOption] = useState<string>("");
-  const limit = 10;
-  const ref = useRef<HTMLDivElement>(null);
-  const debounceFilter = useDebounce(filterBy, 750);
+
+  // IntersectionObserver for inifinite page loading
   const entry = useIntersectionObserver(ref, { threshold: 0.5 });
-  const queryClient = useQueryClient();
   const isVisible = !!entry?.isIntersecting;
 
+  const limit = 10;
+
+  // Function to send request
   const sendReq = async ({ pageParam = 0 }) => {
     const params = new URLSearchParams([]);
     params.append("page", pageParam.toString());
@@ -90,18 +100,21 @@ const OrdersList = () => {
       const response = await axiosPrivate.get(`/orders/all`, { params });
       return response.data;
     } catch (error) {
-      // Handle any errors
-      console.error(error);
-      throw new Error("An error occurred while fetching the orders.");
+      if (error instanceof AxiosError) {
+        throw new Error(error.response?.data.error.message);
+      } else throw new Error("Во время загрузки произошла неизвестная ошибка");
     }
   };
 
+  // Infinite query hook
   const { data, error, fetchNextPage, hasNextPage, isFetching, status } =
     useInfiniteQuery({
       queryKey: ["orders", debounceFilter, sortBy, endDate, filterProp],
       queryFn: sendReq,
       initialPageParam: 1,
       getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+        // if total count of records more than already loaded records count
+        // then return incremented next page value
         if (lastPage.totalRows > lastPageParam * limit)
           return lastPage.nextPage;
         else return undefined;
@@ -109,7 +122,9 @@ const OrdersList = () => {
       refetchOnWindowFocus: false,
     });
 
+  // Effect hook to fetch next page when visible
   useEffect(() => {
+    // do nothing while ref is not visible, request is fetching or no pages left
     if (!isVisible || isFetching || !hasNextPage) return () => {};
 
     const interval = setInterval(() => {
@@ -122,6 +137,7 @@ const OrdersList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible]);
 
+  // Handler for select change
   const handleSelect = async (value: string) => {
     setSelectedOption(value);
     const values = value.split("/");
@@ -129,6 +145,7 @@ const OrdersList = () => {
     setSortBy({ orderBy: values[0], direction: values[1] });
   };
 
+  // Handler for filter input change
   const handleFilterInput = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -139,6 +156,7 @@ const OrdersList = () => {
     setFilterBy(value);
   };
 
+  // Handler for checkbox change
   const handleCheckboxChange = () => {
     switch (filterProp.fieldName) {
       case "id": {
@@ -147,6 +165,7 @@ const OrdersList = () => {
       }
       case "customer_name": {
         setFilterProp({ fieldName: "id" });
+        // if after checkbox change input type is number clear filter field
         typeof Number(filterBy) === "number" && setFilterBy("");
         break;
       }
@@ -210,7 +229,10 @@ const OrdersList = () => {
         {status === "pending" ? (
           <LoadingSpinner />
         ) : status === "error" ? (
-          <p className="text-center">Error: {error.message}</p>
+          <ErrorPage
+            error={error}
+            customMessage="При загрузке списка заказов произошла ошибка"
+          />
         ) : (
           <div className="bg-background-200 p-4 lg:p-0 lg:pb-4 rounded-xl">
             <OrdersListHeader isFiltersShown={isFiltersShown} />

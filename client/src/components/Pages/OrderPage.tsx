@@ -5,6 +5,7 @@ import FormatDate from "../FormatDate";
 import { OrderItem } from "../../types/OrderItem";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import ErrorPage from "./ErrorPage";
 
 interface OrderItemWithTypeName extends OrderItem {
   type: string;
@@ -23,8 +24,6 @@ const OrderPage = () => {
     },
     refetchOnWindowFocus: false,
   });
-
-  if (isError) return <h1>{error.message}</h1>;
 
   return (
     <>
@@ -112,6 +111,14 @@ const OrderPage = () => {
             </div>
           )}
         </>
+      )}
+      {isError && (
+        <div className="p-4">
+          <ErrorPage
+            error={error}
+            customMessage="При загрузке заказа произошла ошибка"
+          />
+        </div>
       )}
     </>
   );
