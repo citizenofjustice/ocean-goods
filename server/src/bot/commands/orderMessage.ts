@@ -2,20 +2,26 @@ import { Telegraf } from "telegraf";
 import { Order } from "../../types/Order";
 import { BotContext } from "../context.interface";
 
+// Function to handle order messages
 export const handleOrderMessage = async (
-  bot: Telegraf<BotContext>,
-  order: Order
+  bot: Telegraf<BotContext>, // Bot instance
+  order: Order // Order details
 ) => {
   try {
+    // Destructuring order details
     const { orderId, customerName, createdAt, orderDetails } = order;
+
+    // Formatting the date
     const date = new Date(createdAt);
     const formatDate = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`;
+
+    // Sending message to the chat
     await bot.telegram
       .sendMessage(
-        process.env.TELEGRAM_CHAT_ID,
+        process.env.TELEGRAM_CHAT_ID, // Chat ID from environment variables
         `🛒 <b>Заказ №${orderId}</b>\n📆 <b>от</b>: ${formatDate}\n💁 <b>Заказчик</b>: ${customerName}\n💵 <b>На сумму</b>: ${orderDetails.totalPrice} руб.`,
         {
-          parse_mode: "HTML",
+          parse_mode: "HTML", // Parsing mode set to HTML
           reply_markup: {
             inline_keyboard: [
               [
@@ -29,8 +35,9 @@ export const handleOrderMessage = async (
           },
         }
       )
-      .catch((error) => console.log("bot send order error: ", error));
+      .catch((error) => console.log("bot send order error: ", error)); // Logging any errors
   } catch (error) {
-    console.log(error);
+    console.error(error); // Logging any errors
+    return error;
   }
 };

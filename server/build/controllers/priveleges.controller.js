@@ -12,25 +12,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db");
 const privelegesCamelCase = `id as "privelegeId", title`;
 class PrivelegesController {
-    createPrivelege(req, res) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    getPriveleges(req, res) {
+    // This function is not implemented yet
+    createPrivelege(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const priveleges = yield (0, db_1.dbQuery)({
-                text: `SELECT ${privelegesCamelCase} FROM priveleges ORDER BY title`,
-            });
-            res.json(priveleges.rows);
+            res.sendStatus(501);
         });
     }
-    getOnePrivelege(req, res) {
-        return __awaiter(this, void 0, void 0, function* () { });
+    // Method to get all priveleges
+    getPriveleges(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const priveleges = yield (0, db_1.dbQuery)({
+                    text: `SELECT ${privelegesCamelCase} FROM priveleges ORDER BY title`,
+                });
+                res.status(200).json(priveleges.rows);
+            }
+            catch (error) {
+                // Pass the error to the errorHandler middleware
+                next(error);
+            }
+        });
     }
-    updatePrivelege(req, res) {
-        return __awaiter(this, void 0, void 0, function* () { });
+    // This function is not implemented yet
+    getOnePrivelege(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            res.sendStatus(501);
+        });
     }
-    deletePrivelege(req, res) {
-        return __awaiter(this, void 0, void 0, function* () { });
+    // This function is not implemented yet
+    updatePrivelege(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            res.sendStatus(501);
+        });
+    }
+    // This function is not implemented yet
+    deletePrivelege(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            res.sendStatus(501);
+        });
     }
 }
 exports.default = new PrivelegesController();

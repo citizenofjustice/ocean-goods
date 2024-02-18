@@ -1,13 +1,17 @@
 import { useState } from "react";
-import LabeledInputField from "./UI/LabeledInputField";
-import CustomCheckbox from "./UI/CustomCheckbox";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import DefaultButton from "./UI/DefaultButton";
-import { RoleInputs } from "../types/form-types";
-import LoadingSpinner from "./UI/LoadingSpinner";
-import CustomAlertMessage from "./UI/CustomAlertMessage";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import DefaultButton from "./UI/DefaultButton";
+import { Privelege } from "../types/Privelege";
+import CustomCheckbox from "./UI/CustomCheckbox";
+import { RoleInputs } from "../types/form-types";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import LabeledInputField from "./UI/LabeledInputField";
+import { useStore } from "../store/root-store-context";
+import CustomAlertMessage from "./UI/CustomAlertMessage";
+
+// Defining the initial values for role inputs
 const emptyInitValues: RoleInputs = {
   title: "",
   privelegeIds: [],
@@ -15,59 +19,72 @@ const emptyInitValues: RoleInputs = {
 
 const RoleAdd: React.FC<{
   onFormClose: () => void;
-}> = ({ onFormClose }) => {
-  const [inputValues, setInputValues] = useState(emptyInitValues);
-  const [checkboxAlert, setCheckboxAlert] = useState("");
+  priveleges: Privelege[];
+}> = ({ onFormClose, priveleges }) => {
+  // Initializing mobX store, queryClient for managing queries and axiosPrivate for requests with credentials
+  const { alert } = useStore();
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
 
-  const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["priveleges"],
-    queryFn: async () => {
-      const response = await axiosPrivate.get(`/priveleges`);
-      return response.data;
-    },
-    refetchOnWindowFocus: false,
-  });
+  const [checkboxAlert, setCheckboxAlert] = useState(""); // State to manage the alert message for the checkbox
+  const [inputValues, setInputValues] = useState(emptyInitValues); // State to manage the input values of the form
 
+  // Mutation to add a role
   const mutation = useMutation({
     mutationFn: async (newRole: FormData) => {
       const response = await axiosPrivate.post(`/roles/create`, newRole);
       return response.data;
     },
     onSuccess: async () => {
+      // if query was successful invalidate query and refetch data
       await queryClient.invalidateQueries({ queryKey: ["roles"] });
-      setInputValues(emptyInitValues);
-      onFormClose();
+      setInputValues(emptyInitValues); // reset input values
+      onFormClose(); // hide form
+    },
+    onError: (error) => {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При добавлении нового типа произошла неизвестная ошибка",
+          type: "error",
+        });
     },
   });
 
+  // Handler function to update the input values when they change
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInputValues({ ...inputValues, [name]: value });
   };
 
+  // Handler function to handle the submission of the form
   const handleRoleSubmission = (
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e.preventDefault();
+    // if priveleges was not checked show alert message and stop execution
     if (inputValues.privelegeIds.length === 0) {
       setCheckboxAlert("Для роли не были выбраны полномочия");
       return;
     } else {
-      setCheckboxAlert("");
+      setCheckboxAlert(""); // clear alert message
     }
     const fData = new FormData();
+    // filling FormData with values
     fData.append("title", inputValues.title);
     fData.append("privelegeIds", JSON.stringify(inputValues.privelegeIds));
     mutation.mutate(fData);
   };
 
+  // Handler function to update the checkbox values when they change
   const handleCheckboxChange = (priveleges: number[]) => {
     setInputValues({ ...inputValues, privelegeIds: priveleges });
   };
-
-  if (error) return <h1>{error.message}</h1>;
 
   return (
     <>
@@ -83,11 +100,10 @@ const RoleAdd: React.FC<{
               onInputChange={handleValueChange}
             />
           </div>
-          {isLoading && <LoadingSpinner />}
-          {!isLoading && !isError && (
+          {priveleges && (
             <CustomCheckbox
               nameForIds="priveleges"
-              content={data}
+              content={priveleges}
               onChange={handleCheckboxChange}
             />
           )}

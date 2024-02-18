@@ -1,36 +1,58 @@
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Role } from "../types/Role";
 import { useState } from "react";
+import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+
 import RoleEdit from "./RoleEdit";
+import { Role } from "../types/Role";
 import { Privelege } from "../types/Privelege";
+import { useStore } from "../store/root-store-context";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const RoleItem: React.FC<{
   priveleges: Privelege[];
   role: Role;
 }> = ({ role, priveleges }) => {
-  const [isInEdit, setIsInEdit] = useState<boolean>(false);
+  // Initializing mobX store, queryClient for managing queries and axiosPrivate for requests with credentials
+  const { alert } = useStore();
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
+  const [isInEdit, setIsInEdit] = useState<boolean>(false); // State to manage the edit mode
 
+  // Handler function to toggle the edit mode
   const editModeHandler = () => {
     setIsInEdit((prevValue) => !prevValue);
   };
 
+  // Mutation to remove a role
   const removeMutation = useMutation({
     mutationFn: async (id: number) => {
       const response = await axiosPrivate.delete(`/roles/${id}`);
       return response.data;
     },
     onSuccess: (_data, variables) => {
+      // if query was successful modify query data
       queryClient.setQueryData(["roles"], (oldData: Role[]) => {
         const newData = oldData.filter((item) => item.roleId !== variables);
         return newData;
       });
     },
+    onError: (error) => {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При добавлении удалении роли произошла неизвестная ошибка",
+          type: "error",
+        });
+    },
   });
 
+  // Mutation to update a role
   const updateMutation = useMutation({
     mutationFn: async (updatedRole: FormData) => {
       const response = await axiosPrivate.put(
@@ -40,8 +62,22 @@ const RoleItem: React.FC<{
       return response.data;
     },
     onSuccess: async () => {
+      // if query was successful invalidate query and refetch data
       await queryClient.invalidateQueries({ queryKey: ["roles"] });
       setIsInEdit(false);
+    },
+    onError: (error) => {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При изменении роли произошла неизвестная ошибка",
+          type: "error",
+        });
     },
   });
 

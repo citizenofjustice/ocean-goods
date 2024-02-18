@@ -7,7 +7,7 @@ const DashboardPage = () => {
         <p className="mb-4 font-medium text-lg">Панель управления</p>
         <nav
           id="dashboard-nav"
-          className="grid grid-cols-none vsm:grid-cols-2 sm:grid-flow-col sm:auto-cols-max gap-4 mb-4"
+          className="grid items-center grid-cols-none vsm:grid-cols-2 sm:grid-flow-col sm:auto-cols-max gap-4 mb-4"
         >
           <NavLink
             className="border border-2 border-background-500 rounded-lg p-2 text-center"

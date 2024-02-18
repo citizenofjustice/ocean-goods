@@ -10,14 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleOrderMessage = void 0;
-const handleOrderMessage = (bot, order) => __awaiter(void 0, void 0, void 0, function* () {
+// Function to handle order messages
+const handleOrderMessage = (bot, // Bot instance
+order // Order details
+) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Destructuring order details
         const { orderId, customerName, createdAt, orderDetails } = order;
+        // Formatting the date
         const date = new Date(createdAt);
         const formatDate = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`;
+        // Sending message to the chat
         yield bot.telegram
-            .sendMessage(process.env.TELEGRAM_CHAT_ID, `🛒 <b>Заказ №${orderId}</b>\n📆 <b>от</b>: ${formatDate}\n💁 <b>Заказчик</b>: ${customerName}\n💵 <b>На сумму</b>: ${orderDetails.totalPrice} руб.`, {
-            parse_mode: "HTML",
+            .sendMessage(process.env.TELEGRAM_CHAT_ID, // Chat ID from environment variables
+        `🛒 <b>Заказ №${orderId}</b>\n📆 <b>от</b>: ${formatDate}\n💁 <b>Заказчик</b>: ${customerName}\n💵 <b>На сумму</b>: ${orderDetails.totalPrice} руб.`, {
+            parse_mode: "HTML", // Parsing mode set to HTML
             reply_markup: {
                 inline_keyboard: [
                     [
@@ -30,10 +37,11 @@ const handleOrderMessage = (bot, order) => __awaiter(void 0, void 0, void 0, fun
                 ],
             },
         })
-            .catch((error) => console.log("bot send order error: ", error));
+            .catch((error) => console.log("bot send order error: ", error)); // Logging any errors
     }
     catch (error) {
-        console.log(error);
+        console.error(error); // Logging any errors
+        return error;
     }
 });
 exports.handleOrderMessage = handleOrderMessage;

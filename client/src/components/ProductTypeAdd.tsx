@@ -3,18 +3,20 @@ import LabeledInputField from "./UI/LabeledInputField";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { AxiosError } from "axios";
+import { useStore } from "../store/root-store-context";
 
 const ProductTypeAdd: React.FC<{
   onAdditionCancel: () => void;
 }> = ({ onAdditionCancel }) => {
-  const [productType, setProductType] = useState<string>("");
+  // Initializing mobX store, queryClient for managing queries and axiosPrivate for requests with credentials
+  const { alert } = useStore();
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
 
-  const handleProductTypeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProductType(e.target.value);
-  };
+  const [productType, setProductType] = useState<string>(""); // state for storing input value
 
+  // Handler for form submission event
   const handleProductTypeSubmission = (
     event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
@@ -23,6 +25,7 @@ const ProductTypeAdd: React.FC<{
     mutation.mutate(fData);
   };
 
+  // Mutation for creating a new product type
   const mutation = useMutation({
     mutationFn: async (newType: FormData) => {
       const response = await axiosPrivate.post(
@@ -32,8 +35,22 @@ const ProductTypeAdd: React.FC<{
       return response.data;
     },
     onSuccess: async () => {
+      // invalidate query data after addition of new product type
       await queryClient.invalidateQueries({ queryKey: ["product-type"] });
-      setProductType("");
+      setProductType(""); // clear input value
+    },
+    onError: (error) => {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При добавлении нового типа произошла неизвестная ошибка",
+          type: "error",
+        });
     },
   });
 
@@ -50,7 +67,7 @@ const ProductTypeAdd: React.FC<{
             name="type"
             title="Тип продукта"
             value={productType}
-            onInputChange={handleProductTypeInput}
+            onInputChange={(e) => setProductType(e.target.value)}
           />
           <div className="flex flex-col items-center justify-end basis-2/12 gap-1">
             <XCircleIcon

@@ -1,14 +1,18 @@
+import { useState } from "react";
 import {
   CheckCircleIcon,
   PencilSquareIcon,
   TrashIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import { ProductType } from "../types/ProductType";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
+import { ProductType } from "../types/ProductType";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useStore } from "../store/root-store-context";
+import { AxiosError } from "axios";
+
+// Defining styles for the input element
 const inputStyles = `focus:outline-none focus:border-accent-700 focus:ring-1 focus:ring-accent-700 hover:border-accent-700
 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none
 invalid:border-red-500 invalid:text-text-600 focus:invalid:border-red-500 focus:invalid:ring-red-500`;
@@ -16,11 +20,16 @@ invalid:border-red-500 invalid:text-text-600 focus:invalid:border-red-500 focus:
 const ProductTypeItem: React.FC<{
   productType: ProductType;
 }> = ({ productType }) => {
+  // Initializing mobX store, queryClient for managing queries and axiosPrivate for requests with credentials
+  const { alert } = useStore();
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
+
+  // State variables for managing edit mode and input value
   const [isInEdit, setIsInEdit] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(productType.type);
 
+  // Mutation for removing a product type
   const removeMutation = useMutation({
     mutationFn: async (productTypeId: number) => {
       const response = await axiosPrivate.delete(
@@ -29,6 +38,7 @@ const ProductTypeItem: React.FC<{
       return response.data;
     },
     onSuccess: (_data, variables) => {
+      // if request was successful modify query data
       queryClient.setQueryData(["product-type"], (oldData: ProductType[]) => {
         const newData = oldData.filter(
           (item) => item.productTypeId !== variables
@@ -36,8 +46,22 @@ const ProductTypeItem: React.FC<{
         return newData;
       });
     },
+    onError: (error) => {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При удалении произошла неизвестная ошибка",
+          type: "error",
+        });
+    },
   });
 
+  // Mutation for updating a product type
   const updateMutation = useMutation({
     mutationFn: async (updatedProductType: ProductType) => {
       const response = await axiosPrivate.put(
@@ -47,6 +71,7 @@ const ProductTypeItem: React.FC<{
       return response.data;
     },
     onSuccess: (_data, variables) => {
+      // if request was successful modify query data
       queryClient.setQueryData(["product-type"], (oldData: ProductType[]) => {
         const newData = oldData.map((item) => {
           if (item.productTypeId === variables.productTypeId)
@@ -58,17 +83,48 @@ const ProductTypeItem: React.FC<{
         });
         return newData;
       });
+      // if update was successful disable edit mode
+      setIsInEdit(false);
+    },
+    onError: (error) => {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При изменении произошла неизвестная ошибка",
+          type: "error",
+        });
     },
   });
 
-  const editModeHandler = () => {
+  // Handler for updating product type
+  const updateProductTypeHandler = () => {
+    // if update is still pending stop execution
+    if (updateMutation.isPending) return;
+    // if edit mode is active perform update
     if (isInEdit) {
       updateMutation.mutate({
         productTypeId: productType.productTypeId,
         type: inputValue,
       });
     }
-    setIsInEdit((prevValue) => !prevValue);
+  };
+
+  // Handler for removing product type
+  const removeProductTypeHandler = () => {
+    if (removeMutation.isPending) return;
+    removeMutation.mutate(productType.productTypeId);
+  };
+
+  // Handler for disabling edit mode
+  const editModeCloseHandler = () => {
+    // set input to previous value if edit was cancelled
+    setInputValue(productType.type);
+    setIsInEdit(false);
   };
 
   return (
@@ -91,20 +147,26 @@ const ProductTypeItem: React.FC<{
           <div className="flex flex-col items-center justify-center gap-1">
             {isInEdit && (
               <XCircleIcon
-                onClick={() => setIsInEdit(false)}
+                onClick={editModeCloseHandler}
                 className="w-6 h-6 text-primary-800 hover:cursor-pointer"
               />
             )}
-            <div onClick={editModeHandler}>
+            <div>
               {isInEdit ? (
-                <CheckCircleIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+                <CheckCircleIcon
+                  onClick={updateProductTypeHandler}
+                  className="w-6 h-6 text-primary-800 hover:cursor-pointer"
+                />
               ) : (
-                <PencilSquareIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+                <PencilSquareIcon
+                  onClick={() => setIsInEdit(true)}
+                  className="w-6 h-6 text-primary-800 hover:cursor-pointer"
+                />
               )}
             </div>
           </div>
           <TrashIcon
-            onClick={() => removeMutation.mutate(productType.productTypeId)}
+            onClick={removeProductTypeHandler}
             className="w-6 h-6 text-primary-800 hover:cursor-pointer"
           />
         </div>
