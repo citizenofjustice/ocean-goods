@@ -2,27 +2,45 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-import db, { dbQuery } from "../db";
+import { dbQuery } from "../db";
 
 class AuthController {
+  // method to authenticate user
   async authUser(req: Request, res: Response, next: NextFunction) {
     try {
+      // Extract email and password from request body
       const { email, password } = req.body;
+
+      // Check if email and password are provided
       if (!email || !password)
-        res
-          .status(400)
-          .json({ message: "Одно из полей формы авторизации осталось пустым" });
+        return res.status(400).json({
+          error: {
+            message: "Одно из полей формы авторизации осталось пустым",
+          },
+        });
+
+      // Query to select user from database
       const selectQuery = await dbQuery({
         text: `SELECT * FROM users WHERE login = $1`,
         values: [email],
       });
+
+      // Check if user exists
       const foundUser = selectQuery.rows[0];
-      if (!foundUser) throw new Error("Введена неверная эл. почта");
+      if (!foundUser)
+        return res.status(400).json({
+          error: { message: "Введена неверная эл. почта" },
+        });
+
+      // Check if password is valid
       const passwordHash = foundUser.password_hash;
       const isValid = await bcrypt.compare(password, passwordHash);
-      if (!isValid) throw new Error("Введен неверный пароль");
+      if (!isValid)
+        return res.status(400).json({
+          error: { message: "Введен неверный пароль" },
+        });
 
-      // create JWTs
+      // Create JWTs
       const accessToken = jwt.sign(
         {
           userInfo: {
@@ -47,11 +65,16 @@ class AuthController {
           expiresIn: "1d",
         }
       );
+
+      // Remove password hash from user object
       delete foundUser.password_hash;
+      // Update the user's refresh token in the database
       const updateQuery = await dbQuery({
         text: `UPDATE users SET refresh_token = $1 WHERE id = $2 RETURNING login, role_id as "roleId"`,
         values: [refreshToken, foundUser.id],
       });
+
+      // Send the response with the access token, refresh token, and user info
       const userWithToken = updateQuery.rows[0];
       res.cookie("token", refreshToken, {
         httpOnly: true,
@@ -65,32 +88,53 @@ class AuthController {
         role: userWithToken.roleId,
       });
     } catch (error) {
+      // Pass the error to the errorHandler middleware
       next(error);
     }
   }
 
+  // method to handle refresh token
   async handleRefreshToken(req: Request, res: Response, next: NextFunction) {
     try {
+      // Extract the refresh token from the cookies
       const cookies = req.cookies;
-
-      if (!cookies?.token) return res.sendStatus(401);
+      // If no refresh token, return 401 status
+      if (!cookies?.token)
+        return res.status(401).json({
+          error: { message: "Доступ запрещен. Отсутствует токен авторизации" },
+        });
       const refreshToken = cookies.token;
 
+      // Query the database for the user with the provided refresh token
       const selectQuery = await dbQuery({
         text: `SELECT * FROM users WHERE refresh_token = $1`,
         values: [refreshToken],
       });
+      // Check if user exists
       const foundUser = selectQuery.rows[0];
-      if (!foundUser) return res.sendStatus(403);
+      if (!foundUser)
+        return res.status(403).json({
+          error: {
+            message: "Возникла проблема при обновлении токена авторизации",
+          },
+        });
 
-      // evaluate token
+      // Verify the refresh token
       jwt.verify(
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         (error: any, decoded: any) => {
-          if (!decoded) return res.sendStatus(403);
+          // If token is invalid or user ID does not match, return 403 status
+          if (!decoded)
+            return res.status(403).json({
+              error: { message: "Доступ запрещен" },
+            });
           if (error || foundUser.id !== decoded.userInfo.user)
-            return res.sendStatus(403);
+            return res.status(403).json({
+              error: { message: "Доступ запрещен" },
+            });
+
+          // Create a new access token
           const accessToken = jwt.sign(
             {
               userInfo: {
@@ -103,6 +147,8 @@ class AuthController {
               expiresIn: "10m",
             }
           );
+
+          // Send the response with the access token and user info
           res.json({
             user: foundUser.login,
             accessToken,
@@ -111,12 +157,15 @@ class AuthController {
         }
       );
     } catch (error) {
+      // Pass the error to the errorHandler middleware
       next(error);
     }
   }
 
+  // method to log out a user
   async logoutUser(req: Request, res: Response, next: NextFunction) {
     try {
+      // Extract the refresh token from the cookies
       const { token: refreshToken } = req.cookies;
 
       // If no refresh token, clear the cookie and return
@@ -129,7 +178,7 @@ class AuthController {
         return res.sendStatus(204);
       }
 
-      // Check if refreshToken is in db
+      // Query the database for the user with the provided refresh token
       const selectQuery = await dbQuery({
         text: `SELECT * FROM users WHERE refresh_token = $1`,
         values: [refreshToken],
@@ -146,7 +195,7 @@ class AuthController {
         return res.sendStatus(204);
       }
 
-      // Delete refresh_token in db
+      // Delete refresh token in the database
       await dbQuery({
         text: `UPDATE users SET refresh_token = '' WHERE refresh_token = $1`,
         values: [refreshToken],
@@ -160,6 +209,7 @@ class AuthController {
       });
       res.sendStatus(204);
     } catch (error) {
+      // Pass the error to the errorHandler middleware
       next(error);
     }
   }

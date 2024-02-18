@@ -6,6 +6,8 @@ import SelectField from "./UI/SelectField";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import PasswordInputField from "./UI/PasswordInputField";
+import { AxiosError } from "axios";
+import { useStore } from "../store/root-store-context";
 
 const initValues = {
   email: "",
@@ -17,6 +19,8 @@ const RegisterForm = () => {
   const [inputValues, setInputValues] = useState(initValues);
   const formRef = useRef<HTMLFormElement>(null);
   const axiosPrivate = useAxiosPrivate();
+  const [isPending, setIsPendind] = useState(false);
+  const { alert } = useStore();
 
   const { isLoading, isError, error, data } = useQuery({
     queryKey: ["roles-select"],
@@ -41,12 +45,26 @@ const RegisterForm = () => {
     event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     event.preventDefault();
+    setIsPendind(true);
     const newUserData = new FormData(event.currentTarget);
-    const response = await axiosPrivate.post(`/users/register`, newUserData);
-    if (response.status === 201) {
+    try {
+      await axiosPrivate.post(`/users/register`, newUserData);
       formRef.current?.reset();
       setInputValues(initValues);
-    } else console.log(response);
+    } catch (error) {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При входе в учетную запись произошла неизвестная ошибка",
+          type: "error",
+        });
+    }
+    setIsPendind(false);
   };
 
   if (isError) return <p>{error.message}</p>;
@@ -85,7 +103,9 @@ const RegisterForm = () => {
             onInputChange={handleValueChange}
           />
 
-          <DefaultButton type="submit">Зарегистрировать</DefaultButton>
+          <DefaultButton type="submit" isPending={isPending}>
+            Зарегистрировать
+          </DefaultButton>
         </form>
       </FormCard>
     </>

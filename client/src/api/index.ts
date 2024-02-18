@@ -1,28 +1,5 @@
 import axios from "./axios";
 
-export const getCatalog = () => {
-  return axios("/catalog")
-    .then(function (response) {
-      if (response.status === 200) return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
-export const getCatalogItem = (id: number) => {
-  axios(`/catalog?=${id}`)
-    .then(function (response) {
-      console.log(response);
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return error;
-    });
-};
-
 export const getUserData = (id: number) => {
   return axios
     .get(`/users?=${id}`, { withCredentials: true })
@@ -52,11 +29,9 @@ export const authUser = (authData: FormData) => {
 export const getProductTypesSelectValues = () => {
   return axios(`/product-types/select-values`)
     .then(function (response) {
-      console.log(response);
       return response.data;
     })
     .catch(function (error) {
-      console.log(error);
       return error;
     });
 };

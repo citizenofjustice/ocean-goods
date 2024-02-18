@@ -2,11 +2,12 @@ import { useState } from "react";
 import DefaultButton from "../UI/DefaultButton";
 import LabeledInputField from "../UI/LabeledInputField";
 import FormCard from "../UI/FormCard";
-import { authUser } from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/root-store-context";
 import { observer } from "mobx-react-lite";
 import PasswordInputField from "../UI/PasswordInputField";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { AxiosError } from "axios";
 
 const initValues = {
   email: "",
@@ -16,10 +17,12 @@ const initValues = {
 const AuthPage = observer(() => {
   const [inputValues, setInputValues] = useState(initValues);
   const navigate = useNavigate();
+  const [isPending, setIsPending] = useState(false);
   const location = useLocation();
-  const { auth } = useStore();
+  const { auth, alert } = useStore();
   const { authData } = auth;
   const from = location.state?.from.pathname || "/";
+  const axiosPrivate = useAxiosPrivate();
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,18 +31,28 @@ const AuthPage = observer(() => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsPending(true);
     const fData = new FormData(event.currentTarget);
-    const result = await authUser(fData);
-    if (result.status === 200) {
-      const { user, accessToken, role } = result.data;
-
+    try {
+      const response = await axiosPrivate.post(`/login`, fData);
+      const { user, accessToken, role } = response.data;
       auth.setAuthData({ ...authData, user, accessToken, roles: [role] });
-
       setInputValues(initValues);
       navigate(from, { replace: true });
-    } else {
-      console.log(result.response.data);
+    } catch (error) {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При входе в учетную запись произошла неизвестная ошибка",
+          type: "error",
+        });
     }
+    setIsPending(false);
   };
 
   return (
@@ -62,7 +75,9 @@ const AuthPage = observer(() => {
               value={inputValues.password}
               onInputChange={handleValueChange}
             />
-            <DefaultButton type="submit">Войти</DefaultButton>
+            <DefaultButton type="submit" isPending={isPending}>
+              Войти
+            </DefaultButton>
           </form>
         </FormCard>
       </div>

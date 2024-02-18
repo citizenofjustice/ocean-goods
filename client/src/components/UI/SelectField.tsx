@@ -43,11 +43,12 @@ const SelectField: React.FC<{
               <option value="" disabled>
                 {` Выберите ${title.toLowerCase()} `}
               </option>
-              {options.map((item) => (
-                <option key={item.id} className="text-black" value={item.id}>
-                  {item.optionValue}
-                </option>
-              ))}
+              {options.length > 0 &&
+                options.map((item) => (
+                  <option key={item.id} className="text-black" value={item.id}>
+                    {item.optionValue}
+                  </option>
+                ))}
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
               <svg

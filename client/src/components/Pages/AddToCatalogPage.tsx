@@ -12,6 +12,8 @@ import DefaultButton from "../UI/DefaultButton";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import { useStore } from "../../store/root-store-context";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -38,11 +40,24 @@ const AddToCatalogPage: React.FC<{
     const [inputValues, setInputValues] =
       useState<CatalogItemInputs>(initValues);
     const axiosPrivate = useAxiosPrivate();
+    const [isPending, setIsPending] = useState(false);
     const navigate = useNavigate();
+    const { alert } = useStore();
 
     const { isLoading, isError, data } = useQuery({
       queryKey: ["product-type-select"],
-      queryFn: async () => await getProductTypesSelectValues(),
+      queryFn: async () => {
+        const response = await getProductTypesSelectValues();
+        console.log(response);
+
+        if (response instanceof AxiosError) {
+          alert.setPopup({
+            message: "Не удалось загрузить типы продуктов",
+            type: "error",
+          });
+        }
+        return response;
+      },
       refetchOnWindowFocus: false,
     });
 
@@ -83,13 +98,29 @@ const AddToCatalogPage: React.FC<{
       event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
     ) => {
       event.preventDefault();
+      setIsPending(true);
       const fData = new FormData(event.currentTarget);
       switch (actionType) {
         case "CREATE": {
-          const response = await axiosPrivate.post(`/catalog/create`, fData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-          console.log(response.data);
+          try {
+            const response = await axiosPrivate.post(`/catalog/create`, fData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            });
+            if (response.status === 201)
+              alert.setPopup({
+                message: "Продукт был успешно добавлен в каталог",
+                type: "success",
+              });
+            navigate("/");
+            setInputValues(emptyInitValues);
+          } catch (error) {
+            if (error instanceof AxiosError)
+              alert.setPopup({
+                message: error.response?.data.error.message,
+                type: "error",
+              });
+          }
+          setIsPending(false);
           break;
         }
         case "UPDATE": {
@@ -103,19 +134,38 @@ const AddToCatalogPage: React.FC<{
             fData.set("mainImage", `${inputValues.mainImage}`);
           }
 
-          if (!editItemId)
+          if (!editItemId) {
+            alert.setPopup({
+              message: "Не обнаружен идентификатор редактируемого продукта",
+              type: "error",
+            });
             throw new Error(
               "Не обнаружен идентификатор редактируемого продукта"
             );
-          const response = await axiosPrivate.put(
-            `/catalog/${editItemId}`,
-            fData,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
-            }
-          );
-          console.log(response);
+          }
 
+          try {
+            const response = await axiosPrivate.put(
+              `/catalog/${editItemId}`,
+              fData,
+              {
+                headers: { "Content-Type": "multipart/form-data" },
+              }
+            );
+            if (response.status === 204)
+              alert.setPopup({
+                message: "Продукт был успешно обновлен",
+                type: "success",
+              });
+            navigate("/");
+          } catch (error) {
+            if (error instanceof AxiosError)
+              alert.setPopup({
+                message: error.response?.data.error.message,
+                type: "error",
+              });
+          }
+          setIsPending(false);
           break;
         }
         default: {
@@ -123,8 +173,6 @@ const AddToCatalogPage: React.FC<{
           break;
         }
       }
-      setInputValues(emptyInitValues);
-      navigate("/");
     };
 
     return (
@@ -223,7 +271,9 @@ const AddToCatalogPage: React.FC<{
                 checked={initValues.inStock}
               />
             </div>
-            <DefaultButton type="submit">Cохранить</DefaultButton>
+            <DefaultButton type="submit" isPending={isPending}>
+              Cохранить
+            </DefaultButton>
           </form>
         </div>
       </>

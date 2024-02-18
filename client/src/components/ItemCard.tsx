@@ -1,15 +1,16 @@
+import { AxiosError } from "axios";
+import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
-import ItemInfoCard from "./UI/ItemInfoCard";
-import CatalogItemModel from "../classes/CatalogItemModel";
-import { useStore } from "../store/root-store-context";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import CatalogItemDropdown from "./UI/CatalogItemDropdown";
-import TextCrossed from "./UI/TextCrossed";
 import AddToCart from "./AddToCart";
+import TextCrossed from "./UI/TextCrossed";
+import ItemInfoCard from "./UI/ItemInfoCard";
+import { useStore } from "../store/root-store-context";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import CatalogItemModel from "../classes/CatalogItemModel";
+import CatalogItemDropdown from "./UI/CatalogItemDropdown";
 
 /**
  * Renders catalog item card
@@ -20,23 +21,30 @@ const ItemCard: React.FC<{
   catalogItem: CatalogItemModel;
 }> = observer(({ catalogItem }) => {
   const queryClient = useQueryClient();
+  // Calling a custom axios hook
   const axiosPrivate = useAxiosPrivate();
-  const { auth } = useStore();
+  // Using store context
+  const { auth, alert } = useStore();
 
+  // Defining mutation for deleting a product
   const mutation = useMutation({
+    // Function to delete a product
     mutationFn: async (productId: number) => {
-      const response = await axiosPrivate.delete(`/catalog/${productId}`); //removeCatalogItem(productId);
+      const response = await axiosPrivate.delete(`/catalog/${productId}`);
       return response.data;
     },
+    // Function to execute on successful deletion
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["catalog"] });
-      console.log("log success");
+      alert.setPopup({ message: "Запись успешно удалена", type: "success" });
     },
-    onError: () => {
-      console.log("log error");
-    },
-    onSettled: () => {
-      console.log("log settled");
+    // Function to execute on error
+    onError: (error) => {
+      if (error instanceof AxiosError)
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
     },
   });
 
@@ -44,7 +52,7 @@ const ItemCard: React.FC<{
     <>
       <div className="w-full my-2 px-2 flex">
         <div className={`${auth.isAuth ? "w-10/12" : "w-full"}`}>
-          <p className="text-center font-medium px-3">
+          <p className="text-center font-medium px-1 vsm:px-3">
             <Link to={`item/${catalogItem.productId}`}>
               {catalogItem.productName}
             </Link>
@@ -71,15 +79,13 @@ const ItemCard: React.FC<{
           </div>
         )}
       </div>
-      <div className="flex justify-center">
-        <div className="basis-1/12" />
-        <div className="grow rounded overflow-hidden flex items-center p-2">
+      <div className="flex px-3 vsm:px-4 gap-3 vsm:gap-4 justify-center">
+        <div className="rounded overflow-hidden min-w-[60px] flex items-center ">
           {catalogItem.mainImage && (
             <img className="rounded" src={catalogItem.mainImage} />
           )}
         </div>
-        <div className="basis-1/12" />
-        <div className="basis-2/12 flex items-center">
+        <div className="flex items-center">
           <div className="flex flex-col justify-end">
             <ItemInfoCard>{`${catalogItem.weight} гр.`}</ItemInfoCard>
             <ItemInfoCard>{`${catalogItem.kcal} ккал.`}</ItemInfoCard>
@@ -95,9 +101,8 @@ const ItemCard: React.FC<{
             </ItemInfoCard>
           </div>
         </div>
-        <div className="basis-1/12" />
       </div>
-      <div className="py-2 h-14 flex items-center">
+      <div className="my-2 vsm:my-3 h-8 flex items-center">
         <AddToCart
           productId={catalogItem.productId}
           catalogItem={catalogItem}

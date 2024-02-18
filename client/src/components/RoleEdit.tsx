@@ -1,10 +1,12 @@
 import { useState } from "react";
+
 import DefaultButton from "./UI/DefaultButton";
-import LabeledInputField from "./UI/LabeledInputField";
-import CustomCheckbox from "./UI/CustomCheckbox";
 import { Privelege } from "../types/Privelege";
+import CustomCheckbox from "./UI/CustomCheckbox";
+import LabeledInputField from "./UI/LabeledInputField";
 import CustomAlertMessage from "./UI/CustomAlertMessage";
 
+// Define the type for the initial values of the form
 interface editRoleInputs {
   roleId: number;
   title: string;
@@ -16,30 +18,36 @@ const RoleEdit: React.FC<{
   priveleges: Privelege[];
   onFormClose: () => void;
   onFormSubmit: (updatedRole: FormData) => void;
-}> = ({ initValues, priveleges, onFormClose, onFormSubmit }) => {
-  const [inputValues, setInputValues] = useState(initValues);
-  const [checkboxAlert, setCheckboxAlert] = useState("");
+  isPending: boolean;
+}> = ({ initValues, priveleges, onFormClose, onFormSubmit, isPending }) => {
+  const [inputValues, setInputValues] = useState(initValues); // State to manage the input values of the form
+  const [checkboxAlert, setCheckboxAlert] = useState(""); // State to manage the alert message for the checkbox
 
+  // Handler function to update the input values when they change
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInputValues({ ...inputValues, [name]: value });
   };
 
+  // Handler function to update the checkbox values when they change
   const handleCheckboxChange = (priveleges: number[]) => {
     setInputValues({ ...inputValues, privelegeIds: priveleges });
   };
 
+  // Handler function to handle the submission of the form
   const handleEditSubmission = (
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
   ) => {
     e.preventDefault();
+    // if priveleges was not checked show alert message and stop execution
     if (inputValues.privelegeIds.length === 0) {
       setCheckboxAlert("Для роли не были выбраны полномочия");
       return;
     } else {
-      setCheckboxAlert("");
+      setCheckboxAlert(""); // clear alert message
     }
     const fData = new FormData();
+    // filling FormData with values
     fData.append("roleId", JSON.stringify(inputValues.roleId));
     fData.append("title", inputValues.title);
     fData.append("privelegeIds", JSON.stringify(inputValues.privelegeIds));
@@ -60,18 +68,22 @@ const RoleEdit: React.FC<{
               onInputChange={handleValueChange}
             />
           </div>
-          <CustomCheckbox
-            nameForIds={`${inputValues.title}-${inputValues.roleId}-priveleges`}
-            content={priveleges}
-            initValues={initValues.privelegeIds}
-            onChange={handleCheckboxChange}
-          />
+          {priveleges && (
+            <CustomCheckbox
+              nameForIds={`${inputValues.title}-${inputValues.roleId}-priveleges`}
+              content={priveleges}
+              initValues={initValues.privelegeIds}
+              onChange={handleCheckboxChange}
+            />
+          )}
           {checkboxAlert && <CustomAlertMessage message={checkboxAlert} />}
           <div className="flex gap-4">
             <DefaultButton type="button" onClick={onFormClose}>
               Отмена
             </DefaultButton>
-            <DefaultButton type="submit">Сохранить</DefaultButton>
+            <DefaultButton type="submit" isPending={isPending}>
+              Сохранить
+            </DefaultButton>
           </div>
         </div>
       </form>
