@@ -150,9 +150,6 @@ const OrdersList = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { value } = event.target;
-    await queryClient.invalidateQueries({
-      queryKey: ["orders"],
-    });
     setFilterBy(value);
   };
 
@@ -174,6 +171,20 @@ const OrdersList = () => {
         break;
       }
     }
+  };
+
+  const handleDateRangeSelect = async (update: [Date, Date]) => {
+    if (update[0] && update[1]) {
+      const endDateIncluded = new Date(
+        new Date(update[1].getTime()).setHours(23, 59, 59, 999)
+      );
+      await queryClient.invalidateQueries({
+        queryKey: ["orders"],
+      });
+      setDateRange([update[0], endDateIncluded]);
+      return;
+    }
+    setDateRange(update);
   };
 
   return (
@@ -200,12 +211,9 @@ const OrdersList = () => {
               <InputDateRange
                 startDate={startDate}
                 endDate={endDate}
-                setDateRange={async (update: [Date, Date]) => {
-                  await queryClient.invalidateQueries({
-                    queryKey: ["orders"],
-                  });
-                  setDateRange(update);
-                }}
+                setDateRange={(update: [Date, Date]) =>
+                  handleDateRangeSelect(update)
+                }
               />
               <OrdersFilter
                 filterProp={filterProp}
@@ -247,7 +255,7 @@ const OrdersList = () => {
                 ))}
               </ul>
             ) : (
-              <div>
+              <div className="p-4 text-center">
                 {filterBy || endDate
                   ? "Заказы c указанными параметрами не обнаружены"
                   : "Заказы не обнаружены"}
@@ -255,7 +263,7 @@ const OrdersList = () => {
             )}
           </div>
         )}
-        <div className="h-4 w-full" ref={ref} />
+        <div className="h-8 w-full" ref={ref} />
       </div>
     </>
   );

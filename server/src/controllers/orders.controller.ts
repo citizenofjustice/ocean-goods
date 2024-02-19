@@ -143,10 +143,15 @@ class OrderController {
       }
 
       // Check if orderBy are of certain type
-      let orderByValue: "created_at" | "totalPrice" | undefined;
+      let orderByValue:
+        | "created_at"
+        | "totalPrice"
+        | "customer_name"
+        | undefined;
       if (
         orderBy === "created_at" ||
         orderBy === "totalPrice" ||
+        orderBy === "customer_name" ||
         orderBy === undefined
       ) {
         orderByValue = orderBy;
