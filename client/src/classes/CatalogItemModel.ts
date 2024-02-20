@@ -15,10 +15,12 @@ class CatalogItemModel implements CatalogItem {
   kcal: number;
   mainImage?: string;
 
+  // Getter to calculate the final price after discount
   get finalPrice(): number {
     return this.price - Math.round(this.price * (this.discount / 100));
   }
 
+  // Constructor for the CatalogItemModel class
   constructor(
     productId: number,
     productName: string,
@@ -31,7 +33,9 @@ class CatalogItemModel implements CatalogItem {
     kcal: number,
     mainImage?: string
   ) {
+    // Making all properties of this class observable for reactive programming
     makeAutoObservable(this);
+    // Assigning values to properties
     this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;

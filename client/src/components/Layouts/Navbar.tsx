@@ -14,10 +14,10 @@ import Cart from "../Cart";
 import MenuList from "../MenuList";
 import { MenuItem } from "../../types/MenuItem";
 import { useStore } from "../../store/root-store-context";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
 import UserDropdownMenu from "../UI/UserDropdownMenu";
 import SignInSVG from "../UI/SignInSVG";
 import Logo from "../../assets/images/Logo.svg";
+import { useMediaQuery } from "usehooks-ts";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
