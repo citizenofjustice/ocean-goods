@@ -49,7 +49,7 @@ const CustomerDataForm: React.FC<{
     const response = await axios.post(`/orders`, fData, {
       headers: { "Content-Type": "application/json" },
     });
-    if (response.status === 200) {
+    if (response.status === 201) {
       setInputValues(emptyInitValues);
       cart.clearCart();
       onOrderSend();

@@ -48,8 +48,6 @@ const AddToCatalogPage: React.FC<{
       queryKey: ["product-type-select"],
       queryFn: async () => {
         const response = await getProductTypesSelectValues();
-        console.log(response);
-
         if (response instanceof AxiosError) {
           alert.setPopup({
             message: "Не удалось загрузить типы продуктов",

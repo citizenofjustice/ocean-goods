@@ -5,6 +5,13 @@ import { verifyToken } from "../middleware/verifyToken";
 
 const router = Router();
 
+// Public route for getting select option values
+router.get(
+  "/select-values",
+  ProductTypesController.getProductTypesSelectValues
+);
+
+// Protected routes that require token and roles
 router.post(
   "/create",
   verifyToken,
@@ -12,10 +19,6 @@ router.post(
   ProductTypesController.createProductType
 );
 router.get("", verifyToken, verifyRole, ProductTypesController.getProductTypes);
-router.get(
-  "/select-values",
-  ProductTypesController.getProductTypesSelectValues
-);
 router.get(
   "/:id",
   verifyToken,
