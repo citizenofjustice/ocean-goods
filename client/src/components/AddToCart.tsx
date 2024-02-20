@@ -23,8 +23,15 @@ const AddToCart: React.FC<{
   };
 
   const handleItemDecrement = (inCartProduct: CartItemModel) => {
-    const filteredItems: CartItemModel[] = cart.amountDecrease(inCartProduct);
-    setCartContent(filteredItems);
+    try {
+      // Decrease amound and filter item if this product amount 0
+      const filteredItems: CartItemModel[] | undefined =
+        cart.amountDecrease(inCartProduct);
+      if (!filteredItems) throw new Error("Item amount decrease gone wrong");
+      setCartContent(filteredItems);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

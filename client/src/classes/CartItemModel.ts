@@ -3,7 +3,6 @@ import { makeAutoObservable } from "mobx";
 
 import { CartItem } from "../types/CartItem";
 
-// Cart item class implementing CartItem interface
 class CartItemModel implements CartItem {
   cartItemId: string = nanoid();
   amount: number = 1;
@@ -18,18 +17,19 @@ class CartItemModel implements CartItem {
   kcal: number;
   mainImage?: string;
 
+  // Getter to calculate the final price after discount
   get finalPrice(): number {
     return this.price - Math.round(this.price * (this.discount / 100));
   }
 
-  // calc cart item total price
+  // Getter to calculate the total price of the cart item
   get totalProductPrice(): number {
     const totalProductPrice = this.amount * this.finalPrice;
     return totalProductPrice;
   }
 
+  // Constructor for the CartItemModel class
   constructor(
-    // id: number,
     productId: number,
     productName: string,
     productTypeId: number,
@@ -39,7 +39,9 @@ class CartItemModel implements CartItem {
     kcal: number,
     mainImage?: string
   ) {
+    // Making all properties of this class observable for reactive programming
     makeAutoObservable(this);
+    // Assigning values to properties
     this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;

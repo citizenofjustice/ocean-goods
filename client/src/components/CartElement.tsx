@@ -20,8 +20,14 @@ const CartElement: React.FC<{
   const [, setCartContent] = useLocalStorage("cart", cartItems);
 
   const handleCartItemRemoval = () => {
-    const cartItemsKept = cart.removeItem(cartItem.cartItemId);
-    setCartContent(cartItemsKept);
+    try {
+      // Decrease amound and filter item if this product amount 0
+      const cartItemsKept = cart.removeItem(cartItem.cartItemId);
+      if (!cartItemsKept) throw new Error("Cart item removal gone wrong");
+      setCartContent(cartItemsKept);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -54,9 +60,9 @@ const CartElement: React.FC<{
             <AmountControls
               currentValue={cartItem.amount}
               onDecrement={action(() => {
-                const filteredItems: CartItemModel[] =
+                const filteredItems: CartItemModel[] | undefined =
                   cart.amountDecrease(cartItem);
-                setCartContent(filteredItems);
+                filteredItems && setCartContent(filteredItems);
               })}
               onIncrement={action(() => {
                 cartItem.amount++;
