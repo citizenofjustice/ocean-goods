@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   Bars3Icon,
   Squares2X2Icon,
-  MagnifyingGlassIcon,
   PhoneIcon,
 } from "@heroicons/react/24/outline";
 import { Link, NavLink } from "react-router-dom";
@@ -26,12 +25,6 @@ const menuItems: MenuItem[] = [
     title: "Каталог",
     path: "/",
     icon: <Squares2X2Icon className="w-6 h-6" />,
-  },
-  {
-    id: nanoid(),
-    title: "Поиск",
-    path: "/search",
-    icon: <MagnifyingGlassIcon className="w-6 h-6" />,
   },
   {
     id: nanoid(),

@@ -5,6 +5,7 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 import { Order } from "../types/Order";
+import { SortBy } from "../types/SortBy";
 import ErrorPage from "./Pages/ErrorPage";
 import OrdersFilter from "./OrdersFilter";
 import SortComponent from "./SortComponent";
@@ -15,12 +16,6 @@ import OrdersListHeader from "./OrdersListHeader";
 import { SelectOptions } from "./UI/SimpleSelect";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
-// Interface for sorting
-interface SortBy {
-  orderBy: string;
-  direction: string;
-}
-
 // Initial values for sorting
 const initSortValues: SortBy = {
   orderBy: "",
@@ -28,7 +23,7 @@ const initSortValues: SortBy = {
 };
 
 // interface for filtering
-export interface FilterProp {
+export interface FilterOrdersProp {
   fieldName: "id" | "customer_name";
 }
 
@@ -59,7 +54,7 @@ const OrdersList = () => {
   const axiosPrivate = useAxiosPrivate();
   const ref = useRef<HTMLDivElement>(null);
   const [isFiltersShown, setIsFiltersShown] = useState<boolean>(false);
-  const [filterProp, setFilterProp] = useState<FilterProp>({
+  const [filterProp, setFilterProp] = useState<FilterOrdersProp>({
     fieldName: "id",
   });
   const [filterBy, setFilterBy] = useState<string>("");
@@ -135,7 +130,7 @@ const OrdersList = () => {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible]);
+  }, [isVisible, isFetching]);
 
   // Handler for select change
   const handleSelect = async (value: string) => {

@@ -40,6 +40,7 @@ class cartStore {
           item.productId,
           item.productName,
           item.productTypeId,
+          item.amount,
           item.weight,
           item.price,
           item.discount,
@@ -76,10 +77,12 @@ class cartStore {
       inCartProduct.amount++;
     } else {
       try {
+        const startAmount = 1;
         const newItem = new CartItemModel(
           product.productId,
           product.productName,
           product.productTypeId,
+          startAmount,
           product.weight,
           product.price,
           product.discount,

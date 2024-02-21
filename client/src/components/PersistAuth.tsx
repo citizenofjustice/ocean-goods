@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { observer } from "mobx-react-lite";
 import useRefreshToken from "../hooks/useRefreshToken";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import { useStore } from "../store/root-store-context";
 
-const PersistAuth = () => {
+const PersistAuth = observer(() => {
   const [isLoading, setIsLoading] = useState(true);
   const { refresh } = useRefreshToken();
   const { auth } = useStore();
@@ -30,6 +31,6 @@ const PersistAuth = () => {
   }, []);
 
   return <>{isLoading ? <LoadingSpinner /> : <Outlet />}</>;
-};
+});
 
 export default PersistAuth;

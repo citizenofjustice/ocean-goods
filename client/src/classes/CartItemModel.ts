@@ -5,10 +5,10 @@ import { CartItem } from "../types/CartItem";
 
 class CartItemModel implements CartItem {
   cartItemId: string = nanoid();
-  amount: number = 1;
   productId: number;
   productName: string;
   productTypeId: number;
+  amount: number = 1;
   inStock: boolean = true;
   description: string = "";
   price: number;
@@ -33,6 +33,7 @@ class CartItemModel implements CartItem {
     productId: number,
     productName: string,
     productTypeId: number,
+    amount: number,
     weight: number,
     price: number,
     discount: number,
@@ -45,6 +46,7 @@ class CartItemModel implements CartItem {
     this.productId = productId;
     this.productName = productName;
     this.productTypeId = productTypeId;
+    this.amount = amount;
     this.price = price;
     this.discount = discount;
     this.weight = weight;
