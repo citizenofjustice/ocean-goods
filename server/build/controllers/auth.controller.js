@@ -98,7 +98,7 @@ class AuthController {
                 // Extract the refresh token from the cookies
                 const cookies = req.cookies;
                 // If no refresh token, return 401 status
-                if (cookies === null || cookies === void 0 ? void 0 : cookies.token)
+                if (!(cookies === null || cookies === void 0 ? void 0 : cookies.token))
                     return res.status(401).json({
                         error: { message: "Доступ запрещен. Отсутствует токен авторизации" },
                     });

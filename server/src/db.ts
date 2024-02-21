@@ -1,5 +1,8 @@
 import { db } from "@vercel/postgres";
+import { PrismaClient } from "@prisma/client";
 import { Pool, QueryConfig, QueryResult } from "pg";
+
+export const prisma = new PrismaClient();
 
 // Creating a new pool with the database configuration
 const pool = new Pool({

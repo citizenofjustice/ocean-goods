@@ -14,7 +14,7 @@ const SimpleSelect: React.FC<{
         <select
           value={selectedOption}
           onChange={(e) => onOptionSelect(e.target.value)}
-          className="block appearance-none py-3 px-4 pr-8 rounded leading-tight w-full bg-white border border-gray-300 text-text-700
+          className="block appearance-none py-2.5 px-4 pr-8 rounded leading-tight w-full bg-white border border-gray-300 text-text-700
           focus:outline-none focus:bg-white focus:border-accent-700 focus:border-2
           hover:border-accent-700
           disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none"

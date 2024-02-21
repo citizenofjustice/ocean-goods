@@ -9,9 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbQuery = void 0;
+exports.dbQuery = exports.prisma = void 0;
 const postgres_1 = require("@vercel/postgres");
+const client_1 = require("@prisma/client");
 const pg_1 = require("pg");
+exports.prisma = new client_1.PrismaClient();
 // Creating a new pool with the database configuration
 const pool = new pg_1.Pool({
     user: "postgres",

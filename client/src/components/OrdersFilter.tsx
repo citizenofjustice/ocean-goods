@@ -1,11 +1,11 @@
-import { FilterProp } from "./OrdersList";
+import { FilterOrdersProp } from "./OrdersList";
 
 const inputStyles = `focus:outline-none focus:border-accent-700 focus:ring-1 focus:ring-accent-700 hover:border-accent-700
 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background-50 disabled:text-text-500 disabled:border-background-200 disabled:shadow-none
 invalid:border-red-500 invalid:text-text-600 focus:invalid:border-red-500 focus:invalid:ring-red-500`;
 
 const OrdersFilter: React.FC<{
-  filterProp: FilterProp;
+  filterProp: FilterOrdersProp;
   handleCheckboxChange: () => void;
   filterBy: string;
   handleFilterInput: (e: React.ChangeEvent<HTMLInputElement>) => void;

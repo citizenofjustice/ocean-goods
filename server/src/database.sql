@@ -29,7 +29,7 @@ create Table catalog(
     product_name VARCHAR(255),
     product_type_id INTEGER,
     FOREIGN KEY (product_type_id) REFERENCES product_types (id),
-    in_stoke BOOLEAN, 
+    in_stock BOOLEAN, 
     description VARCHAR(2000),
     price INTEGER,
     discount INTEGER,
