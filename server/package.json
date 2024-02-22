@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "postinstall": "npx prisma generate",
     "build": "npx prisma generate && rimraf build && npx tsc",
     "prestart": "npm run build",
     "start": "node build/index.js",
