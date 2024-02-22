@@ -17,5 +17,14 @@
         }
       ]
     }
+    {
+      "source": "/ocean-goods-server.vercel.app/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://ocean-goods-client-git-dev-citizenofjustice.vercel.app"
+        }
+      ]
+    }
   ]
 }
