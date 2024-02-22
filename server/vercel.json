@@ -16,7 +16,7 @@
           "value": "https://ocean-goods-client.vercel.app"
         }
       ]
-    }
+    },
     {
       "source": "/ocean-goods-server.vercel.app/(.*)",
       "headers": [
