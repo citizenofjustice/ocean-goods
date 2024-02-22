@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "rimraf build && npx tsc",
+    "build": "npx prisma generate && rimraf build && npx tsc",
     "prestart": "npm run build",
     "start": "node build/index.js",
     "preserve": "npm run build",

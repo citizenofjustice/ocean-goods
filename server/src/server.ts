@@ -21,9 +21,7 @@ export default class Server {
     const corsOptions: CorsOptions = {
       origin:
         // Setting the origin based on whether the app is hosted locally
-        process.env.IS_HOSTED_LOCALLY === "true"
-          ? "http://localhost:5173"
-          : "https://ocean-goods-client.vercel.app",
+        "https://ocean-goods-client.vercel.app",
       // Allowing credentials
       credentials: true,
     };
