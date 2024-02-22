@@ -19,11 +19,11 @@ export default class Server {
 
     // Defining CORS options
     const corsOptions: CorsOptions = {
-      origin:
-        // Setting the origin based on whether the app is hosted locally
-        "https://ocean-goods-client.vercel.app",
+      // Setting the origin based on whether the app is hosted locally
+      origin: "https://ocean-goods-client.vercel.app",
       // Allowing credentials
       credentials: true,
+      methods: "POST, GET, PUT, DELETE, OPTIONS",
     };
 
     app.use(cors(corsOptions)); // Using CORS with the defined options

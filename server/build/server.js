@@ -21,11 +21,11 @@ class Server {
         dotenv_1.default.config();
         // Defining CORS options
         const corsOptions = {
-            origin: 
             // Setting the origin based on whether the app is hosted locally
-            "https://ocean-goods-client.vercel.app",
+            origin: "https://ocean-goods-client.vercel.app",
             // Allowing credentials
             credentials: true,
+            methods: "POST, GET, PUT, DELETE, OPTIONS",
         };
         app.use((0, cors_1.default)(corsOptions)); // Using CORS with the defined options
         app.use(express_1.default.json()); // Using express.json middleware to parse JSON requests
