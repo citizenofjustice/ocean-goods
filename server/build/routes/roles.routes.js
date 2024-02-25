@@ -9,9 +9,9 @@ const roles_controller_1 = __importDefault(require("../controllers/roles.control
 const router = (0, express_1.Router)();
 // Protected routes that require token and roles (middleware used in src/index)
 router.post("/create", roles_controller_1.default.createRole);
+router.get("/select-values", roles_controller_1.default.getRolesSelectValues);
 router.get("", roles_controller_1.default.getRoles);
 router.get("/:id", roles_controller_1.default.getOneRole);
-router.get("/select-values", roles_controller_1.default.getRolesSelectValues);
 router.put("/:id", roles_controller_1.default.updateRole);
 router.delete("/:id", roles_controller_1.default.deleteRole);
 exports.default = router;

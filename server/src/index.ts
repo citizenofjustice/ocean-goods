@@ -51,15 +51,6 @@ app.use("/api/priveleges", privelegesRouter);
 app.use(errorHandler);
 
 // Starting the server
-app
-  .listen(PORT, "localhost", function () {
-    console.log(`Server is running on port ${PORT}.`);
-  })
-  .on("error", (err: any) => {
-    // Handling any errors when starting the server
-    if (err.code === "EADDRINUSE") {
-      console.log("Error: address already in use");
-    } else {
-      console.log(err);
-    }
-  });
+app.listen(PORT, function () {
+  console.log(`Server is running on port ${PORT}.`);
+});

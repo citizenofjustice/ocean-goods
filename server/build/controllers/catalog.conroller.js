@@ -17,30 +17,27 @@ class CatalogController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Get the item details from the request body
-                const item = yield req.body;
+                const item = req.body;
                 let imageLink = "";
                 // If there is a file in the request, upload it and get the URL
                 if (req.file)
                     imageLink = yield (0, upload_1.uploadPictureAndGetUrl)(req.file);
                 // Insert the new item into the database
-                const newItem = yield (0, db_1.dbQuery)({
-                    text: `INSERT INTO catalog
-      (product_name, product_type_id, in_stock, description, price, discount, weight, kcal, main_image)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)  RETURNING *`,
-                    values: [
-                        item.productName,
-                        item.productTypeId,
-                        item.inStock ? true : false,
-                        item.description,
-                        item.price,
-                        item.discount,
-                        item.weight,
-                        item.kcal,
-                        imageLink,
-                    ],
+                const newItem = yield db_1.prisma.catalog.create({
+                    data: {
+                        productName: item.productName,
+                        productTypeId: Number(item.productTypeId),
+                        inStock: !!item.inStock,
+                        description: item.description,
+                        price: Number(item.price),
+                        discount: Number(item.discount),
+                        weight: Number(item.weight),
+                        kcal: Number(item.kcal),
+                        mainImage: imageLink,
+                    },
                 });
                 // Send the newly created item as the response
-                res.status(201).json(newItem.rows[0]);
+                res.status(201).json(newItem);
             }
             catch (error) {
                 // Pass the error to the errorHandler middleware
@@ -120,14 +117,28 @@ class CatalogController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Get the item ID from the request parameters
-                const id = req.params.id;
-                // Query the database for the specific item
-                const catalogItem = yield (0, db_1.dbQuery)({
-                    text: `SELECT catalog.id as "productId", catalog.product_name as "productName", catalog.product_type_id as "productTypeId", catalog.in_stock as "inStock", catalog.description, catalog.price, catalog.discount, catalog.weight, catalog.kcal, catalog.main_image as "mainImage", catalog.created_at as "createdAt", catalog.updated_at as "updatedAt", product_types.type FROM catalog JOIN product_types ON catalog.product_type_id = product_types.id WHERE catalog.id = $1`,
-                    values: [id],
+                const id = parseInt(req.params.id);
+                // The findUnique method is used to retrieve a single record that matches the where clause
+                // The include option is used to include the related productTypes records in the result
+                const catalogItem = yield db_1.prisma.catalog.findUnique({
+                    where: { productId: id },
+                    include: {
+                        productTypes: {
+                            select: {
+                                type: true,
+                            },
+                        },
+                    },
                 });
+                // If the catalogItem is not found in the database, return a 404 status code and an error message
+                if (!catalogItem)
+                    return res.status(404).json({
+                        error: {
+                            message: "В базе данных отсутствует продукт с данным идентификатором",
+                        },
+                    });
                 // Send the catalog item as the response
-                res.status(200).json(catalogItem.rows[0]);
+                res.status(200).json(catalogItem);
             }
             catch (error) {
                 // Pass the error to the errorHandler middleware
@@ -140,43 +151,28 @@ class CatalogController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Get the item ID from the request parameters
-                const id = req.params.id;
+                const id = parseInt(req.params.id);
                 // Get the updated item details from the request body
                 const item = yield req.body;
-                let imageLink = "";
-                // If there is a file in the request, upload it and get the URL
-                if (req.file) {
-                    imageLink = yield (0, upload_1.uploadPictureAndGetUrl)(req.file);
-                }
-                else {
-                    imageLink = item.mainImage;
-                }
-                // Update the item in the database
-                yield (0, db_1.dbQuery)({
-                    text: `UPDATE catalog SET 
-          product_name = $1,
-          product_type_id = $2,
-          in_stock = $3,
-          description = $4,
-          price = $5,
-          discount = $6,
-          weight = $7,
-          kcal = $8,
-          main_image = $9,
-          updated_at = NOW()
-          WHERE id = $10 RETURNING *`,
-                    values: [
-                        item.productName,
-                        item.productTypeId,
-                        item.inStock,
-                        item.description,
-                        item.price,
-                        item.discount,
-                        item.weight,
-                        item.kcal,
-                        imageLink,
-                        id,
-                    ],
+                // If there is a new file in the request, upload it and get the URL, otherwise keep old value
+                let imageLink = req.file
+                    ? yield (0, upload_1.uploadPictureAndGetUrl)(req.file)
+                    : item.mainImage;
+                // Update the item in the database using Prisma
+                yield db_1.prisma.catalog.update({
+                    where: { productId: id },
+                    data: {
+                        productName: item.productName,
+                        productTypeId: Number(item.productTypeId),
+                        inStock: !!item.inStock,
+                        description: item.description,
+                        price: Number(item.price),
+                        discount: Number(item.discount),
+                        weight: Number(item.weight),
+                        kcal: Number(item.kcal),
+                        mainImage: imageLink,
+                        updatedAt: new Date(),
+                    },
                 });
                 // Send a success status
                 res.sendStatus(204);
@@ -192,11 +188,12 @@ class CatalogController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Get the item ID from the request parameters
-                const id = req.params.id;
+                const id = parseInt(req.params.id);
                 // Delete the item from the database
-                yield (0, db_1.dbQuery)({
-                    text: `DELETE FROM catalog WHERE id = $1`,
-                    values: [id],
+                yield db_1.prisma.catalog.delete({
+                    where: {
+                        productId: id,
+                    },
                 });
                 // Send a success status
                 res.sendStatus(204);

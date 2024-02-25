@@ -48,16 +48,6 @@ app.use("/api/priveleges", priveleges_routes_1.default);
 // Using the error handler as the last middleware
 app.use(errorHandler_1.errorHandler);
 // Starting the server
-app
-    .listen(PORT, "localhost", function () {
+app.listen(PORT, function () {
     console.log(`Server is running on port ${PORT}.`);
-})
-    .on("error", (err) => {
-    // Handling any errors when starting the server
-    if (err.code === "EADDRINUSE") {
-        console.log("Error: address already in use");
-    }
-    else {
-        console.log(err);
-    }
 });
