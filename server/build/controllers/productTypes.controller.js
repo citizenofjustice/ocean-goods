@@ -54,7 +54,7 @@ class ProductTypesController {
             try {
                 // Fetching values of product types for filling select field options
                 const selectValues = yield (0, db_1.dbQuery)({
-                    text: `SELECT id, type as "optionValue" FROM product_types ORDER BY type ASC`,
+                    text: `SELECT id as "productTypeId", type FROM product_types ORDER BY type ASC`,
                 });
                 res.status(200).json(selectValues.rows); // Sending select values as a response
             }

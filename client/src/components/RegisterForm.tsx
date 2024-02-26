@@ -8,12 +8,18 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import PasswordInputField from "./UI/PasswordInputField";
 import { AxiosError } from "axios";
 import { useStore } from "../store/root-store-context";
+import { SelectValue } from "../types/SelectValue";
 
 const initValues = {
   email: "",
   password: "",
   roleId: "",
 };
+
+interface RoleSelectOption {
+  roleId: number;
+  title: string;
+}
 
 const RegisterForm = () => {
   const [inputValues, setInputValues] = useState(initValues);
@@ -26,7 +32,18 @@ const RegisterForm = () => {
     queryKey: ["roles-select"],
     queryFn: async () => {
       const response = await axiosPrivate.get(`/roles/select-values`);
-      return response.data;
+      if (response instanceof AxiosError) {
+        throw new Error("Error while fetching roles select-values");
+      } else {
+        const availableRoles = response.data.map((item: RoleSelectOption) => {
+          const selectValue: SelectValue = {
+            id: item.roleId,
+            optionValue: item.title,
+          };
+          return selectValue;
+        });
+        return availableRoles;
+      }
     },
     refetchOnWindowFocus: false,
   });

@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import { dbQuery } from "../db";
-
-const privelegesCamelCase: string = `id as "privelegeId", title`;
+import { prisma } from "../db";
 
 class PrivelegesController {
   // This function is not implemented yet
@@ -13,10 +11,12 @@ class PrivelegesController {
   // Method to get all priveleges
   async getPriveleges(req: Request, res: Response, next: NextFunction) {
     try {
-      const priveleges = await dbQuery({
-        text: `SELECT ${privelegesCamelCase} FROM priveleges ORDER BY title`,
+      const priveleges = await prisma.priveleges.findMany({
+        orderBy: {
+          title: "asc",
+        },
       });
-      res.status(200).json(priveleges.rows);
+      res.status(200).json(priveleges);
     } catch (error) {
       // Pass the error to the errorHandler middleware
       next(error);

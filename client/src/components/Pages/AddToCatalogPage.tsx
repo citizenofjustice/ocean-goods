@@ -14,6 +14,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useStore } from "../../store/root-store-context";
+import { SelectValue } from "../../types/SelectValue";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -26,6 +27,11 @@ const emptyInitValues: CatalogItemInputs = {
   kcal: "",
   mainImage: undefined,
 };
+
+interface ProductTypeSelectOption {
+  productTypeId: number;
+  type: string;
+}
 
 const AddToCatalogPage: React.FC<{
   actionType?: "CREATE" | "UPDATE";
@@ -47,14 +53,22 @@ const AddToCatalogPage: React.FC<{
     const { isLoading, isError, data } = useQuery({
       queryKey: ["product-type-select"],
       queryFn: async () => {
-        const response = await getProductTypesSelectValues();
-        if (response instanceof AxiosError) {
+        const data = await getProductTypesSelectValues();
+        if (data instanceof AxiosError) {
           alert.setPopup({
             message: "Не удалось загрузить типы продуктов",
             type: "error",
           });
+        } else {
+          const availableRoles = data.map((item: ProductTypeSelectOption) => {
+            const selectValue: SelectValue = {
+              id: item.productTypeId,
+              optionValue: item.type,
+            };
+            return selectValue;
+          });
+          return availableRoles;
         }
-        return response;
       },
       refetchOnWindowFocus: false,
     });

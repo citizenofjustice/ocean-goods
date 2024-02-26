@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db");
-const privelegesCamelCase = `id as "privelegeId", title`;
 class PrivelegesController {
     // This function is not implemented yet
     createPrivelege(req, res, next) {
@@ -22,10 +21,12 @@ class PrivelegesController {
     getPriveleges(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const priveleges = yield (0, db_1.dbQuery)({
-                    text: `SELECT ${privelegesCamelCase} FROM priveleges ORDER BY title`,
+                const priveleges = yield db_1.prisma.priveleges.findMany({
+                    orderBy: {
+                        title: "asc",
+                    },
                 });
-                res.status(200).json(priveleges.rows);
+                res.status(200).json(priveleges);
             }
             catch (error) {
                 // Pass the error to the errorHandler middleware

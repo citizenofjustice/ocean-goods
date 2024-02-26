@@ -33,12 +33,14 @@ class RolesController {
                     return res.status(400).json({
                         error: { message: "Привелегии не были указаны при создании роли" },
                     });
-                // Inserts the new role into the database and returns the created role
-                const newRole = yield (0, db_1.dbQuery)({
-                    text: `INSERT INTO roles (title, privelege_ids) VALUES ($1, $2) RETURNING *`,
-                    values: [title, priveleges],
+                // Create a new role with Prisma and return the created role
+                const newRole = yield db_1.prisma.roles.create({
+                    data: {
+                        title: title,
+                        privelegeIds: priveleges,
+                    },
                 });
-                res.status(201).json(newRole.rows[0]); // Return the created role with a 201 status code
+                res.status(201).json(newRole); // Return the created role with a 201 status code
             }
             catch (error) {
                 next(error); // Pass the error to the errorHandler middleware
@@ -50,20 +52,17 @@ class RolesController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Query the database to get all roles and their associated privileges
-                const roles = yield (0, db_1.dbQuery)({
-                    text: `
-        SELECT r.id as "roleId", r.title, json_agg(json_build_object(
-          'privelegeId', pr.id,
-          'title', pr.title
-        )) as priveleges
-        FROM roles r
-        RIGHT JOIN priveleges pr
-        ON pr.id = ANY(r.privelege_ids)
-        WHERE r.id IS NOT NULL
-        GROUP BY r.id
-      `,
+                const roles = yield db_1.prisma.roles.findMany({
+                    select: {
+                        roleId: true,
+                        title: true,
+                        privelegeIds: true,
+                    },
+                    orderBy: {
+                        title: "asc",
+                    },
                 });
-                res.status(200).json(roles.rows); // Return the roles
+                res.status(200).json(roles); // Return the roles
             }
             catch (error) {
                 next(error); // Pass the error to the errorHandler middleware
@@ -74,10 +73,16 @@ class RolesController {
     getRolesSelectValues(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const selectValues = yield (0, db_1.dbQuery)({
-                    text: `SELECT id, title as "optionValue" FROM roles ORDER BY title ASC`,
+                const selectValues = yield db_1.prisma.roles.findMany({
+                    select: {
+                        roleId: true,
+                        title: true,
+                    },
+                    orderBy: {
+                        title: "asc",
+                    },
                 });
-                res.status(200).json(selectValues.rows);
+                res.status(200).json(selectValues);
             }
             catch (error) {
                 next(error); // Pass the error to the errorHandler middleware
@@ -95,7 +100,6 @@ class RolesController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { roleId, title, privelegeIds } = req.body;
-                // 'privelegeIds' & 'roleId' should be a JSON string of an array of privilege IDs
                 let priveleges;
                 let roleIdValue;
                 // Try to parse privelegeIds & roleId. If it's not a valid JSON string, an error will be thrown
@@ -109,21 +113,28 @@ class RolesController {
                     });
                 }
                 // Query the database to find the role with the given ID
-                const foundRole = yield (0, db_1.dbQuery)({
-                    text: "SELECT id FROM roles WHERE id = $1",
-                    values: [roleIdValue],
+                const foundRole = yield db_1.prisma.roles.findUnique({
+                    where: {
+                        roleId: roleIdValue,
+                    },
                 });
-                if (!foundRole.rows[0])
+                if (!foundRole) {
                     // If the role is not found, return a 404 error with a message
                     return res.status(404).json({
                         error: {
                             message: "Изменение не возможно. Запись не найдена в базе данных",
                         },
                     });
-                // Update the role in the database and return the updated role
-                yield (0, db_1.dbQuery)({
-                    text: `UPDATE roles SET title = $1, privelege_ids = $2 WHERE id = $3 RETURNING *`,
-                    values: [title, priveleges, roleIdValue],
+                }
+                // Update the role in the database
+                yield db_1.prisma.roles.update({
+                    where: {
+                        roleId: roleIdValue,
+                    },
+                    data: {
+                        title: title,
+                        privelegeIds: priveleges,
+                    },
                 });
                 // Return a 204 status code (request has succeeded but returns no message body)
                 res.sendStatus(204);
@@ -137,22 +148,24 @@ class RolesController {
     deleteRole(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { id } = req.params;
+                const roleId = parseInt(req.params.id);
                 // Query the database to find the role with the given ID
-                const foundRole = yield (0, db_1.dbQuery)({
-                    text: `SELECT id FROM roles WHERE id = $1`,
-                    values: [id],
+                const foundRole = yield db_1.prisma.roles.findUnique({
+                    where: {
+                        roleId: roleId,
+                    },
                 });
-                if (!foundRole.rows[0])
+                if (!foundRole)
                     // If the role is not found, return a 404 error with a message
                     return res.status(404).json({
                         error: {
                             message: "Удаление не возможно. Запись не найдена в базе данных",
                         },
                     });
-                yield (0, db_1.dbQuery)({
-                    text: `DELETE FROM roles WHERE id = $1`,
-                    values: [id],
+                yield db_1.prisma.roles.delete({
+                    where: {
+                        roleId: roleId,
+                    },
                 });
                 // Return a 204 status code (request has succeeded but returns no message body)
                 res.sendStatus(204);

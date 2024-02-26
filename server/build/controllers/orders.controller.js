@@ -70,24 +70,18 @@ class OrderController {
                     return res.status(422).json({
                         error: "Не удалось создать заказ. В заказе отсутствуют продукты.",
                     });
-                // Prepare the SQL query
-                const sqlQuery = `
-        INSERT INTO orders (order_details, customer_name, customer_phone, customer_email, contact_method)
-        VALUES ($1, $2, $3, $4, $5) RETURNING ${orderCamelCase}
-      `;
-                // Execute the query and get the result
-                const createOrderQuery = yield (0, db_1.dbQuery)({
-                    text: sqlQuery,
-                    values: [
-                        orderDetails,
-                        customerName,
-                        customerPhone,
-                        customerEmail,
-                        contactMethod,
-                    ],
+                // Prepare the Prisma query
+                const newOrder = yield db_1.prisma.orders.create({
+                    data: {
+                        orderDetails: orderDetails,
+                        customerName: customerName,
+                        customerPhone: customerPhone,
+                        customerEmail: customerEmail,
+                        contactMethod: contactMethod,
+                    },
                 });
                 // Extract the new order from the result
-                const newOrder = createOrderQuery.rows[0];
+                // const newOrder: Order = createOrderQuery.rows[0];
                 // Pass new order to a telegram bot message
                 yield (0, orderMessage_1.handleOrderMessage)(index_1.ordersBot.bot, newOrder);
                 // Send the response status
