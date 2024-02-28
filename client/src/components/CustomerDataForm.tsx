@@ -3,7 +3,6 @@ import LabeledInputField from "./UI/LabeledInputField";
 import FormCard from "./UI/FormCard";
 import { CustomerDataInputs } from "../types/form-types";
 import DefaultButton from "./UI/DefaultButton";
-import { OrderItem } from "../types/OrderItem";
 import { useStore } from "../store/root-store-context";
 import { observer } from "mobx-react-lite";
 import axios from "../api/axios";
@@ -33,19 +32,14 @@ const CustomerDataForm: React.FC<{
     event.preventDefault();
     setIsPending(true);
     const fData = new FormData(event.currentTarget);
-    const orderItems: OrderItem[] = cartItems.map((item) => {
-      const orderItem: OrderItem = {
+    const orderItems = cartItems.map((item) => {
+      const orderItem = {
         productId: item.productId,
-        productTypeId: item.productTypeId,
-        productName: item.productName,
-        mainImage: item.mainImage,
         amount: item.amount,
-        totalProductPrice: item.totalProductPrice,
       };
       return orderItem;
     });
-    const orderDetails = { orderItems, totalPrice: cart.totalCartPrice };
-    fData.append("orderDetails", JSON.stringify(orderDetails));
+    fData.append("orderItems", JSON.stringify(orderItems));
     const response = await axios.post(`/orders`, fData, {
       headers: { "Content-Type": "application/json" },
     });

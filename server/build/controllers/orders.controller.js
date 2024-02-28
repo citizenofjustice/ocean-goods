@@ -13,42 +13,32 @@ exports.getOrderById = void 0;
 const db_1 = require("../db");
 const index_1 = require("../index");
 const orderMessage_1 = require("../bot/commands/orderMessage");
-// Defining a string to convert column names to camel case
-const orderCamelCase = 'id as "orderId", order_details as "orderDetails", customer_name as "customerName", customer_phone as "customerPhone", customer_email as "customerEmail", contact_method as "contactMethod", created_at as "createdAt"';
 // Function to get order by ID
 function getOrderById(orderId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // Query the database for the order (join with product types)
-            const orderData = yield (0, db_1.dbQuery)({
-                text: `SELECT 
-        orders.id as "orderId", orders.customer_name as "customerName", orders.customer_phone as "customerPhone",
-        orders.customer_email as "customerEmail", orders.contact_method as "contactMethod", orders.created_at as "createdAt",
-        json_build_object(
-          'orderItems', json_agg(
-            jsonb_set(
-              elems::jsonb, 
-              '{type}', 
-              to_jsonb(product_types.type)
-            )
-          ),
-          'totalPrice', orders.order_details->'totalPrice'
-        ) AS "orderDetails"
-      FROM 
-        orders
-      JOIN 
-        jsonb_array_elements(orders.order_details->'orderItems') AS elems ON TRUE
-      JOIN 
-        product_types ON product_types.id = (elems->'productTypeId')::text::integer
-      WHERE orders.id = $1
-      GROUP BY 
-        orders.id`,
-                values: [orderId],
+            const orderData = yield db_1.prisma.order.findUnique({
+                where: {
+                    orderId: orderId,
+                },
+                include: {
+                    orderItems: {
+                        include: {
+                            catalogItem: {
+                                include: {
+                                    productTypes: true,
+                                },
+                            },
+                        },
+                    },
+                },
             });
-            // Extract the order from the query result
-            const foundOrder = orderData.rows[0];
+            // Check if the order exists
+            if (!orderData)
+                throw new Error("Заказа с таким номером не существует");
             // Return the order
-            return foundOrder;
+            return orderData;
         }
         catch (error) {
             // Log the error and rethrow it
@@ -64,26 +54,52 @@ class OrderController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Destructure the request body
-                const { orderDetails, customerName, customerPhone, customerEmail, contactMethod, } = req.body;
+                const { customerName, customerPhone, customerEmail, contactMethod, orderItems, } = req.body;
+                const parsedOrderItems = JSON.parse(orderItems);
+                const opderProducts = yield db_1.prisma.catalog.findMany({
+                    where: {
+                        productId: {
+                            in: parsedOrderItems.map((item) => item.productId),
+                        },
+                    },
+                });
+                const itemsWithAmount = opderProducts.map((item) => {
+                    const orderItem = parsedOrderItems.find((orderItem) => orderItem.productId === item.productId);
+                    return Object.assign(Object.assign({}, item), { amount: orderItem ? orderItem.amount : 0 });
+                });
+                let totalPrice = 0;
+                for (const item of itemsWithAmount) {
+                    const finalPrice = item.price - Math.round(item.price * (item.discount / 100));
+                    totalPrice += item.amount * finalPrice;
+                }
                 // Check if order details is empty
-                if (JSON.parse(orderDetails).orderItems.length === 0)
+                if (parsedOrderItems.length === 0)
                     return res.status(422).json({
                         error: "Не удалось создать заказ. В заказе отсутствуют продукты.",
                     });
                 // Prepare the Prisma query
-                const newOrder = yield db_1.prisma.orders.create({
+                const newOrder = yield db_1.prisma.order.create({
                     data: {
-                        orderDetails: orderDetails,
                         customerName: customerName,
                         customerPhone: customerPhone,
                         customerEmail: customerEmail,
                         contactMethod: contactMethod,
+                        totalPrice: totalPrice,
+                        orderItems: {
+                            create: parsedOrderItems.map((item) => {
+                                const snapshot = opderProducts.find((catalogItem) => catalogItem.productId === item.productId);
+                                return {
+                                    productId: item.productId,
+                                    amount: item.amount,
+                                    itemSnapshot: snapshot,
+                                };
+                            }),
+                        },
                     },
                 });
-                // Extract the new order from the result
-                // const newOrder: Order = createOrderQuery.rows[0];
+                const orderMessageContent = Object.assign(Object.assign({}, newOrder), { totalPrice });
                 // Pass new order to a telegram bot message
-                yield (0, orderMessage_1.handleOrderMessage)(index_1.ordersBot.bot, newOrder);
+                yield (0, orderMessage_1.handleOrderMessage)(index_1.ordersBot.bot, orderMessageContent);
                 // Send the response status
                 res.sendStatus(201);
             }
@@ -125,78 +141,74 @@ class OrderController {
                         },
                     });
                 }
-                // Check if orderBy are of certain type
-                let orderByValue;
-                if (orderBy === "created_at" ||
-                    orderBy === "totalPrice" ||
-                    orderBy === "customer_name" ||
-                    orderBy === undefined) {
-                    orderByValue = orderBy;
-                }
-                else {
-                    return res.status(400).json({
-                        error: {
-                            message: "Не удалось определить значение, по которому выполняется сортировка",
-                        },
-                    });
-                }
-                // Check if direction are of certain type
-                let directionValue;
-                if (direction === "ASC" ||
-                    direction === "DESC" ||
-                    direction === undefined) {
-                    directionValue = direction;
-                }
-                else {
-                    return res.status(400).json({
-                        error: { message: "Не удалось определить порядок сортировки" },
-                    });
-                }
-                // Initialize an array to hold our WHERE clauses
-                let whereClauses = [];
-                // If a filter and filterType are provided, add a WHERE clause for the filter
-                if (filter && filterType) {
-                    whereClauses.push(`${filterType}::text ILIKE '%${filter}%'`);
-                }
-                // If a startDate and endDate are provided, add a WHERE clause for the date range
-                if (startDate && endDate) {
-                    whereClauses.push(`created_at BETWEEN '${startDate}' AND '${endDate}'`);
-                }
-                // Initialize the WHERE string
-                let where = "";
-                // If there are any WHERE clauses, join them with " AND " and prepend with "WHERE "
-                if (whereClauses.length > 0) {
-                    where = `WHERE ${whereClauses.join(" AND ")}`;
-                }
-                // Default ORDER BY clause
-                let orderByQuery = "ORDER BY created_at DESC";
-                // If an orderByValue and directionValue are provided, update the ORDER BY clause
-                if (orderByValue && directionValue) {
-                    if (orderByValue === "totalPrice") {
-                        // If orderByValue is "totalPrice", we need to cast it as an integer
-                        orderByQuery = `ORDER BY cast(order_details->>'totalPrice' as integer) ${directionValue}`;
-                    }
-                    else {
-                        // Otherwise, we can just use the provided orderByValue
-                        orderByQuery = `ORDER BY ${orderByValue} ${directionValue}`;
-                    }
-                }
                 // Calculate the offset for pagination
-                const offset = (pageNum - 1) * limitNum;
-                // Construct the final query
-                const query = `SELECT COUNT(*) OVER() as total, ${orderCamelCase} FROM orders ${where} ${orderByQuery} LIMIT ${limit} OFFSET ${offset}`;
-                const ordersQuery = yield (0, db_1.dbQuery)({ text: query });
-                // Extract the totalRows and orders from the result set
-                const totalRows = ordersQuery.rows[0]
-                    ? Number(ordersQuery.rows[0].total)
-                    : 0;
-                const orders = ordersQuery.rows.map((row) => {
-                    delete row.total;
-                    return row;
-                });
+                const skip = (pageNum - 1) * limitNum;
+                // Define the query parameters
+                let queryParameters = {
+                    take: limitNum,
+                    skip: skip,
+                    include: {
+                        orderItems: true,
+                    },
+                };
+                const startDateStr = startDate === null || startDate === void 0 ? void 0 : startDate.toString();
+                const endDateStr = endDate === null || endDate === void 0 ? void 0 : endDate.toString();
+                if (startDateStr && endDateStr) {
+                    queryParameters.where = Object.assign(Object.assign({}, queryParameters.where), { createdAt: {
+                            gte: new Date(startDateStr),
+                            lte: new Date(endDateStr),
+                        } });
+                }
+                // Check if orderBy and direction are valid
+                const sortByValid = orderBy === "createdAt" ||
+                    orderBy === "totalPrice" ||
+                    orderBy === "customerName";
+                const filterTypeIsValid = filterType === "orderId" || filterType === "customerName";
+                const directionValid = direction === "asc" || direction === "desc";
+                // Set the orderBy parameter based on the provided orderBy value
+                if (sortByValid && directionValid) {
+                    switch (orderBy) {
+                        case "createdAt":
+                            queryParameters.orderBy = {
+                                createdAt: direction,
+                            };
+                            break;
+                        case "customerName":
+                            queryParameters.orderBy = {
+                                customerName: direction,
+                            };
+                            break;
+                        case "totalPrice":
+                            queryParameters.orderBy = {
+                                totalPrice: direction,
+                            };
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (filterTypeIsValid && filter) {
+                    switch (filterType) {
+                        case "orderId":
+                            queryParameters.where = Object.assign(Object.assign({}, queryParameters.where), { orderId: Number(filter) });
+                            break;
+                        case "customerName":
+                            queryParameters.where = Object.assign(Object.assign({}, queryParameters.where), { customerName: {
+                                    contains: filter.toString(),
+                                    mode: "insensitive",
+                                } });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                // Query the database for items in the order
+                const orders = yield db_1.prisma.order.findMany(queryParameters);
+                // Count the total rows
+                const totalRows = yield db_1.prisma.order.count();
                 // Calculate the cursor for the next page
                 const nextPage = totalRows > pageNum * limitNum ? pageNum + 1 : null;
-                // Include the cursor for the next page in the response
+                // Send the catalog items as the response
                 res.status(200).json({ totalRows, orders, nextPage });
             }
             catch (error) {

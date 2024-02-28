@@ -31,15 +31,23 @@ class SendCommand extends command_class_1.Command {
                 const replyId = (_a = ctx.callbackQuery.message) === null || _a === void 0 ? void 0 : _a.message_id;
                 // Fetching the order by its ID
                 const foundOrder = yield (0, orders_controller_1.getOrderById)(orderId);
+                const orderItems = foundOrder.orderItems;
                 // Constructing the response string with the order details
-                let resString = yield foundOrder.orderDetails.orderItems
+                let resString;
+                resString = orderItems
                     .map((item, i) => {
-                    return `${i + 1}) ${item.productName}, ${item.amount} шт., ${item.totalProductPrice} руб.;`;
+                    if (!item.itemSnapshot)
+                        throw new Error("Order item does not exist");
+                    const { price, discount, productName } = JSON.parse(item.itemSnapshot.toString());
+                    if (!price || !discount || !productName)
+                        throw new Error("Order data not found");
+                    const totalProductPrice = price * ((100 - discount) / 100);
+                    return `${i + 1}) ${productName}, ${item.amount} шт., ${totalProductPrice} руб.;`;
                 })
                     .join("\n");
                 resString =
                     resString +
-                        `\n💰 <b>Общая сумма:</b> ${foundOrder.orderDetails.totalPrice} руб.`;
+                        `\n💰 <b>Общая сумма:</b> ${foundOrder.totalPrice} руб.`;
                 // Sending the response message
                 yield this.bot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, resString, {
                     parse_mode: "HTML",

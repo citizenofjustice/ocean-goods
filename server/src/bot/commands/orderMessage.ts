@@ -1,5 +1,5 @@
 import { Telegraf } from "telegraf";
-import { Order } from "../../types/Order";
+import { Order } from "@prisma/client";
 import { BotContext } from "../context.interface";
 
 // Function to handle order messages

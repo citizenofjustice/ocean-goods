@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { Prisma, catalog } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 import { prisma } from "../db";
 import { uploadPictureAndGetUrl } from "../upload";
+import { sortByFinalPrice } from "../utils/sortByPrice";
 
 class CatalogController {
   // method for creating a new catalogItem
@@ -52,7 +53,7 @@ class CatalogController {
       const skip = (pageNum - 1) * limitNum;
 
       // Define the query parameters
-      let queryParameters: Prisma.catalogFindManyArgs = {
+      let queryParameters: Prisma.CatalogFindManyArgs = {
         take: limitNum,
         skip: skip,
       };
@@ -208,41 +209,5 @@ class CatalogController {
     }
   }
 }
-
-/**
- * This function sorts an array of catalog items by their final price.
- * The final price is calculated as the original price minus the discount.
- *
- * @param catalogItems - An array of catalog items to sort.
- * @param direction - The direction to sort the items. Can be "asc" for ascending or "desc" for descending.
- * @throws {Error} Will throw an error if the direction is not "asc" or "desc".
- * @returns An array of catalog items sorted by their final price.
- */
-const sortByFinalPrice = (
-  catalogItems: catalog[],
-  direction: "asc" | "desc"
-) => {
-  // Calculate the final price for each item
-  const itemsWithFinalPrice = catalogItems.map((item) => ({
-    ...item,
-    finalPrice: item.price - Math.round((item.price * item.discount) / 100),
-  }));
-
-  // Sort the items by the final price in the specified direction
-  switch (direction) {
-    case "asc":
-      itemsWithFinalPrice.sort((a, b) => a.finalPrice - b.finalPrice);
-      break;
-    case "desc":
-      itemsWithFinalPrice.sort((a, b) => b.finalPrice - a.finalPrice);
-      break;
-    default:
-      throw new Error(
-        `Invalid sort direction: ${direction}. Expected "asc" or "desc".`
-      );
-  }
-
-  return itemsWithFinalPrice;
-};
 
 export default new CatalogController();

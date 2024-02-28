@@ -22,7 +22,7 @@ const OrdersFilter: React.FC<{
             <input
               id="order-filter-id"
               type="checkbox"
-              checked={filterProp.fieldName === "id"}
+              checked={filterProp.fieldName === "orderId"}
               onChange={handleCheckboxChange}
               className="w-fit col-span-1 accent-primary-600 mr-2"
             />
@@ -34,7 +34,7 @@ const OrdersFilter: React.FC<{
             <input
               id="order-filter-customer"
               type="checkbox"
-              checked={filterProp.fieldName === "customer_name"}
+              checked={filterProp.fieldName === "customerName"}
               onChange={handleCheckboxChange}
               className="w-fit col-span-1 accent-primary-600 mr-2"
             />
@@ -47,7 +47,7 @@ const OrdersFilter: React.FC<{
       <input
         id="order-filter"
         name="filter"
-        type={filterProp.fieldName === "id" ? "number" : "text"}
+        type={filterProp.fieldName === "orderId" ? "number" : "text"}
         className={`${inputStyles} appearance-none text-text-700 py-3 px-4 rounded leading-tight truncate basis-1/2 vsm:basis-3/5 lg:basis-1/2 h-fit border border-gray-300 block sm:min-w-[120px] p-2.5`}
         placeholder="Введите искомое значение"
         value={filterBy}

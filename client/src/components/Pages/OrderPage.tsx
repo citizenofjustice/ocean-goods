@@ -6,9 +6,18 @@ import { OrderItem } from "../../types/OrderItem";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import ErrorPage from "./ErrorPage";
+import { AxiosError } from "axios";
+import { CatalogItem } from "../../types/CatalogItem";
+import { ProductType } from "../../types/ProductType";
+
+interface CatalogItemWithType extends CatalogItem {
+  productTypes: ProductType;
+}
 
 interface OrderItemWithTypeName extends OrderItem {
   type: string;
+  finalPrice: number;
+  catalogItem?: CatalogItemWithType;
 }
 
 const OrderPage = () => {
@@ -17,10 +26,24 @@ const OrderPage = () => {
   const { id } = params;
 
   const { isLoading, isError, error, data } = useQuery({
-    queryKey: ["order"],
+    queryKey: [`order`, id],
     queryFn: async () => {
       const response = await axiosPrivate.get(`/orders/${id}`);
-      return response.data;
+      if (response instanceof AxiosError) {
+        throw new Error("Error while fetching orders");
+      } else {
+        const fetchedOrderItems = response.data.orderItems.map(
+          (item: OrderItem) => {
+            const finalPrice =
+              item.itemSnapshot.price -
+              Math.round(
+                item.itemSnapshot.price * (item.itemSnapshot.discount / 100)
+              );
+            return { ...item, finalPrice };
+          }
+        );
+        return { ...response.data, orderItems: fetchedOrderItems };
+      }
     },
     refetchOnWindowFocus: false,
   });
@@ -39,7 +62,7 @@ const OrderPage = () => {
               <p className="sm:px-4">Телефон: {data.customerPhone}</p>
             </div>
           )}
-          {data.orderDetails && (
+          {data.orderItems && (
             <div className="m-2 sm:m-6 text-base">
               <ul className="max-w-5xl m-auto py-2 px-4 bg-background-200 rounded-xl">
                 <div className="pb-2 font-body font-bold text-center text-2xl">
@@ -63,47 +86,45 @@ const OrderPage = () => {
                       Количество
                     </span>
                     <span className="text-center p-2 bg-background-700">
-                      Цена
+                      Цена (за шт.)
                     </span>
                   </div>
                   <div className="w-fit font-body bg-background-50 divide-y divide-solid divide-gray-800 border-t border-gray-800">
-                    {data.orderDetails.orderItems.map(
-                      (orderItem: OrderItemWithTypeName) => (
-                        <div
-                          key={orderItem.productId}
-                          className="grid grid-cols-[minmax(5rem,7rem)_repeat(4,minmax(9rem,500px))] divide-x divide-solid divide-gray-800"
-                        >
-                          <span className="p-2">
-                            <div className="overflow-hidden border border-accent-700 rounded">
-                              <img src={orderItem.mainImage} />
-                            </div>
-                          </span>
-                          <span className="p-2 text-wrap">
-                            {orderItem.productName}
-                          </span>
-                          <span className="p-2 text-wrap">
-                            {orderItem.type}
-                          </span>
-                          <span className="p-2 text-wrap">
-                            {orderItem.amount}
-                          </span>
-                          <span className="p-2 text-wrap">
-                            {orderItem.totalProductPrice} руб.
-                          </span>
-                        </div>
-                      )
-                    )}
+                    {data.orderItems.map((orderItem: OrderItemWithTypeName) => (
+                      <div
+                        key={orderItem.orderItemId}
+                        className="grid grid-cols-[minmax(5rem,7rem)_repeat(4,minmax(9rem,500px))] divide-x divide-solid divide-gray-800"
+                      >
+                        <span className="p-2">
+                          <div className="overflow-hidden border border-accent-700 rounded">
+                            <img src={orderItem.itemSnapshot.mainImage} />
+                          </div>
+                        </span>
+                        <span className="p-2 text-wrap">
+                          {orderItem.itemSnapshot.productName}
+                        </span>
+                        <span className="p-2 text-wrap">
+                          {orderItem.catalogItem?.productTypes.type}
+                        </span>
+                        <span className="p-2 text-wrap">
+                          {orderItem.amount}
+                        </span>
+                        <span className="p-2 text-wrap">
+                          {orderItem.finalPrice} руб.
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                  {data.orderDetails.orderItems.length === 0 && (
+                  {data.orderItems.length === 0 && (
                     <div className="font-body text-center">
                       В заказе отсутствуют товары. Возможно произошла ошибка.
                     </div>
                   )}
                 </li>
-                {data.orderDetails.totalPrice && (
+                {data.totalPrice && (
                   <li className="min-w-[220px] grid grid-cols-5 px-2 font-bold mt-2">
                     <p className="w-fit place-self-end col-span-5 font-body rounded-2xl py-1 px-2 border-2 bg-primary-100 border-accent-700">
-                      Общая сумма заказа: {data.orderDetails.totalPrice} руб.
+                      Общая сумма заказа: {data.totalPrice} руб.
                     </p>
                   </li>
                 )}

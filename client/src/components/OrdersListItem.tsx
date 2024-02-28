@@ -30,7 +30,7 @@ const OrdersListItem: React.FC<{
         <div className="lg:py-2 lg:bg-background-50 rounded lg:px-4 h-full flex flex-col justify-center">
           <p className="rounded-xl px-4 py-1 text-start border-2 bg-primary-100 border-accent-700 text-text-800 font-medium w-fit mt-2 lg:mt-0">
             {!matches && "Сумма заказа: "}
-            {order.orderDetails.totalPrice}&nbsp;руб.
+            {order.totalPrice}&nbsp;руб.
           </p>
         </div>
         <Link

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db");
 const upload_1 = require("../upload");
+const sortByPrice_1 = require("../utils/sortByPrice");
 class CatalogController {
     // method for creating a new catalogItem
     createCatalogItem(req, res, next) {
@@ -99,7 +100,7 @@ class CatalogController {
                 let catalog;
                 // If orderBy is "finalPrice", sort the catalog items by final price
                 if (orderBy === "finalPrice" && directionValid) {
-                    catalog = sortByFinalPrice(catalogQuery, direction);
+                    catalog = (0, sortByPrice_1.sortByFinalPrice)(catalogQuery, direction);
                 }
                 else
                     catalog = catalogQuery;
@@ -205,29 +206,4 @@ class CatalogController {
         });
     }
 }
-/**
- * This function sorts an array of catalog items by their final price.
- * The final price is calculated as the original price minus the discount.
- *
- * @param catalogItems - An array of catalog items to sort.
- * @param direction - The direction to sort the items. Can be "asc" for ascending or "desc" for descending.
- * @throws {Error} Will throw an error if the direction is not "asc" or "desc".
- * @returns An array of catalog items sorted by their final price.
- */
-const sortByFinalPrice = (catalogItems, direction) => {
-    // Calculate the final price for each item
-    const itemsWithFinalPrice = catalogItems.map((item) => (Object.assign(Object.assign({}, item), { finalPrice: item.price - Math.round((item.price * item.discount) / 100) })));
-    // Sort the items by the final price in the specified direction
-    switch (direction) {
-        case "asc":
-            itemsWithFinalPrice.sort((a, b) => a.finalPrice - b.finalPrice);
-            break;
-        case "desc":
-            itemsWithFinalPrice.sort((a, b) => b.finalPrice - a.finalPrice);
-            break;
-        default:
-            throw new Error(`Invalid sort direction: ${direction}. Expected "asc" or "desc".`);
-    }
-    return itemsWithFinalPrice;
-};
 exports.default = new CatalogController();

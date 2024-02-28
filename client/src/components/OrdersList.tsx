@@ -24,29 +24,29 @@ const initSortValues: SortBy = {
 
 // interface for filtering
 export interface FilterOrdersProp {
-  fieldName: "id" | "customer_name";
+  fieldName: "orderId" | "customerName";
 }
 
 // Options for sorting
 const sortOptions: SelectOptions[] = [
   {
-    value: "created_at/DESC",
+    value: "createdAt/desc",
     content: "по дате (убыв.)",
   },
-  { value: "created_at/ASC", content: "по дате (возр.)" },
+  { value: "createdAt/asc", content: "по дате (возр.)" },
   {
-    value: "customer_name/DESC",
+    value: "customerName/desc",
     content: "по имени (убыв.)",
   },
   {
-    value: "customer_name/ASC",
+    value: "customerName/asc",
     content: "по имени (возр.)",
   },
   {
-    value: "totalPrice/DESC",
+    value: "totalPrice/desc",
     content: "по цене (убыв.)",
   },
-  { value: "totalPrice/ASC", content: "по цене (возр.)" },
+  { value: "totalPrice/asc", content: "по цене (возр.)" },
 ];
 
 const OrdersList = () => {
@@ -55,7 +55,7 @@ const OrdersList = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [isFiltersShown, setIsFiltersShown] = useState<boolean>(false);
   const [filterProp, setFilterProp] = useState<FilterOrdersProp>({
-    fieldName: "id",
+    fieldName: "orderId",
   });
   const [filterBy, setFilterBy] = useState<string>("");
   const [dateRange, setDateRange] = useState<Date[] | null[]>([null, null]);
@@ -151,18 +151,18 @@ const OrdersList = () => {
   // Handler for checkbox change
   const handleCheckboxChange = () => {
     switch (filterProp.fieldName) {
-      case "id": {
-        setFilterProp({ fieldName: "customer_name" });
+      case "orderId": {
+        setFilterProp({ fieldName: "customerName" });
         break;
       }
-      case "customer_name": {
-        setFilterProp({ fieldName: "id" });
+      case "customerName": {
+        setFilterProp({ fieldName: "orderId" });
         // if after checkbox change input type is number clear filter field
         typeof Number(filterBy) === "number" && setFilterBy("");
         break;
       }
       default: {
-        setFilterProp({ fieldName: "id" });
+        setFilterProp({ fieldName: "orderId" });
         break;
       }
     }
@@ -239,7 +239,7 @@ const OrdersList = () => {
         ) : (
           <div className="bg-background-200 p-4 lg:p-0 lg:pb-4 rounded-xl">
             <OrdersListHeader isFiltersShown={isFiltersShown} />
-            {data.pages[0].totalRows > 0 ? (
+            {data.pages[0].orders.length > 0 ? (
               <ul className="lg:mt-1 flex flex-col gap-y-4 lg:gap-y-1 max-w-screen-xl">
                 {data.pages.map((group, i) => (
                   <Fragment key={i}>
