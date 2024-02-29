@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-import { dbQuery, prisma } from "../db";
+import { prisma } from "../db";
 
 class AuthController {
   // method to authenticate user

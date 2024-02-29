@@ -16,13 +16,13 @@ const verifyRole = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     // If there is no role in the request, return a 401 status
     if (!(req === null || req === void 0 ? void 0 : req.role))
         return res.sendStatus(401);
+    console.log(req.role);
     // Query the database for the role with the id from the request
-    const rolesQuery = yield (0, db_1.dbQuery)({
-        text: `SELECT * FROM roles WHERE id = $1`,
-        values: [req.role],
+    const foundRole = yield db_1.prisma.roles.findUnique({
+        where: {
+            roleId: req.role,
+        },
     });
-    // Get the first row from the query result
-    const foundRole = rolesQuery.rows[0];
     if (!foundRole)
         return res.sendStatus(401); // If there is no role found, return a 401 status
     next(); // Call the next middleware

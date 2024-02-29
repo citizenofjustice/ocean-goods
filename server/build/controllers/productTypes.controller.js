@@ -10,8 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db");
-// Defining the product types in camel case for SQL queries
-const productTypesCamelCase = `id as "productTypeId", type, created_at as "createdAt", updated_at as "updatedAt"`;
 class ProductTypesController {
     // Method to create a new product type
     createProductType(req, res, next) {
@@ -22,11 +20,12 @@ class ProductTypesController {
                 if (typeof type !== "string")
                     throw new Error("Неверный тип данных");
                 //  inserting new product to database
-                const newProductType = yield (0, db_1.dbQuery)({
-                    text: `INSERT INTO product_types (type) VALUES ($1) RETURNING *`,
-                    values: [type],
+                const newProductType = yield db_1.prisma.productTypes.create({
+                    data: {
+                        type: type,
+                    },
                 });
-                res.status(201).json(newProductType.rows[0]); // Sending the newly created product type as a response
+                res.status(201).json(newProductType); // Sending the newly created product type as a response
             }
             catch (error) {
                 next(error); // Pass the error to the errorHandler middleware
@@ -38,10 +37,12 @@ class ProductTypesController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Fetching all product types from the database
-                const productTypes = yield (0, db_1.dbQuery)({
-                    text: `SELECT ${productTypesCamelCase} FROM product_types ORDER BY updated_at DESC`,
+                const productTypes = yield db_1.prisma.productTypes.findMany({
+                    orderBy: {
+                        updatedAt: "desc",
+                    },
                 });
-                res.status(200).json(productTypes.rows); // Sending all product types as a response
+                res.status(200).json(productTypes); // Sending all product types as a response
             }
             catch (error) {
                 next(error); // Pass the error to the errorHandler middleware
@@ -53,10 +54,16 @@ class ProductTypesController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Fetching values of product types for filling select field options
-                const selectValues = yield (0, db_1.dbQuery)({
-                    text: `SELECT id as "productTypeId", type FROM product_types ORDER BY type ASC`,
+                const selectValues = yield db_1.prisma.productTypes.findMany({
+                    select: {
+                        productTypeId: true,
+                        type: true,
+                    },
+                    orderBy: {
+                        type: "asc",
+                    },
                 });
-                res.status(200).json(selectValues.rows); // Sending select values as a response
+                res.status(200).json(selectValues); // Sending select values as a response
             }
             catch (error) {
                 next(error); // Pass the error to the errorHandler middleware
@@ -67,13 +74,14 @@ class ProductTypesController {
     getOneProductType(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { id } = req.params;
+                const id = parseInt(req.params.id);
                 // Fetching a single product type from the database
-                const productType = yield (0, db_1.dbQuery)({
-                    text: `SELECT ${productTypesCamelCase} FROM product_types WHERE id = $1`,
-                    values: [id],
+                const productType = yield db_1.prisma.productTypes.findUnique({
+                    where: {
+                        productTypeId: id,
+                    },
                 });
-                res.status(200).json(productType.rows[0]); // Sending the fetched product type as a response
+                res.status(200).json(productType); // Sending the fetched product type as a response
             }
             catch (error) {
                 next(error); // Pass the error to the errorHandler middleware
@@ -86,12 +94,16 @@ class ProductTypesController {
             try {
                 const { productTypeId, type } = req.body;
                 // Checking if productTypeId is a number and type is a string
-                if (typeof productTypeId !== "number" && typeof type !== "string")
+                if (typeof productTypeId !== "number" || typeof type !== "string")
                     throw new Error("Неверный тип данных");
                 // Updating a product type in the database
-                yield (0, db_1.dbQuery)({
-                    text: `UPDATE product_types SET type = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
-                    values: [type, productTypeId],
+                yield db_1.prisma.productTypes.update({
+                    where: {
+                        productTypeId: productTypeId,
+                    },
+                    data: {
+                        type: type,
+                    },
                 });
                 res.sendStatus(204); // Sending a no content status as a response
             }
@@ -103,11 +115,12 @@ class ProductTypesController {
     deleteProductType(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { id } = req.params;
+                const id = parseInt(req.params.id);
                 // Deleting a product type from the database
-                yield (0, db_1.dbQuery)({
-                    text: `DELETE FROM product_types WHERE id = $1`,
-                    values: [id],
+                yield db_1.prisma.productTypes.delete({
+                    where: {
+                        productTypeId: id,
+                    },
                 });
                 res.sendStatus(204); // Sending a no content status as a response
             }
