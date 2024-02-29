@@ -1,8 +1,8 @@
 import { Telegraf } from "telegraf";
 
 import { Command } from "./command.class";
-import { BotContext } from "../context.interface";
 import { OrderItem } from "@prisma/client";
+import { BotContext } from "../context.interface";
 import { getOrderById } from "../../controllers/orders.controller";
 
 // Defining the SendCommand class that extends the Command class
@@ -24,27 +24,27 @@ export class SendCommand extends Command {
           const replyId = ctx.callbackQuery.message?.message_id;
           // Fetching the order by its ID
           const foundOrder = await getOrderById(orderId);
-          const orderItems = foundOrder.orderItems;
+          const orderItems: OrderItem[] = foundOrder.orderItems;
           // Constructing the response string with the order details
           let resString: string;
           resString = orderItems
             .map((item: OrderItem, i: number) => {
               if (!item.itemSnapshot)
                 throw new Error("Order item does not exist");
-              const { price, discount, productName } = JSON.parse(
-                item.itemSnapshot.toString()
-              );
-              if (!price || !discount || !productName)
-                throw new Error("Order data not found");
-              const totalProductPrice = price * ((100 - discount) / 100);
-              return `${i + 1}) ${productName}, ${
-                item.amount
-              } шт., ${totalProductPrice} руб.;`;
+              if (
+                typeof item.itemSnapshot === "object" &&
+                "productName" in item.itemSnapshot
+              ) {
+                const productName = item.itemSnapshot["productName"];
+                return `${i + 1}) ${productName}, ${item.amount} шт., ${
+                  item.totalPrice
+                } руб.;`;
+              } else throw new Error("Invalid itemSnapshot");
             })
             .join("\n");
           resString =
             resString +
-            `\n💰 <b>Общая сумма:</b> ${foundOrder.totalPrice} руб.`;
+            `\n💰 <b>Общая сумма:</b> ${foundOrder.totalOrderPrice} руб.`;
 
           // Sending the response message
           await this.bot.telegram.sendMessage(

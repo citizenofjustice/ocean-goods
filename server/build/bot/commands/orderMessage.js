@@ -16,14 +16,14 @@ order // Order details
 ) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Destructuring order details
-        const { orderId, customerName, createdAt, totalPrice } = order;
+        const { orderId, customerName, createdAt, totalOrderPrice } = order;
         // Formatting the date
         const date = new Date(createdAt);
         const formatDate = `${date.toLocaleDateString()}, ${date.toLocaleTimeString()}`;
         // Sending message to the chat
         yield bot.telegram
             .sendMessage(process.env.TELEGRAM_CHAT_ID, // Chat ID from environment variables
-        `🛒 <b>Заказ №${orderId}</b>\n📆 <b>от</b>: ${formatDate}\n💁 <b>Заказчик</b>: ${customerName}\n💵 <b>На сумму</b>: ${totalPrice} руб.`, {
+        `🛒 <b>Заказ №${orderId}</b>\n📆 <b>от</b>: ${formatDate}\n💁 <b>Заказчик</b>: ${customerName}\n💵 <b>На сумму</b>: ${totalOrderPrice} руб.`, {
             parse_mode: "HTML", // Parsing mode set to HTML
             reply_markup: {
                 inline_keyboard: [

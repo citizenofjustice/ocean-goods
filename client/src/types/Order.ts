@@ -2,7 +2,7 @@ import { OrderItem } from "./OrderItem";
 
 export interface Order {
   orderId: number;
-  totalPrice: number;
+  totalOrderPrice: number;
   orderItems: OrderItem[];
   customerName: string;
   customerPhone: string;

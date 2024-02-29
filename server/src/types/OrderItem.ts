@@ -6,4 +6,5 @@ export interface OrderItem {
   productId: number;
   amount: number;
   itemSnapshot: Catalog;
+  totalPrice: number;
 }

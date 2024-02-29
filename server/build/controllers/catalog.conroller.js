@@ -156,7 +156,8 @@ class CatalogController {
                 // Get the updated item details from the request body
                 const item = yield req.body;
                 // If there is a new file in the request, upload it and get the URL, otherwise keep old value
-                let imageLink = req.file
+                let imageLink = "";
+                imageLink = req.file
                     ? yield (0, upload_1.uploadPictureAndGetUrl)(req.file)
                     : item.mainImage;
                 // Update the item in the database using Prisma

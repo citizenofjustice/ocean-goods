@@ -159,7 +159,8 @@ class CatalogController {
       const item = await req.body;
 
       // If there is a new file in the request, upload it and get the URL, otherwise keep old value
-      let imageLink = req.file
+      let imageLink = "";
+      imageLink = req.file
         ? await uploadPictureAndGetUrl(req.file)
         : item.mainImage;
 

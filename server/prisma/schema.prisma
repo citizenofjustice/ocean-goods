@@ -52,6 +52,7 @@ model OrderItem {
   orderId       Int      @map("order_id")
   productId     Int      @map("product_id")
   amount        Int
+  totalPrice    Int      @map("total_price")
   itemSnapshot  Json     @map("item_snapshot")
   order         Order    @relation(fields: [orderId], references: [orderId])
   catalogItem   Catalog  @relation(fields: [productId], references: [productId])
@@ -59,15 +60,15 @@ model OrderItem {
 }
 
 model Order {
-  orderId       Int         @id @default(autoincrement())  @map("id")
-  customerName  String      @db.VarChar(255)  @map("customer_name")
-  customerPhone String      @db.VarChar(255)  @map("customer_phone")
-  customerEmail String?     @db.VarChar(255)  @map("customer_email")
-  contactMethod String?     @db.VarChar(255)  @map("contact_method")
-  totalPrice    Int         @map("total_price")
-  createdAt     DateTime    @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime    @default(now()) @db.Timestamptz(6) @map("updated_at")
-  orderItems    OrderItem[]
+  orderId            Int         @id @default(autoincrement())  @map("id")
+  customerName       String      @db.VarChar(255)  @map("customer_name")
+  customerPhone      String      @db.VarChar(255)  @map("customer_phone")
+  customerEmail      String?     @db.VarChar(255)  @map("customer_email")
+  contactMethod      String?     @db.VarChar(255)  @map("contact_method")
+  totalOrderPrice    Int         @map("total_order_price")
+  createdAt          DateTime    @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt          DateTime    @default(now()) @db.Timestamptz(6) @map("updated_at")
+  orderItems         OrderItem[]
   @@map("orders")
 }
 

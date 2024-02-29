@@ -38,16 +38,18 @@ class SendCommand extends command_class_1.Command {
                     .map((item, i) => {
                     if (!item.itemSnapshot)
                         throw new Error("Order item does not exist");
-                    const { price, discount, productName } = JSON.parse(item.itemSnapshot.toString());
-                    if (!price || !discount || !productName)
-                        throw new Error("Order data not found");
-                    const totalProductPrice = price * ((100 - discount) / 100);
-                    return `${i + 1}) ${productName}, ${item.amount} шт., ${totalProductPrice} руб.;`;
+                    if (typeof item.itemSnapshot === "object" &&
+                        "productName" in item.itemSnapshot) {
+                        const productName = item.itemSnapshot["productName"];
+                        return `${i + 1}) ${productName}, ${item.amount} шт., ${item.totalPrice} руб.;`;
+                    }
+                    else
+                        throw new Error("Invalid itemSnapshot");
                 })
                     .join("\n");
                 resString =
                     resString +
-                        `\n💰 <b>Общая сумма:</b> ${foundOrder.totalPrice} руб.`;
+                        `\n💰 <b>Общая сумма:</b> ${foundOrder.totalOrderPrice} руб.`;
                 // Sending the response message
                 yield this.bot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, resString, {
                     parse_mode: "HTML",

@@ -104,7 +104,7 @@ const OrdersList = () => {
   // Infinite query hook
   const { data, error, fetchNextPage, hasNextPage, isFetching, status } =
     useInfiniteQuery({
-      queryKey: ["orders", debounceFilter, sortBy, endDate, filterProp],
+      queryKey: ["orders", debounceFilter, sortBy, endDate],
       queryFn: sendReq,
       initialPageParam: 1,
       getNextPageParam: (lastPage, _allPages, lastPageParam) => {

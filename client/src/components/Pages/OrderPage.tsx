@@ -121,10 +121,10 @@ const OrderPage = () => {
                     </div>
                   )}
                 </li>
-                {data.totalPrice && (
+                {data.totalOrderPrice && (
                   <li className="min-w-[220px] grid grid-cols-5 px-2 font-bold mt-2">
                     <p className="w-fit place-self-end col-span-5 font-body rounded-2xl py-1 px-2 border-2 bg-primary-100 border-accent-700">
-                      Общая сумма заказа: {data.totalPrice} руб.
+                      Общая сумма заказа: {data.totalOrderPrice} руб.
                     </p>
                   </li>
                 )}
