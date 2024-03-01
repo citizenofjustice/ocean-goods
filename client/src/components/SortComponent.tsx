@@ -14,6 +14,8 @@ const SortComponent: React.FC<{
         options={sortOptions}
         selectedOption={selectedOption}
         onOptionSelect={handleSelect}
+        placeholder="Сортировать по"
+        groupLabel="Варианты сортировки"
       />
     </div>
   );

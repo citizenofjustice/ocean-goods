@@ -9,7 +9,6 @@ export const verifyRole = async (
 ) => {
   // If there is no role in the request, return a 401 status
   if (!req?.role) return res.sendStatus(401);
-  console.log(req.role);
 
   // Query the database for the role with the id from the request
   const foundRole = await prisma.roles.findUnique({

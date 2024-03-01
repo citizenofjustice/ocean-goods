@@ -16,7 +16,6 @@ const verifyRole = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     // If there is no role in the request, return a 401 status
     if (!(req === null || req === void 0 ? void 0 : req.role))
         return res.sendStatus(401);
-    console.log(req.role);
     // Query the database for the role with the id from the request
     const foundRole = yield db_1.prisma.roles.findUnique({
         where: {
