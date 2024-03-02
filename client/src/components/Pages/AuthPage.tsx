@@ -1,13 +1,14 @@
 import { useState } from "react";
-import DefaultButton from "../UI/DefaultButton";
-import LabeledInputField from "../UI/LabeledInputField";
-import FormCard from "../UI/FormCard";
+import LabeledInputField from "../ui/LabeledInputField";
+import FormCard from "../ui/FormCard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/root-store-context";
 import { observer } from "mobx-react-lite";
-import PasswordInputField from "../UI/PasswordInputField";
+import PasswordInputField from "../ui/PasswordInputField";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { AxiosError } from "axios";
+import { Button } from "../ui/button";
+import { ButtonLoading } from "../ui/ButtonLoading";
 
 const initValues = {
   email: "",
@@ -75,9 +76,11 @@ const AuthPage = observer(() => {
               value={inputValues.password}
               onInputChange={handleValueChange}
             />
-            <DefaultButton type="submit" isPending={isPending}>
-              Войти
-            </DefaultButton>
+            {isPending ? (
+              <ButtonLoading />
+            ) : (
+              <Button type="submit">Cохранить</Button>
+            )}
           </form>
         </FormCard>
       </div>

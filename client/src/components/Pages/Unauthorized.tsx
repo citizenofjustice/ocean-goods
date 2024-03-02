@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import DefaultButton from "../UI/DefaultButton";
+import { Button } from "../ui/button";
 
 const Unauthorized = () => {
   const navigate = useNavigate();
@@ -13,9 +13,7 @@ const Unauthorized = () => {
         <br />
         <p>Пользователю с вашими правами не доступна данная страница</p>
         <br />
-        <DefaultButton type="button" onClick={goBack}>
-          Вернуться назад
-        </DefaultButton>
+        <Button onClick={goBack}>Вернуться назад</Button>
       </div>
     </>
   );

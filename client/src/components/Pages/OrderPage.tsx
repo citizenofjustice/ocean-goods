@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import FormatDate from "../FormatDate";
 import { OrderItem } from "../../types/OrderItem";
-import LoadingSpinner from "../UI/LoadingSpinner";
+import LoadingSpinner from "../ui/LoadingSpinner";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import ErrorPage from "./ErrorPage";
 import { AxiosError } from "axios";

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
-import FormCard from "./UI/FormCard";
+import FormCard from "./ui/FormCard";
 import ErrorPage from "./Pages/ErrorPage";
 import { Privelege } from "../types/Privelege";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 // Component for displaing the list of all available priveleges

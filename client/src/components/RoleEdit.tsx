@@ -1,10 +1,11 @@
 import { useState } from "react";
 
-import DefaultButton from "./UI/DefaultButton";
 import { Privelege } from "../types/Privelege";
-import CustomCheckbox from "./UI/CustomCheckbox";
-import LabeledInputField from "./UI/LabeledInputField";
-import CustomAlertMessage from "./UI/CustomAlertMessage";
+import CustomCheckbox from "./ui/CustomCheckbox";
+import LabeledInputField from "./ui/LabeledInputField";
+import CustomAlertMessage from "./ui/CustomAlertMessage";
+import { Button } from "./ui/button";
+import { ButtonLoading } from "./ui/ButtonLoading";
 
 // Define the type for the initial values of the form
 interface editRoleInputs {
@@ -78,12 +79,12 @@ const RoleEdit: React.FC<{
           )}
           {checkboxAlert && <CustomAlertMessage message={checkboxAlert} />}
           <div className="flex gap-4">
-            <DefaultButton type="button" onClick={onFormClose}>
-              Отмена
-            </DefaultButton>
-            <DefaultButton type="submit" isPending={isPending}>
-              Сохранить
-            </DefaultButton>
+            <Button onClick={onFormClose}>Отмена</Button>
+            {isPending ? (
+              <ButtonLoading />
+            ) : (
+              <Button type="submit">Сохранить</Button>
+            )}
           </div>
         </div>
       </form>

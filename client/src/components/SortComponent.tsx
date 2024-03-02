@@ -1,4 +1,4 @@
-import SimpleSelect, { SelectOptions } from "./UI/SimpleSelect";
+import SimpleSelect, { SelectOptions } from "./ui/SimpleSelect";
 
 const SortComponent: React.FC<{
   sortOptions: SelectOptions[];

@@ -215,6 +215,7 @@ class OrderController {
         string,
         keyof Prisma.OrderOrderByWithRelationInput
       > = {
+        orderId: "orderId",
         createdAt: "createdAt",
         customerName: "customerName",
         totalPrice: "totalOrderPrice",

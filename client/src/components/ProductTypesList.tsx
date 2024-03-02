@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
-import FormCard from "./UI/FormCard";
+import FormCard from "./ui/FormCard";
 import ErrorPage from "./Pages/ErrorPage";
 import ProductTypeAdd from "./ProductTypeAdd";
 import ProductTypeItem from "./ProductTypeItem";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import { ProductType } from "../types/ProductType";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 

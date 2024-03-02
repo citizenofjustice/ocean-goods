@@ -5,12 +5,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 import AddToCart from "./AddToCart";
-import TextCrossed from "./UI/TextCrossed";
-import ItemInfoCard from "./UI/ItemInfoCard";
+import TextCrossed from "./ui/TextCrossed";
+import ItemInfoCard from "./ui/ItemInfoCard";
 import { useStore } from "../store/root-store-context";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CatalogItemModel from "../classes/CatalogItemModel";
-import CatalogItemDropdown from "./UI/CatalogItemDropdown";
+import CatalogItemDropdown from "./ui/CatalogItemDropdown";
 
 /**
  * Renders catalog item card

@@ -178,6 +178,7 @@ class OrderController {
                 }
                 // Define a mapping from the 'orderBy' parameter to the corresponding field in the database.
                 const orderByMapping = {
+                    orderId: "orderId",
                     createdAt: "createdAt",
                     customerName: "customerName",
                     totalPrice: "totalOrderPrice",

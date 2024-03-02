@@ -1,20 +1,21 @@
 import { useState } from "react";
 
-import ImageDropzone from "../UI/ImageDropzone";
-import LabeledInputField from "../UI/LabeledInputField";
+import ImageDropzone from "../ui/ImageDropzone";
+import LabeledInputField from "../ui/LabeledInputField";
 import { observer } from "mobx-react-lite";
 import { getProductTypesSelectValues } from "../../api";
 import { CatalogItemInputs } from "../../types/form-types";
-import SelectField from "../UI/SelectField";
-import ToggleField from "../UI/ToggleField";
-import TextareaField from "../UI/TextareaField";
-import DefaultButton from "../UI/DefaultButton";
+import SelectField from "../ui/SelectField";
+import ToggleField from "../ui/ToggleField";
+import TextareaField from "../ui/TextareaField";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useStore } from "../../store/root-store-context";
 import { SelectValue } from "../../types/SelectValue";
+import { Button } from "../ui/button";
+import { ButtonLoading } from "../ui/ButtonLoading";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -283,9 +284,11 @@ const AddToCatalogPage: React.FC<{
                 checked={initValues.inStock}
               />
             </div>
-            <DefaultButton type="submit" isPending={isPending}>
-              Cохранить
-            </DefaultButton>
+            {isPending ? (
+              <ButtonLoading />
+            ) : (
+              <Button type="submit">Cохранить</Button>
+            )}
           </form>
         </div>
       </>

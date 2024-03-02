@@ -1,11 +1,12 @@
 import { useState } from "react";
-import LabeledInputField from "./UI/LabeledInputField";
-import FormCard from "./UI/FormCard";
+import LabeledInputField from "./ui/LabeledInputField";
+import FormCard from "./ui/FormCard";
 import { CustomerDataInputs } from "../types/form-types";
-import DefaultButton from "./UI/DefaultButton";
 import { useStore } from "../store/root-store-context";
 import { observer } from "mobx-react-lite";
 import axios from "../api/axios";
+import { ButtonLoading } from "./ui/ButtonLoading";
+import { Button } from "./ui/button";
 
 const emptyInitValues: CustomerDataInputs = {
   customerName: "",
@@ -90,9 +91,11 @@ const CustomerDataForm: React.FC<{
             value={inputValues.contactMethod}
             onInputChange={handleValueChange}
           />
-          <DefaultButton isPending={isPending} type="submit">
-            Заказать
-          </DefaultButton>
+          {isPending ? (
+            <ButtonLoading />
+          ) : (
+            <Button type="submit">Заказать</Button>
+          )}
         </form>
       </FormCard>
     </div>

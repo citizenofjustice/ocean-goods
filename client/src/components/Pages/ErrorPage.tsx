@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 
 const ErrorPage: React.FC<{
-  error: Error;
+  error: Error | null;
   customMessage: string;
 }> = observer(({ error, customMessage }) => {
   const [isErrorDetailsShown, setIsErrorDetailsShown] = useState(false);
@@ -31,7 +31,7 @@ const ErrorPage: React.FC<{
             <p className="mt-4 border-2 border-red-400 bg-background-50 rounded-md p-2">
               {error instanceof AxiosError
                 ? error.response?.data.error.message
-                : error.message}
+                : error?.message}
             </p>
           </div>
         )}

@@ -1,10 +1,10 @@
 import { useLocalStorage } from "usehooks-ts";
 import CartItemModel from "../classes/CartItemModel";
 import { useStore } from "../store/root-store-context";
-import DefaultButton from "./UI/DefaultButton";
 import AmountControls from "./AmontControls";
 import { observer } from "mobx-react-lite";
 import CatalogItemModel from "../classes/CatalogItemModel";
+import { Button } from "./ui/button";
 
 const AddToCart: React.FC<{
   productId: number;
@@ -37,9 +37,12 @@ const AddToCart: React.FC<{
   return (
     <>
       {!inCartProduct && (
-        <DefaultButton type="button" onClick={handleItemCartAddition}>
+        <Button
+          disabled={!catalogItem.inStock}
+          onClick={handleItemCartAddition}
+        >
           {catalogItem.inStock ? "В корзину" : "Нет в наличии"}
-        </DefaultButton>
+        </Button>
       )}
       {inCartProduct && (
         <AmountControls

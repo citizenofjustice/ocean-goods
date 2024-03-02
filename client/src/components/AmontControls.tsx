@@ -1,4 +1,4 @@
-import AmountContolButton from "./UI/AmountContolButton";
+import AmountContolButton from "./ui/AmountContolButton";
 
 /**
  * Component for setting amount of item user whats to buy

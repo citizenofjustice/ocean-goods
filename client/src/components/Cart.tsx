@@ -4,9 +4,9 @@ import { useLockBodyScroll } from "@uidotdev/usehooks";
 
 import CartElement from "./CartElement";
 import { useStore } from "../store/root-store-context";
-import DefaultButton from "./UI/DefaultButton";
 import { useState } from "react";
 import CustomerDataForm from "./CustomerDataForm";
+import { Button } from "./ui/button";
 
 /**
  * Component rendering list of cart items
@@ -39,7 +39,7 @@ const Cart: React.FC<{
         <div
           className={`fixed top-[4.5rem] ${
             isContactFormActive ? "bottom-0" : "bottom-[4.5rem]"
-          } overflow-y-auto w-full px-4 content-scroll`}
+          } overflow-y-auto bg-background w-full px-4 content-scroll`}
         >
           {isContactFormActive ? (
             <CustomerDataForm onOrderSend={onCartClose} />
@@ -62,22 +62,16 @@ const Cart: React.FC<{
           )}
         </div>
         {!isContactFormActive && (
-          <div className="fixed bottom-0 w-full bg-background-0 m-auto drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex place-content-around items-center h-[4.5rem] py-3 px-4 gap-2 text-sm vsm:text-base">
+          <div className="fixed bottom-0 w-full bg-background m-auto drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex place-content-around items-center h-[4.5rem] py-3 px-4 gap-2 text-sm vsm:text-base">
             <p className="font-medium text-text-700">
               Cумма заказа: {cart.totalCartPrice}&nbsp;руб.
             </p>
-            <DefaultButton
+            <Button
+              disabled={cartItems.length === 0}
               onClick={() => setIsContactFormActive(true)}
-              type="button"
-              attr={{
-                disabled: cartItems.length === 0,
-                style: {
-                  opacity: cartItems.length === 0 ? "50%" : "100%",
-                },
-              }}
             >
               Оформить
-            </DefaultButton>
+            </Button>
           </div>
         )}
       </div>

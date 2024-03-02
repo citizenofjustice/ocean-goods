@@ -1,6 +1,6 @@
 "use client";
 
-import { addDays, format } from "date-fns";
+import { format, endOfDay } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
@@ -9,55 +9,82 @@ import { ru } from "date-fns/locale";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useOnClickOutside } from "usehooks-ts";
 
-export function DatePickerWithRange({
-  className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  });
+export const DatePickerWithRange: React.FC<{
+  onDateChange: (dateRange: DateRange | undefined) => void;
+  className?: string;
+}> = ({ className, onDateChange }) => {
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+  const popoverRef = useRef(null);
+  useOnClickOutside(popoverRef, () => setIsPopoverOpen(false));
+
+  const handleDateRangeSelect = (dateRange: DateRange | undefined) => {
+    if (dateRange && dateRange.from && !dateRange.to) {
+      setDateRange(dateRange);
+      return;
+    }
+    if (dateRange && dateRange.from && dateRange.to) {
+      const range = { from: dateRange.from, to: endOfDay(dateRange.to) };
+      setIsPopoverOpen(false);
+      onDateChange(range);
+      setDateRange(range);
+      return;
+    }
+  };
+
+  const handleDayBlur = () => {
+    if (isPopoverOpen && dateRange && dateRange.from && dateRange.to) {
+      setDateRange(undefined);
+    }
+  };
 
   return (
     <div className={cn("grid gap-2", className)}>
-      <Popover>
+      <Popover open={isPopoverOpen} onOpenChange={() => setIsPopoverOpen(true)}>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              "w-[245px] justify-start text-left font-normal",
+              !dateRange && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
+            {dateRange?.from ? (
+              dateRange.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {format(dateRange.from, "dd LLL, y", { locale: ru })} -{" "}
+                  {format(dateRange.to, "dd LLL, y", { locale: ru })}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(dateRange.from, "dd LLL, y", { locale: ru })
               )
             ) : (
-              <span>Pick a date</span>
+              <span className="text-gray-400">укажите даты</span>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 bg-white" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={1}
-            locale={ru}
-          />
+          <div ref={popoverRef}>
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={dateRange?.from}
+              selected={dateRange}
+              onSelect={(dateRange: DateRange | undefined) =>
+                handleDateRangeSelect(dateRange)
+              }
+              onDayBlur={handleDayBlur}
+              numberOfMonths={1}
+              locale={ru}
+            />
+          </div>
         </PopoverContent>
       </Popover>
     </div>
   );
-}
+};

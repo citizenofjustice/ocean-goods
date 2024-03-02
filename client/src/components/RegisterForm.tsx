@@ -1,14 +1,15 @@
 import { useRef, useState } from "react";
-import FormCard from "./UI/FormCard";
-import LabeledInputField from "./UI/LabeledInputField";
-import DefaultButton from "./UI/DefaultButton";
-import SelectField from "./UI/SelectField";
+import FormCard from "./ui/FormCard";
+import LabeledInputField from "./ui/LabeledInputField";
+import SelectField from "./ui/SelectField";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import PasswordInputField from "./UI/PasswordInputField";
+import PasswordInputField from "./ui/PasswordInputField";
 import { AxiosError } from "axios";
 import { useStore } from "../store/root-store-context";
 import { SelectValue } from "../types/SelectValue";
+import { Button } from "./ui/button";
+import { ButtonLoading } from "./ui/ButtonLoading";
 
 const initValues = {
   email: "",
@@ -119,10 +120,7 @@ const RegisterForm = () => {
             value={inputValues.password}
             onInputChange={handleValueChange}
           />
-
-          <DefaultButton type="submit" isPending={isPending}>
-            Зарегистрировать
-          </DefaultButton>
+          {isPending ? <ButtonLoading /> : <Button>Зарегистрировать</Button>}
         </form>
       </FormCard>
     </>
