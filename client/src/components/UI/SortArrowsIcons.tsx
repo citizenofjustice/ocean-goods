@@ -9,9 +9,9 @@ export const SortArrowsIcons: React.FC<{
       {isActive ? (
         <>
           {sortDirection === "asc" ? (
-            <ArrowUp className="h-4 w-4" />
+            <ArrowUp className="ml-2 h-4 w-4" />
           ) : (
-            <ArrowDown className="h-4 w-4" />
+            <ArrowDown className="ml-2 h-4 w-4" />
           )}
         </>
       ) : (

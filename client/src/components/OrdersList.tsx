@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DateRange } from "react-day-picker";
@@ -13,7 +14,6 @@ import {
   TableRow,
 } from "./ui/table";
 import { Input } from "./ui/input";
-import FormatDate from "./FormatDate";
 import { Order } from "../types/Order";
 import ErrorPage from "./Pages/ErrorPage";
 import { useOrders } from "../hooks/useOrders";
@@ -112,8 +112,8 @@ const OrdersList = () => {
 
   return (
     <>
-      <div className="fixed w-full px-2">
-        <div className="max-w-4xl sticky top-0 m-auto pt-4 mb-4 grid grid-cols-1 sm:grid-cols-12 gap-2 justify-between">
+      <div className="w-full px-4 pb-4">
+        <div className="max-w-4xl m-auto pt-4 mb-4 grid grid-cols-1 sm:grid-cols-12 gap-2 justify-between">
           <div className="flex gap-2 sm:col-span-7">
             <Input
               placeholder={`Поиск ${filterPlaceholder}`}
@@ -192,7 +192,10 @@ const OrdersList = () => {
                               </Link>
                             </TableCell>
                             <TableCell>
-                              <FormatDate createdAt={item.createdAt} />
+                              {format(
+                                new Date(item.createdAt),
+                                "dd.MM.y HH:mm"
+                              )}
                             </TableCell>
                             <TableCell>{item.customerName}</TableCell>
                             <TableCell>{item.customerPhone}</TableCell>

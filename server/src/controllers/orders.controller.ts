@@ -276,7 +276,7 @@ class OrderController {
       if (isNaN(Number(id)))
         res
           .status(400)
-          .json({ error: { message: "Не верный идентификатор заказа" } });
+          .json({ error: { message: "Неверный идентификатор заказа" } });
 
       // Get the order
       const foundOrder = await getOrderById(Number(id));
