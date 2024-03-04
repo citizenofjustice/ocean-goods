@@ -28,9 +28,12 @@ function getOrderById(orderId) {
                         include: {
                             // Join catalog item
                             catalogItem: {
-                                include: {
-                                    // Join product types
-                                    productTypes: true,
+                                select: {
+                                    productTypes: {
+                                        select: {
+                                            type: true,
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -67,6 +70,13 @@ class OrderController {
                     });
                 // Fetch the products from the catalog that match the product IDs in the order items
                 const orderProducts = yield db_1.prisma.catalog.findMany({
+                    include: {
+                        mainImage: {
+                            select: {
+                                path: true,
+                            },
+                        },
+                    },
                     where: {
                         productId: {
                             in: parsedOrderItems.map((item) => item.productId),

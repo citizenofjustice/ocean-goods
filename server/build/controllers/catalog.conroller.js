@@ -19,10 +19,19 @@ class CatalogController {
             try {
                 // Get the item details from the request body
                 const item = req.body;
-                let imageLink = "";
+                let image;
                 // If there is a file in the request, upload it and get the URL
-                if (req.file)
-                    imageLink = yield (0, upload_1.uploadPictureAndGetUrl)(req.file);
+                if (req.file) {
+                    // First, create an image record
+                    image = yield db_1.prisma.image.create({
+                        data: {
+                            path: req.file.path,
+                            filename: req.file.filename,
+                            originalName: req.file.originalname,
+                            mimetype: req.file.mimetype,
+                        },
+                    });
+                }
                 // Insert the new item into the database
                 const newItem = yield db_1.prisma.catalog.create({
                     data: {
@@ -34,7 +43,7 @@ class CatalogController {
                         discount: Number(item.discount),
                         weight: Number(item.weight),
                         kcal: Number(item.kcal),
-                        mainImage: imageLink,
+                        mainImageId: image ? Number(image.imageId) : null,
                     },
                 });
                 // Send the newly created item as the response
@@ -61,6 +70,13 @@ class CatalogController {
                 let queryParameters = {
                     take: limitNum,
                     skip: skip,
+                    include: {
+                        mainImage: {
+                            select: {
+                                path: true,
+                            },
+                        },
+                    },
                 };
                 // If a search string is provided, add a WHERE clause to the query
                 if (filter) {
@@ -129,6 +145,11 @@ class CatalogController {
                                 type: true,
                             },
                         },
+                        mainImage: {
+                            select: {
+                                path: true,
+                            },
+                        },
                     },
                 });
                 // If the catalogItem is not found in the database, return a 404 status code and an error message
@@ -172,7 +193,7 @@ class CatalogController {
                         discount: Number(item.discount),
                         weight: Number(item.weight),
                         kcal: Number(item.kcal),
-                        mainImage: imageLink,
+                        // mainImage: imageLink,
                         updatedAt: new Date(),
                     },
                 });

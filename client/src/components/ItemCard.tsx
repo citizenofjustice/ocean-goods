@@ -81,8 +81,14 @@ const ItemCard: React.FC<{
       </div>
       <div className="flex px-3 vsm:px-4 gap-3 vsm:gap-4 justify-center">
         <div className="rounded overflow-hidden min-w-[60px] flex items-center ">
-          {catalogItem.mainImage && (
-            <img className="rounded" src={catalogItem.mainImage} />
+          {catalogItem.mainImage?.path && (
+            <img
+              className="rounded"
+              src={
+                import.meta.env.VITE_REACT_SERVER_URL +
+                catalogItem.mainImage.path
+              }
+            />
           )}
         </div>
         <div className="flex items-center">

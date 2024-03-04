@@ -54,7 +54,12 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
     cell: (tableProps) => (
       <div className="overflow-hidden min-w-[40px] max-w-[100px] rounded-md">
         <Link to={`/item/${tableProps.row.original.productId}`}>
-          <img src={tableProps.row.original.itemSnapshot.mainImage} />
+          <img
+            src={
+              import.meta.env.VITE_REACT_SERVER_URL +
+              tableProps.row.original.itemSnapshot.mainImage?.path
+            }
+          />
         </Link>
       </div>
     ),

@@ -25,9 +25,12 @@ export async function getOrderById(orderId: number) {
           include: {
             // Join catalog item
             catalogItem: {
-              include: {
-                // Join product types
-                productTypes: true,
+              select: {
+                productTypes: {
+                  select: {
+                    type: true,
+                  },
+                },
               },
             },
           },
@@ -72,6 +75,13 @@ class OrderController {
 
       // Fetch the products from the catalog that match the product IDs in the order items
       const orderProducts = await prisma.catalog.findMany({
+        include: {
+          mainImage: {
+            select: {
+              path: true,
+            },
+          },
+        },
         where: {
           productId: {
             in: parsedOrderItems.map((item: OrderItem) => item.productId),

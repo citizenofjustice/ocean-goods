@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 import { CatalogItem } from "../types/CatalogItem";
+import { BasicImage } from "src/types/BasicImage";
 
 // Catalog item class implementing CatalogItem interface
 class CatalogItemModel implements CatalogItem {
@@ -13,7 +14,7 @@ class CatalogItemModel implements CatalogItem {
   discount: number;
   weight: number;
   kcal: number;
-  mainImage?: string;
+  mainImage?: BasicImage;
 
   // Getter to calculate the final price after discount
   get finalPrice(): number {
@@ -31,7 +32,7 @@ class CatalogItemModel implements CatalogItem {
     discount: number,
     weight: number,
     kcal: number,
-    mainImage?: string
+    mainImage?: BasicImage
   ) {
     // Making all properties of this class observable for reactive programming
     makeAutoObservable(this);

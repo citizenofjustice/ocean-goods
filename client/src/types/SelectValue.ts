@@ -1,4 +1,4 @@
-export interface SelectValue {
-  id: number;
+export interface SelectValueProp {
+  id: string;
   optionValue: string;
 }

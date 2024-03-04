@@ -1,21 +1,86 @@
-import { useState } from "react";
-
-import ImageDropzone from "../ui/ImageDropzone";
-import LabeledInputField from "../ui/LabeledInputField";
+import { z } from "zod";
 import { observer } from "mobx-react-lite";
-import { getProductTypesSelectValues } from "../../api";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { CatalogItemInputs } from "../../types/form-types";
-import SelectField from "../ui/SelectField";
-import ToggleField from "../ui/ToggleField";
-import TextareaField from "../ui/TextareaField";
-import { useQuery } from "@tanstack/react-query";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
-import { useStore } from "../../store/root-store-context";
-import { SelectValue } from "../../types/SelectValue";
 import { Button } from "../ui/button";
+import { useForm } from "react-hook-form";
+import { Input } from "../ui/input";
+import { zodInputStringPipe } from "../../lib/utils";
+import { Switch } from "../ui/switch";
+import { Textarea } from "../ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Loader2, UploadCloud, X } from "lucide-react";
+import { useState } from "react";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useStore } from "../../store/root-store-context";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getProductTypesSelectValues } from "../../api";
+import { AxiosError } from "axios";
+import { SelectValueProp } from "../../types/SelectValue";
+import { zodImageFile } from "../../lib/zodImageFile";
 import { ButtonLoading } from "../ui/ButtonLoading";
+import { Card } from "../ui/card";
+
+interface CatalogInput {
+  name:
+    | "productName"
+    | "productTypeId"
+    | "inStock"
+    | "description"
+    | "price"
+    | "discount"
+    | "weight"
+    | "kcal"
+    | "mainImage";
+  label: string;
+  type: string;
+  placeholder?: string;
+  inputAttr?: React.InputHTMLAttributes<HTMLInputElement>;
+}
+
+const formInputs: CatalogInput[] = [
+  {
+    name: "productName",
+    label: "Наименование продукта",
+    type: "text",
+  },
+  {
+    name: "price",
+    label: "Цена",
+    type: "text",
+  },
+  {
+    name: "discount",
+    label: "Скидка",
+    type: "text",
+  },
+  {
+    name: "weight",
+    label: "Вес (в граммах)",
+    type: "text",
+  },
+  {
+    name: "kcal",
+    label: "Ккал (на 100 гр.)",
+    type: "text",
+  },
+];
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -26,11 +91,11 @@ const emptyInitValues: CatalogItemInputs = {
   discount: "",
   weight: "",
   kcal: "",
-  mainImage: undefined,
+  mainImage: "",
 };
 
 interface ProductTypeSelectOption {
-  productTypeId: number;
+  productTypeId: string;
   type: string;
 }
 
@@ -62,7 +127,7 @@ const AddToCatalogPage: React.FC<{
           });
         } else {
           const availableRoles = data.map((item: ProductTypeSelectOption) => {
-            const selectValue: SelectValue = {
+            const selectValue: SelectValueProp = {
               id: item.productTypeId,
               optionValue: item.type,
             };
@@ -74,45 +139,54 @@ const AddToCatalogPage: React.FC<{
       refetchOnWindowFocus: false,
     });
 
-    const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, type, value } = e.target;
-      if (name === "mainImage") {
-        const selectedFiles = e.target.files as FileList;
-        setInputValues({ ...inputValues, [name]: selectedFiles[0] });
-      } else {
-        setInputValues({
-          ...inputValues,
-          [name]: type === "number" ? Number(value) : value,
-        });
+    const formSchema = z.object({
+      productName: z
+        .string()
+        .min(2, { message: "Слишком короткое наименование" }),
+      productTypeId: z.string().min(1, { message: "Укажите тип продукта" }),
+      inStock: z.boolean(),
+      description: z.string(),
+      price: zodInputStringPipe(
+        z.number().positive("Значение должно быть больше 0")
+      ),
+      discount: zodInputStringPipe(
+        z
+          .number()
+          .min(0, { message: "Значение должно быть больше 0" })
+          .max(100, { message: "Значение не должно быть больше 100" })
+      ),
+      weight: zodInputStringPipe(
+        z.number().positive("Значение должно быть больше 0")
+      ),
+      kcal: zodInputStringPipe(
+        z.number().positive("Значение должно быть больше 0")
+      ),
+      mainImage: zodImageFile,
+    });
+
+    // Define your form.
+    const form = useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        productName: "",
+        productTypeId: "",
+        inStock: false,
+        description: "",
+        price: "",
+        discount: "",
+        weight: "",
+        kcal: "",
+        mainImage: undefined,
+      },
+    });
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+      console.log(values);
+      const fData = new FormData();
+      for (const [key, value] of Object.entries(values)) {
+        fData.append(key, value);
       }
-    };
-
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const { name, value } = e.target;
-      setInputValues({ ...inputValues, [name]: value });
-    };
-
-    const handleImageReset = () => {
-      setInputValues({ ...inputValues, mainImage: undefined });
-    };
-
-    const handleToggleChange = () => {
-      setInputValues({ ...inputValues, inStock: !inputValues.inStock });
-    };
-
-    const handleTextareaChange = (
-      e: React.ChangeEvent<HTMLTextAreaElement>
-    ) => {
-      const { name, value } = e.target;
-      setInputValues({ ...inputValues, [name]: value });
-    };
-
-    const handleFormSubmittion = async (
-      event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
-    ) => {
-      event.preventDefault();
       setIsPending(true);
-      const fData = new FormData(event.currentTarget);
       switch (actionType) {
         case "CREATE": {
           try {
@@ -186,110 +260,170 @@ const AddToCatalogPage: React.FC<{
           break;
         }
       }
-    };
+    }
 
     return (
       <>
-        <div className="p-4 flex justify-center">
-          <form
-            className="vsm:w-4/5 max-w-screen-lg bg-background-200 rounded-xl p-4"
-            onSubmit={handleFormSubmittion}
-          >
-            <div className="grid gap-6 md:grid-cols-2 mb-4">
-              <LabeledInputField
-                title="Название"
-                inputId="add-to-catalog-name"
-                inputType="text"
-                name="productName"
-                value={inputValues.productName}
-                onInputChange={handleValueChange}
-              />
-              <SelectField
-                title="Тип продукта"
-                inputId="add-to-catalog-product-type"
+        <div className="w-full mt-6 mb-6 flex justify-center">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full px-4 gap-x-4 sm:w-[80vw] max-w-4xl grid vsm:grid-cols-2 sm:gap-x-8 gap-y-4"
+            >
+              <FormField
+                control={form.control}
                 name="productTypeId"
-                onSelectChange={handleSelectChange}
-                value={inputValues.productTypeId}
-                isLoading={isLoading}
-                isError={isError}
-                options={data}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Тип продука:</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={
+                              isLoading ? (
+                                <Loader2 className="w-4 h-4" />
+                              ) : (
+                                "Выберите тип продукта"
+                              )
+                            }
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <FormMessage />
+                      {!isLoading && !isError && (
+                        <SelectContent>
+                          {data.map((item: SelectValueProp) => (
+                            <SelectItem key={item.id} value={String(item.id)}>
+                              {item.optionValue}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      )}
+                    </Select>
+                  </FormItem>
+                )}
               />
-              <LabeledInputField
-                title="Цена"
-                inputId="add-to-catalog-price"
-                inputType="number"
-                name="price"
-                value={inputValues.price}
-                onInputChange={handleValueChange}
-                attr={{
-                  min: 0,
-                }}
-              />
-              <LabeledInputField
-                title="Скидка"
-                inputId="add-to-catalog-discount"
-                inputType="number"
-                name="discount"
-                value={inputValues.discount}
-                onInputChange={handleValueChange}
-                attr={{
-                  maxLength: 2,
-                  min: 0,
-                  max: 99,
-                }}
-              />
-              <LabeledInputField
-                title="Вес"
-                inputId="add-to-catalog-weight"
-                inputType="number"
-                name="weight"
-                value={inputValues.weight}
-                onInputChange={handleValueChange}
-                attr={{
-                  min: 0,
-                }}
-              />
-              <LabeledInputField
-                title="Ккал (на 100 гр.)"
-                inputId="add-to-catalog-kcal"
-                inputType="number"
-                name="kcal"
-                value={inputValues.kcal}
-                onInputChange={handleValueChange}
-                attr={{
-                  min: 0,
-                }}
-              />
-              <ImageDropzone
-                id="add-to-catalog-image"
-                type="file"
+              {formInputs.map((input: CatalogInput, index) => (
+                <FormField
+                  key={index}
+                  control={form.control}
+                  name={input.name}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{input.label}:</FormLabel>
+                      <FormControl>
+                        <Input
+                          type={input.type}
+                          {...field}
+                          {...input.inputAttr}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+              <FormField
+                control={form.control}
                 name="mainImage"
-                previewImage={inputValues.mainImage}
-                onInputChange={handleValueChange}
-                onRemove={handleImageReset}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Изображение:</FormLabel>
+                    <FormControl>
+                      <>
+                        <Input
+                          type="file"
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.files ? e.target.files[0] : null
+                            )
+                          }
+                          id="fileInput"
+                          className="hidden"
+                          multiple
+                        />
+                      </>
+                    </FormControl>
+                    <FormMessage />
+                    <label htmlFor="fileInput">
+                      <Card className="mt-2 flex h-28 flex-col items-center justify-center">
+                        {field.value ? (
+                          <span className="flex justify-center w-[100%] h-[100%]">
+                            <img
+                              className="max-w-[100%] max-h-[100%] py-2"
+                              src={URL.createObjectURL(field.value)}
+                            />
+                            <Button variant="ghost" type="button">
+                              <X className="relative z-40 top-0 left-0 w-6 h-6" />
+                            </Button>
+                          </span>
+                        ) : (
+                          <>
+                            <UploadCloud
+                              strokeWidth={0.95}
+                              className="w-10 h-10"
+                            />
+                            <p className="mb-2 px-4 text-center">
+                              <span className="font-semibold">
+                                Нажмите чтобы загрузить файл
+                              </span>
+                            </p>
+                          </>
+                        )}
+                      </Card>
+                    </label>
+                  </FormItem>
+                )}
               />
-              <TextareaField
-                inputId="add-to-catalog-description"
-                title="Описание"
+              <FormField
+                control={form.control}
                 name="description"
-                value={inputValues.description}
-                onInputChange={handleTextareaChange}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="description">Описание:</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Введте описание продукта"
+                        rows={5}
+                        id="description"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <ToggleField
-                title="Наличие продука"
-                inputId="add-to-catalog-in-stock"
-                inputType="checkbox"
+              <FormField
+                control={form.control}
                 name="inStock"
-                onToggleChange={handleToggleChange}
-                checked={initValues.inStock}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Имеется в наличии:</FormLabel>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            {isPending ? (
-              <ButtonLoading />
-            ) : (
-              <Button type="submit">Cохранить</Button>
-            )}
-          </form>
+              <div className="flex items-end justify-center">
+                {isPending ? (
+                  <ButtonLoading />
+                ) : (
+                  <Button className="px-8" type="submit">
+                    Сохранить
+                  </Button>
+                )}
+              </div>
+            </form>
+          </Form>
         </div>
       </>
     );

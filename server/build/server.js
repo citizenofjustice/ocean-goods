@@ -22,11 +22,13 @@ class Server {
         // Defining CORS options
         const corsOptions = {
             // Setting the origin based on whether the app is hosted locally
-            origin: "https://ocean-goods-client.vercel.app",
+            origin: "http://localhost:5173",
             // Allowing credentials
             credentials: true,
             methods: "POST, GET, PUT, DELETE, OPTIONS",
         };
+        // Function to serve all static files inside public directory.
+        app.use("/public", express_1.default.static("public"));
         app.use((0, cors_1.default)(corsOptions)); // Using CORS with the defined options
         app.use(express_1.default.json()); // Using express.json middleware to parse JSON requests
         app.use((0, cookie_parser_1.default)()); // Using cookieParser middleware to parse cookies

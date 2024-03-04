@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.upload = void 0;
 const path_1 = __importDefault(require("path"));
 const multer_1 = __importDefault(require("multer"));
+const fs_1 = __importDefault(require("fs"));
+const crypto_1 = require("crypto");
 // Function to check the file type
 function checkFileType(file, cb) {
     // Define the allowed extensions
-    const fileTypes = /jpeg|jpg|png/;
+    const fileTypes = /jpeg|jpg|png|webp/;
     // Check the extension of the uploaded file
     const extName = fileTypes.test(path_1.default.extname(file.originalname).toLowerCase());
     // Check the mime type of the uploaded file
@@ -34,10 +36,20 @@ function checkFileType(file, cb) {
         cb(new Error("Unsupported image file type"));
     }
 }
+const storage = multer_1.default.diskStorage({
+    destination: function (req, file, cb) {
+        const path = `./public/images/${file.fieldname}/`;
+        fs_1.default.mkdirSync(path, { recursive: true });
+        return cb(null, path);
+    },
+    filename: function (req, file, cb) {
+        cb(null, (0, crypto_1.randomUUID)() + path_1.default.extname(file.originalname));
+    },
+});
 // Export the multer configuration
 exports.upload = (0, multer_1.default)({
-    // Use memory storage to store the files
-    storage: multer_1.default.memoryStorage(),
+    // Use diskStorage to store the files
+    storage: storage,
     // Limit the file size to 5MB
     limits: { fileSize: 5242880 },
     // Use the checkFileType function to filter the files

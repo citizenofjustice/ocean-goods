@@ -36,8 +36,14 @@ const CartElement: React.FC<{
         <div className="flex flex-row gap-2">
           <div className="basis-1/4">
             <div className="rounded overflow-hidden min-w-[60px]">
-              {cartItem.mainImage && (
-                <img className="rounded" src={cartItem.mainImage} />
+              {cartItem.mainImage?.path && (
+                <img
+                  className="rounded"
+                  src={
+                    import.meta.env.VITE_REACT_SERVER_URL +
+                    cartItem.mainImage?.path
+                  }
+                />
               )}
             </div>
           </div>

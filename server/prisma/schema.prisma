@@ -73,19 +73,32 @@ model Order {
 }
 
 model Catalog {
-  productId     Int            @id @default(autoincrement()) @map("id")
-  productName   String         @db.VarChar(255) @map("product_name")
-  productTypeId Int            @map("product_type_id")
-  inStock       Boolean        @map("in_stock")
-  description   String         @db.VarChar(2000)
-  price         Int
-  discount      Int
-  weight        Int
-  kcal          Int
-  mainImage     String?        @db.VarChar(255) @map("main_image")
-  createdAt     DateTime       @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime       @default(now()) @db.Timestamptz(6) @map("updated_at")
-  productTypes  ProductTypes?  @relation(fields: [productTypeId], references: [productTypeId], onDelete: NoAction, onUpdate: NoAction)
-  orderItems    OrderItem[]
+  productId        Int            @id @default(autoincrement()) @map("id")
+  productName      String         @db.VarChar(255) @map("product_name")
+  productTypeId    Int            @map("product_type_id")
+  inStock          Boolean        @map("in_stock")
+  description      String         @db.VarChar(2000)
+  price            Int
+  discount         Int
+  weight           Int
+  kcal             Int
+  mainImageId      Int?           @unique @map("main_image_id")
+  createdAt        DateTime       @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt        DateTime       @default(now()) @db.Timestamptz(6) @map("updated_at")
+  productTypes     ProductTypes?  @relation(fields: [productTypeId], references: [productTypeId], onDelete: NoAction, onUpdate: NoAction)
+  mainImage        Image?         @relation(fields: [mainImageId], references: [imageId])
+  orderItems       OrderItem[]
   @@map("catalog")
+}
+
+model Image {
+  imageId        Int           @id @default(autoincrement()) @map("id")
+  path           String        
+  filename       String        
+  originalName   String        @map("original_name")
+  mimetype       String        
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt      DateTime      @default(now()) @db.Timestamptz(6) @map("updated_at")
+  catalog        Catalog?
+  @@map("images")
 }

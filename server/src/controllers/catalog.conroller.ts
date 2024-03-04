@@ -11,10 +11,20 @@ class CatalogController {
     try {
       // Get the item details from the request body
       const item = req.body;
-      let imageLink = "";
+      let image;
 
       // If there is a file in the request, upload it and get the URL
-      if (req.file) imageLink = await uploadPictureAndGetUrl(req.file);
+      if (req.file) {
+        // First, create an image record
+        image = await prisma.image.create({
+          data: {
+            path: req.file.path,
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            mimetype: req.file.mimetype,
+          },
+        });
+      }
 
       // Insert the new item into the database
       const newItem = await prisma.catalog.create({
@@ -27,7 +37,7 @@ class CatalogController {
           discount: Number(item.discount),
           weight: Number(item.weight),
           kcal: Number(item.kcal),
-          mainImage: imageLink,
+          mainImageId: image ? Number(image.imageId) : null,
         },
       });
 
@@ -56,6 +66,13 @@ class CatalogController {
       let queryParameters: Prisma.CatalogFindManyArgs = {
         take: limitNum,
         skip: skip,
+        include: {
+          mainImage: {
+            select: {
+              path: true,
+            },
+          },
+        },
       };
 
       // If a search string is provided, add a WHERE clause to the query
@@ -129,6 +146,11 @@ class CatalogController {
               type: true,
             },
           },
+          mainImage: {
+            select: {
+              path: true,
+            },
+          },
         },
       });
 
@@ -176,7 +198,7 @@ class CatalogController {
           discount: Number(item.discount),
           weight: Number(item.weight),
           kcal: Number(item.kcal),
-          mainImage: imageLink,
+          // mainImage: imageLink,
           updatedAt: new Date(),
         },
       });
