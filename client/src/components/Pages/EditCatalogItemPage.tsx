@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "../../api/axios";
 import ErrorPage from "./ErrorPage";
 import LoadingSpinner from "../ui/LoadingSpinner";
-import AddToCatalogPage from "./AddToCatalogPage";
+import CatalogItemForm from "./CatalogItemForm";
 import { CatalogItemInputs } from "../../types/form-types";
 
 const EditCatalogItemPage = observer(() => {
@@ -35,7 +35,9 @@ const EditCatalogItemPage = observer(() => {
           discount: response.data.discount.toString(),
           weight: response.data.weight.toString(),
           kcal: response.data.kcal.toString(),
-          mainImage: response.data.mainImage,
+          mainImage: response.data.mainImage
+            ? response.data.mainImage.path
+            : undefined,
         };
       } catch (error) {
         console.error(error);
@@ -57,10 +59,10 @@ const EditCatalogItemPage = observer(() => {
     <>
       {isLoading && <LoadingSpinner />}
       {!isLoading && beforeEditData && !isError && (
-        <AddToCatalogPage
+        <CatalogItemForm
           actionType="UPDATE"
           editItemId={itemId}
-          initValues={beforeEditData}
+          editInitValues={beforeEditData}
         />
       )}
       {isError && (

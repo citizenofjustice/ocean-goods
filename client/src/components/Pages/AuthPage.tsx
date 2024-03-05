@@ -20,10 +20,12 @@ import { ButtonLoading } from "../ui/ButtonLoading";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useStore } from "../../store/root-store-context";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Eye, EyeOff } from "lucide-react";
 
 const AuthPage = observer(() => {
   const navigate = useNavigate();
   const [isPending, setIsPending] = useState(false);
+  const [isPasswordShown, setIsPasswordShown] = useState(false);
   const location = useLocation();
   const { auth, alert } = useStore();
   const { authData } = auth;
@@ -122,7 +124,23 @@ const AuthPage = observer(() => {
                     <FormItem>
                       <FormLabel>Пароль:</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <div className="flex items-center">
+                          <Input
+                            type={isPasswordShown ? "text" : "password"}
+                            {...field}
+                          />
+                          {isPasswordShown ? (
+                            <EyeOff
+                              className="relative right-7 w-5 h-5 hover:cursor-pointer"
+                              onClick={() => setIsPasswordShown(false)}
+                            />
+                          ) : (
+                            <Eye
+                              className="relative right-7 w-5 h-5 hover:cursor-pointer"
+                              onClick={() => setIsPasswordShown(true)}
+                            />
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

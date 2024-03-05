@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Image, Prisma } from "@prisma/client";
 
 import { prisma } from "../db";
-import { uploadPictureAndGetUrl } from "../upload";
 import { sortByFinalPrice } from "../utils/sortByPrice";
 
 class CatalogController {
@@ -181,10 +180,24 @@ class CatalogController {
       const item = await req.body;
 
       // If there is a new file in the request, upload it and get the URL, otherwise keep old value
-      let imageLink = "";
-      imageLink = req.file
-        ? await uploadPictureAndGetUrl(req.file)
-        : item.mainImage;
+      let image: Image | undefined | null;
+
+      // If there is a file in the request, upload it and get the URL
+      if (req.file) {
+        // First, create an image record
+        image = await prisma.image.create({
+          data: {
+            path: req.file.path,
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            mimetype: req.file.mimetype,
+          },
+        });
+      } else {
+        if (typeof item.mainImage === "string" && item.mainImage === "") {
+          image = null;
+        } else image = undefined;
+      }
 
       // Update the item in the database using Prisma
       await prisma.catalog.update({
@@ -192,13 +205,13 @@ class CatalogController {
         data: {
           productName: item.productName,
           productTypeId: Number(item.productTypeId),
-          inStock: !!item.inStock,
+          inStock: item.inStock === "true" ? true : false,
           description: item.description,
           price: Number(item.price),
           discount: Number(item.discount),
           weight: Number(item.weight),
           kcal: Number(item.kcal),
-          // mainImage: imageLink,
+          mainImageId: image ? Number(image.imageId) : image,
           updatedAt: new Date(),
         },
       });

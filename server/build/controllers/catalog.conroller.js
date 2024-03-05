@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db");
-const upload_1 = require("../upload");
 const sortByPrice_1 = require("../utils/sortByPrice");
 class CatalogController {
     // method for creating a new catalogItem
@@ -177,23 +176,39 @@ class CatalogController {
                 // Get the updated item details from the request body
                 const item = yield req.body;
                 // If there is a new file in the request, upload it and get the URL, otherwise keep old value
-                let imageLink = "";
-                imageLink = req.file
-                    ? yield (0, upload_1.uploadPictureAndGetUrl)(req.file)
-                    : item.mainImage;
+                let image;
+                // If there is a file in the request, upload it and get the URL
+                if (req.file) {
+                    // First, create an image record
+                    image = yield db_1.prisma.image.create({
+                        data: {
+                            path: req.file.path,
+                            filename: req.file.filename,
+                            originalName: req.file.originalname,
+                            mimetype: req.file.mimetype,
+                        },
+                    });
+                }
+                else {
+                    if (typeof item.mainImage === "string" && item.mainImage === "") {
+                        image = null;
+                    }
+                    else
+                        image = undefined;
+                }
                 // Update the item in the database using Prisma
                 yield db_1.prisma.catalog.update({
                     where: { productId: id },
                     data: {
                         productName: item.productName,
                         productTypeId: Number(item.productTypeId),
-                        inStock: !!item.inStock,
+                        inStock: item.inStock === "true" ? true : false,
                         description: item.description,
                         price: Number(item.price),
                         discount: Number(item.discount),
                         weight: Number(item.weight),
                         kcal: Number(item.kcal),
-                        // mainImage: imageLink,
+                        mainImageId: image ? Number(image.imageId) : image,
                         updatedAt: new Date(),
                     },
                 });
