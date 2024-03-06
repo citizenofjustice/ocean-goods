@@ -38,6 +38,7 @@ const AddToCart: React.FC<{
     <>
       {!inCartProduct && (
         <Button
+          className="px-2 h-8 sm:h-10 sm:px-4"
           disabled={!catalogItem.inStock}
           onClick={handleItemCartAddition}
         >

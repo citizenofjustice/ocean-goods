@@ -13,10 +13,12 @@ import Cart from "../Cart";
 import MenuList from "../MenuList";
 import { MenuItem } from "../../types/MenuItem";
 import { useStore } from "../../store/root-store-context";
-import UserDropdownMenu from "../UI/UserDropdownMenu";
-import SignInSVG from "../UI/SignInSVG";
+import UserDropdownMenu from "../ui/UserDropdownMenu";
+import SignInSVG from "../ui/SignInSVG";
 import Logo from "../../assets/images/Logo.svg";
 import { useMediaQuery } from "usehooks-ts";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "../ui/sheet";
+import { X } from "lucide-react";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
@@ -50,14 +52,6 @@ const Navbar = observer(() => {
 
   return (
     <>
-      {isMenuOpen && (
-        <div className={`relative z-50 ${menuClasses}`}>
-          <MenuList
-            menuItems={menuItems}
-            onMenuClose={() => setIsMenuOpen(false)}
-          />
-        </div>
-      )}
       {isCartOpen && (
         <div className={`relative z-50 ${menuClasses}`}>
           <Cart onCartClose={() => setIsCartOpen(false)} />
@@ -66,13 +60,29 @@ const Navbar = observer(() => {
       <header className="hearer-sticky h-[4.5rem] z-50 bg-background-0 border-b-2 border-background-200 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex items-center flex-row py-4">
         <nav className="basis-2/12 flex justify-start">
           {!tablet ? (
-            // if screen width smaller than tablets show mobile menu icon
-            <div
-              onClick={() => setIsMenuOpen(true)}
-              className="flex items-center justify-end h-10 w-12 hover:cursor-pointer"
-            >
-              <Bars3Icon className="w-6 h-6 text-primary-800" />
-            </div>
+            <Sheet open={isMenuOpen}>
+              <SheetTrigger>
+                <div
+                  onClick={() => setIsMenuOpen(true)}
+                  className="flex items-center justify-end h-10 w-12 hover:cursor-pointer"
+                >
+                  <Bars3Icon className="w-6 h-6 text-primary-800" />
+                </div>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[240px] sm:w-[540px]">
+                <SheetClose
+                  onClick={() => setIsMenuOpen(false)}
+                  className="left-6 top-6 rounded-sm ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
+                >
+                  <X className="w-6 h-6" />
+                  <span className="sr-only">Close</span>
+                </SheetClose>
+                <MenuList
+                  menuItems={menuItems}
+                  onMenuClose={() => setIsMenuOpen(false)}
+                />
+              </SheetContent>
+            </Sheet>
           ) : (
             // if screen width bigger than tablets show app name
             <div className="flex items-center justify-end h-10 ml-[1.625rem] whitespace-nowrap">

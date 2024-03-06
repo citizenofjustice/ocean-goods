@@ -1,38 +1,108 @@
 import { useState } from "react";
-import LabeledInputField from "./ui/LabeledInputField";
-import FormCard from "./ui/FormCard";
-import { CustomerDataInputs } from "../types/form-types";
 import { useStore } from "../store/root-store-context";
 import { observer } from "mobx-react-lite";
 import axios from "../api/axios";
 import { ButtonLoading } from "./ui/ButtonLoading";
 import { Button } from "./ui/button";
+import ConfirmActionAlert from "./ui/ConfirmActionAlert";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
+import { Input } from "./ui/input";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import telegramIcon from "../assets/images/telegram.svg";
+import whatsAppIcon from "../assets/images/whatsapp.svg";
+import viberIcon from "../assets/images/viber.svg";
+import phoneIcon from "../assets/images/phonecall.svg";
 
-const emptyInitValues: CustomerDataInputs = {
-  customerName: "",
-  customerPhone: "",
-  customerEmail: "",
-  contactMethod: "",
-};
+interface ContactOption {
+  value: string;
+  content: React.ReactNode;
+}
+
+const contactOptions: ContactOption[] = [
+  {
+    value: "telegram",
+    content: (
+      <span className="flex gap-2">
+        <img className="w-6 h-6" src={telegramIcon} /> Телегарам
+      </span>
+    ),
+  },
+  {
+    value: "whatsppp",
+    content: (
+      <span className="flex gap-2">
+        <img className="w-6 h-6" src={whatsAppIcon} /> WhatsApp
+      </span>
+    ),
+  },
+  {
+    value: "viber",
+    content: (
+      <span className="flex gap-2">
+        <img className="w-6 h-6" src={viberIcon} /> Viber
+      </span>
+    ),
+  },
+  {
+    value: "phone",
+    content: (
+      <span className="flex gap-2">
+        <img className="w-6 h-6" src={phoneIcon} /> Звонок по телефону
+      </span>
+    ),
+  },
+];
 
 const CustomerDataForm: React.FC<{
   onOrderSend: () => void;
 }> = observer(({ onOrderSend }) => {
-  const [inputValues, setInputValues] =
-    useState<CustomerDataInputs>(emptyInitValues);
   const { cart } = useStore();
   const { cartItems } = cart;
   const [isPending, setIsPending] = useState(false);
 
-  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setInputValues({ ...inputValues, [name]: value });
-  };
+  const zodCustomerForm = z.object({
+    customerName: z
+      .string()
+      .min(2, { message: "Введенное имя не может быть короче 2 символов" }),
+    customerPhone: z
+      .string()
+      .min(6, { message: "Номер телефона слишком короткий" }),
+    customerEmail: z.string().optional(),
+    contactMethod: z.string(),
+  });
 
-  const handleOrder = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const form = useForm<z.infer<typeof zodCustomerForm>>({
+    resolver: zodResolver(zodCustomerForm),
+    defaultValues: {
+      customerName: "",
+      customerPhone: "",
+      customerEmail: "",
+      contactMethod: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof zodCustomerForm>) => {
     setIsPending(true);
-    const fData = new FormData(event.currentTarget);
+    const fData = new FormData();
+    for (const [key, value] of Object.entries(values)) {
+      fData.append(key, value);
+    }
     const orderItems = cartItems.map((item) => {
       const orderItem = {
         productId: item.productId,
@@ -45,7 +115,7 @@ const CustomerDataForm: React.FC<{
       headers: { "Content-Type": "application/json" },
     });
     if (response.status === 201) {
-      setInputValues(emptyInitValues);
+      form.reset();
       cart.clearCart();
       onOrderSend();
     } else console.log(response);
@@ -57,47 +127,103 @@ const CustomerDataForm: React.FC<{
       <div className="mb-4 text-center">
         Чтобы завершить оформление введите контактные данные:
       </div>
-      <FormCard>
-        <form onSubmit={handleOrder} className="flex flex-col gap-4">
-          <LabeledInputField
-            inputId="customer-name"
-            title="Имя"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+          <FormField
+            control={form.control}
             name="customerName"
-            inputType="text"
-            value={inputValues.customerName}
-            onInputChange={handleValueChange}
+            render={({ field }) => (
+              <FormItem className="">
+                <FormLabel htmlFor="customerName">Имя заказчика:</FormLabel>
+                <FormControl>
+                  <Input
+                    id="customerName"
+                    placeholder="Введите имя"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          <LabeledInputField
-            inputId="customer-phone"
-            title="Телефон"
-            name="customerPhone"
-            inputType="text"
-            value={inputValues.customerPhone}
-            onInputChange={handleValueChange}
-          />
-          <LabeledInputField
-            inputId="customer-email"
-            title="Эл. почта"
-            name="customerEmail"
-            inputType="email"
-            value={inputValues.customerEmail}
-            onInputChange={handleValueChange}
-          />
-          <LabeledInputField
-            inputId="customer-contact-method"
-            title="Предпочитаемый способ связи"
+          <FormField
+            control={form.control}
             name="contactMethod"
-            inputType="text"
-            value={inputValues.contactMethod}
-            onInputChange={handleValueChange}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="contactMethod">
+                  Предпочитаемый способ связи:
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger id="contactMethod">
+                      <SelectValue placeholder="Выберите способ связи" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <FormMessage />
+                  <SelectContent>
+                    {contactOptions.map((item: ContactOption, index) => (
+                      <SelectItem key={index} value={item.value}>
+                        {item.content}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="customerPhone"
+            render={({ field }) => (
+              <FormItem className="">
+                <FormLabel htmlFor="customerPhone">Телефонный номер:</FormLabel>
+                <FormControl>
+                  <Input
+                    id="customerPhone"
+                    placeholder="Введите номер телефона"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="customerEmail"
+            render={({ field }) => (
+              <FormItem className="">
+                <FormLabel htmlFor="customerEmail">
+                  Электронная почта:
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    id="customerEmail"
+                    placeholder="не обязательное поле"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
           {isPending ? (
             <ButtonLoading />
           ) : (
-            <Button type="submit">Заказать</Button>
+            <ConfirmActionAlert
+              question="Вы уверены что хотите оформить заказ?"
+              message="Проверьте указанные контактные данные на правильность."
+              onConfirm={form.handleSubmit(onSubmit)}
+            >
+              <Button type="button">Заказать</Button>
+            </ConfirmActionAlert>
           )}
         </form>
-      </FormCard>
+      </Form>
     </div>
   );
 });

@@ -1,20 +1,23 @@
+import { Button } from "./button";
+
 /**
  * Styled amount control button
  * @param buttonText - button content
  * @returns
  */
 const AmountContolButton: React.FC<{
-  buttonText: string;
+  children: React.ReactNode;
   buttonAction: () => void;
-}> = ({ buttonText, buttonAction }) => {
+}> = ({ children, buttonAction }) => {
   return (
-    <button
+    <Button
       type="button"
-      className="bg-background-600 text-text-50 font-medium rounded w-5 vsm:w-6"
+      variant="outline"
+      className="h-5 sm:h-8 p-1 sm:p-2 bg-secondary"
       onClick={buttonAction}
     >
-      {buttonText}
-    </button>
+      {children}
+    </Button>
   );
 };
 

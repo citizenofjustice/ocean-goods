@@ -26,6 +26,7 @@ import ImageDropzone from "../ui/ImageDropzone";
 import ProductTypeSelect from "../ProductTypeSelect";
 import { zodCatalogItemForm } from "../../lib/zodCatalogItemForm";
 import CatalogItemFormInputs from "../CatalogItemFormInputs";
+import ConfirmActionAlert from "../ui/ConfirmActionAlert";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",
@@ -215,9 +216,14 @@ const AddToCatalogPage: React.FC<{
                 {isPending ? (
                   <ButtonLoading />
                 ) : (
-                  <Button className="px-8" type="submit">
-                    Сохранить
-                  </Button>
+                  <ConfirmActionAlert
+                    onConfirm={form.handleSubmit(onSubmit)}
+                    question="Вы уверены что хотите сохранить введеные данные?"
+                  >
+                    <Button className="px-8" type="button">
+                      Сохранить
+                    </Button>
+                  </ConfirmActionAlert>
                 )}
               </div>
             </form>

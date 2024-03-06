@@ -124,19 +124,20 @@ const AuthPage = observer(() => {
                     <FormItem>
                       <FormLabel>Пароль:</FormLabel>
                       <FormControl>
-                        <div className="flex items-center">
+                        <div className="relative">
                           <Input
+                            className="pr-10"
                             type={isPasswordShown ? "text" : "password"}
                             {...field}
                           />
                           {isPasswordShown ? (
                             <EyeOff
-                              className="relative right-7 w-5 h-5 hover:cursor-pointer"
+                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
                               onClick={() => setIsPasswordShown(false)}
                             />
                           ) : (
                             <Eye
-                              className="relative right-7 w-5 h-5 hover:cursor-pointer"
+                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
                               onClick={() => setIsPasswordShown(true)}
                             />
                           )}

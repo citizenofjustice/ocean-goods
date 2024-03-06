@@ -58,26 +58,26 @@ const UserDropdownMenu = observer(() => {
   return (
     <>
       <button
-        className="flex text-sm bg-primary-800 rounded-full p-2 h-fit"
+        className="flex text-sm bg-primary rounded-full p-2 h-fit"
         type="button"
         onClick={() => setIsShown(true)}
       >
         <span className="sr-only">Открыть меню пользователя</span>
-        <UserIcon className="text-text-50 h-4 w-4" />
+        <UserIcon className="text-secondary h-4 w-4" />
       </button>
 
       {isShown && (
         <div
           ref={dropdownRef}
-          className="absolute top-[2.5rem] left-[-6.5rem] z-10 rounded-lg shadow-lg w-44 bg-primary-800 px-2"
+          className="absolute top-[2.5rem] left-[-6.5rem] z-10 rounded-lg shadow-lg w-44 bg-primary px-2"
         >
-          <div className="divide-y divide-secondary-50">
-            <div className="px-4 py-3 text-sm flex items-center text-text-100">
+          <div className="divide-y divide-secondary">
+            <div className="px-4 py-3 text-sm flex items-center text-secondary">
               <p className="font-medium truncate first-letter:capitalize">
                 {auth.authData.user}
               </p>
             </div>
-            <ul className="py-2 text-sm text-text-100">
+            <ul className="py-2 text-sm text-secondary">
               {menuItems.map((item: MenuItem) => (
                 <li className="flex items-center px-4 " key={item.id}>
                   {item.icon}
@@ -90,7 +90,7 @@ const UserDropdownMenu = observer(() => {
                 </li>
               ))}
             </ul>
-            <div className="py-2 px-4 flex items-center text-text-100 hover:text-white">
+            <div className="py-2 px-4 flex items-center text-secondary hover:text-white">
               <ArrowLeftOnRectangleIcon className="h-6 w-6" />
               <span
                 onClick={handleLogout}

@@ -1,6 +1,4 @@
 import { NavLink } from "react-router-dom";
-import { useLockBodyScroll } from "@uidotdev/usehooks";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { MenuItem } from "../types/MenuItem";
 import { observer } from "mobx-react-lite";
@@ -19,16 +17,6 @@ const MenuList: React.FC<{
 }> = observer(({ menuItems, onMenuClose, isDesktop = false }) => {
   return (
     <ul id="nav-menu" className={`flex ${isDesktop ? "flex-row" : "flex-col"}`}>
-      {/* show only if screen is smaller than desktop */}
-      {!isDesktop && (
-        <li className="flex py-4">
-          <div onClick={onMenuClose} className="basis-1/12 flex justify-start">
-            <div className="flex items-center justify-end h-10 w-12 hover:cursor-pointer">
-              <CloseMenuIcon />
-            </div>
-          </div>
-        </li>
-      )}
       {menuItems.map((item) => (
         <div key={item.id}>
           <li onClick={onMenuClose} className={isDesktop ? "mx-4" : "m-4"}>
@@ -47,12 +35,3 @@ const MenuList: React.FC<{
 });
 
 export default MenuList;
-
-/**
- * separate component for calling here useLockBodyScroll hook
- * @returns
- */
-const CloseMenuIcon = () => {
-  useLockBodyScroll(); // disable body scroll
-  return <XMarkIcon className="w-6 h-6 text-primary-800" />;
-};
