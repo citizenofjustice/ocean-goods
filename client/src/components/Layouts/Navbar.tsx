@@ -17,8 +17,17 @@ import UserDropdownMenu from "../ui/UserDropdownMenu";
 import SignInSVG from "../ui/SignInSVG";
 import Logo from "../../assets/images/Logo.svg";
 import { useMediaQuery } from "usehooks-ts";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "../ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+  SheetFooter,
+  SheetHeader,
+} from "../ui/sheet";
 import { X } from "lucide-react";
+import CustomerDataForm from "../CustomerDataForm";
+import { Button } from "../ui/button";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
@@ -43,20 +52,12 @@ const menuItems: MenuItem[] = [
 const Navbar = observer(() => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [isContactFormActive, setIsContactFormActive] = useState(false);
   const tablet = useMediaQuery("(min-width: 768px)"); // media query for conditional rendering of navbar
   const { cart, auth } = useStore();
 
-  // additional classes for menu & cart wrappers
-  const menuClasses: string =
-    "w-full h-full fixed z-50 bg-background-0 top-0 left-0 transition-all duration-300 ease-in-out"; //
-
   return (
     <>
-      {isCartOpen && (
-        <div className={`relative z-50 ${menuClasses}`}>
-          <Cart onCartClose={() => setIsCartOpen(false)} />
-        </div>
-      )}
       <header className="hearer-sticky h-[4.5rem] z-50 bg-background-0 border-b-2 border-background-200 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex items-center flex-row py-4">
         <nav className="basis-2/12 flex justify-start">
           {!tablet ? (
@@ -114,20 +115,66 @@ const Navbar = observer(() => {
               <SignInSVG className="w-6 h-6" />
             </NavLink>
           )}
-          <div
-            className="flex items-center justify-start hover:cursor-pointer h-10 w-12"
-            onClick={() => setIsCartOpen(true)}
-          >
-            <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
-            {/* small highlight with counter if cart is not empty */}
-            {cart.totalQuantity > 0 && (
-              <div className="relative top-[-10px] right-[10px] bg-red-500 rounded-full min-w-[16px] min-h-[16px] px-[3px] outline outline-white outline-2">
-                <p className="text-center text-white font-bold align-middle text-xs">
-                  {cart.totalQuantity}
-                </p>
+          <Sheet open={isCartOpen}>
+            <SheetTrigger>
+              <div
+                onClick={() => setIsCartOpen(true)}
+                className="flex items-center justify-end h-10 w-12 hover:cursor-pointer"
+              >
+                <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
+                {/* small highlight with counter if cart is not empty */}
+                {cart.totalQuantity > 0 && (
+                  <div className="relative top-[-10px] right-[10px] bg-red-500 rounded-full min-w-[16px] min-h-[16px] px-[3px] outline outline-white outline-2">
+                    <p className="text-center text-white font-bold align-middle text-xs">
+                      {cart.totalQuantity}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="w-full sm:min-w-[600px] px-0 vsm:px-4"
+            >
+              <SheetHeader>
+                <div className="flex justify-between">
+                  <div className="ml-4 text-lg font-semibold">Корзина:</div>
+                  <SheetClose
+                    onClick={() => setIsCartOpen(false)}
+                    className="mr-4 vsm:mr-0 rounded-sm ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
+                  >
+                    <X className="w-6 h-6" />
+                    <span className="sr-only">Close</span>
+                  </SheetClose>
+                </div>
+              </SheetHeader>
+              {isContactFormActive ? (
+                <CustomerDataForm
+                  onPreviousPage={() => setIsContactFormActive(false)}
+                  onOrderSend={() => setIsCartOpen(false)}
+                />
+              ) : (
+                <div className="mt-0 vsm:mt-4">
+                  <Cart />
+                </div>
+              )}
+              <SheetFooter>
+                {!isContactFormActive && (
+                  <div className="mt-4 flex w-full items-center justify-between gap-2 py-3 px-4 gap-2 text-sm vsm:text-base">
+                    <p className="font-medium text-text-700">
+                      Cумма заказа: {cart.totalCartPrice}&nbsp;руб.
+                    </p>
+                    <Button
+                      disabled={cart.cartItems.length === 0}
+                      onClick={() => setIsContactFormActive(true)}
+                    >
+                      Оформить
+                    </Button>
+                  </div>
+                )}
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
         </div>
       </header>
     </>

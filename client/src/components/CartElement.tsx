@@ -5,7 +5,7 @@ import AmountControls from "./AmontControls";
 import CartItemModel from "../classes/CartItemModel";
 import { useStore } from "../store/root-store-context";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { Trash } from "lucide-react";
 
 /**
  * Component for rendering each cart element
@@ -32,7 +32,7 @@ const CartElement: React.FC<{
 
   return (
     <>
-      <li className="flex flex-col gap-1 bg-background-200 rounded-xl px-4 pt-4 pb-2 text-sm vsm:text-base">
+      <li className="border flex flex-col gap-1 bg-background-200 rounded-xl px-4 pt-4 pb-2 text-sm sm:text-base">
         <div className="flex flex-row gap-2">
           <div className="basis-1/4">
             <div className="rounded overflow-hidden min-w-[60px]">
@@ -51,9 +51,9 @@ const CartElement: React.FC<{
             <div className="flex gap-2 justify-between items-center">
               <div className="font-medium">{cartItem.productName}</div>
               <div className="flex items-center">
-                <TrashIcon
+                <Trash
                   onClick={handleCartItemRemoval}
-                  className="w-6 h-6 text-primary-800 hover:cursor-pointer"
+                  className="w-5 h-5 text-primary-800 hover:cursor-pointer"
                 />
               </div>
             </div>

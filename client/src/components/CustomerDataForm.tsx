@@ -71,7 +71,8 @@ const contactOptions: ContactOption[] = [
 
 const CustomerDataForm: React.FC<{
   onOrderSend: () => void;
-}> = observer(({ onOrderSend }) => {
+  onPreviousPage: () => void;
+}> = observer(({ onOrderSend, onPreviousPage }) => {
   const { cart } = useStore();
   const { cartItems } = cart;
   const [isPending, setIsPending] = useState(false);
@@ -211,6 +212,7 @@ const CustomerDataForm: React.FC<{
               </FormItem>
             )}
           />
+
           {isPending ? (
             <ButtonLoading />
           ) : (
@@ -222,6 +224,9 @@ const CustomerDataForm: React.FC<{
               <Button type="button">Заказать</Button>
             </ConfirmActionAlert>
           )}
+          <Button onClick={onPreviousPage} variant="outline">
+            Отмена
+          </Button>
         </form>
       </Form>
     </div>
