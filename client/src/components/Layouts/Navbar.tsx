@@ -119,7 +119,7 @@ const Navbar = observer(() => {
             <SheetTrigger>
               <div
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center justify-end h-10 w-12 hover:cursor-pointer"
+                className="flex items-center justify-start h-10 w-12 hover:cursor-pointer"
               >
                 <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
                 {/* small highlight with counter if cart is not empty */}
