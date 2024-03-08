@@ -28,6 +28,7 @@ import telegramIcon from "../assets/images/telegram.svg";
 import whatsAppIcon from "../assets/images/whatsapp.svg";
 import viberIcon from "../assets/images/viber.svg";
 import phoneIcon from "../assets/images/phonecall.svg";
+import { AxiosError } from "axios";
 
 interface ContactOption {
   value: string;
@@ -73,7 +74,7 @@ const CustomerDataForm: React.FC<{
   onOrderSend: () => void;
   onPreviousPage: () => void;
 }> = observer(({ onOrderSend, onPreviousPage }) => {
-  const { cart } = useStore();
+  const { cart, alert } = useStore();
   const { cartItems } = cart;
   const [isPending, setIsPending] = useState(false);
 
@@ -99,28 +100,43 @@ const CustomerDataForm: React.FC<{
   });
 
   const onSubmit = async (values: z.infer<typeof zodCustomerForm>) => {
-    setIsPending(true);
-    const fData = new FormData();
-    for (const [key, value] of Object.entries(values)) {
-      fData.append(key, value);
+    try {
+      setIsPending(true);
+      const fData = new FormData();
+      for (const [key, value] of Object.entries(values)) {
+        fData.append(key, value);
+      }
+      const orderItems = cartItems.map((item) => {
+        const orderItem = {
+          productId: item.productId,
+          amount: item.amount,
+        };
+        return orderItem;
+      });
+      fData.append("orderItems", JSON.stringify(orderItems));
+      const response = await axios.post(`/orders`, fData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.status === 201) {
+        form.reset();
+        cart.clearCart();
+        onOrderSend();
+      }
+      setIsPending(false);
+    } catch (error) {
+      // display error alert if request failed
+      if (error instanceof AxiosError) {
+        alert.setPopup({
+          message: error.response?.data.error.message,
+          type: "error",
+        });
+      } else
+        alert.setPopup({
+          message: "При оформлении заказа произошла неизвестная ошибка",
+          type: "error",
+        });
+      setIsPending(false);
     }
-    const orderItems = cartItems.map((item) => {
-      const orderItem = {
-        productId: item.productId,
-        amount: item.amount,
-      };
-      return orderItem;
-    });
-    fData.append("orderItems", JSON.stringify(orderItems));
-    const response = await axios.post(`/orders`, fData, {
-      headers: { "Content-Type": "application/json" },
-    });
-    if (response.status === 201) {
-      form.reset();
-      cart.clearCart();
-      onOrderSend();
-    } else console.log(response);
-    setIsPending(false);
   };
 
   return (

@@ -57,7 +57,9 @@ class OrderController {
       // Check if order details is empty and return an error if it is
       if (parsedOrderItems.length === 0)
         return res.status(422).json({
-          error: "Не удалось создать заказ. В заказе отсутствуют продукты.",
+          error: {
+            message: "Не удалось создать заказ. В заказе отсутствуют продукты.",
+          },
         });
 
       // Fetch the products from the catalog that match the product IDs in the order items
@@ -87,7 +89,12 @@ class OrderController {
           const product = orderProducts.find(
             (catalogItem) => catalogItem.productId === item.productId
           );
-          if (!product) throw new Error("Product not found");
+          if (!product)
+            return res.status(409).json({
+              error: {
+                message: `Не удалось создать заказ. Один из продуктов недоступен для заказа.`,
+              },
+            });
           const finalPrice =
             product.price -
             Math.round(product.price * (product.discount / 100));

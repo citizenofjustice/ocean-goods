@@ -77,7 +77,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
     },
   },
   {
-    accessorKey: "catalogItem.productTypes.type",
+    accessorKey: "itemSnapshot.productTypes.type",
     header: ({ column }) => {
       return <TableHeadSort column={column}>Тип продукта</TableHeadSort>;
     },
