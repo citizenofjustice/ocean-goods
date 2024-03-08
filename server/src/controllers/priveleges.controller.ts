@@ -11,7 +11,7 @@ class PrivelegesController {
   // Method to get all priveleges
   async getPriveleges(req: Request, res: Response, next: NextFunction) {
     try {
-      const priveleges = await prisma.priveleges.findMany({
+      const priveleges = await prisma.privelege.findMany({
         orderBy: {
           title: "asc",
         },

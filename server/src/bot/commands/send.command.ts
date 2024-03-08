@@ -22,6 +22,8 @@ export class SendCommand extends Command {
           const orderId = Number(ctx.match[1]);
           // Getting the message ID for the reply
           const replyId = ctx.callbackQuery.message?.message_id;
+          if (!replyId) throw new Error("replyId not found");
+
           // Fetching the order by its ID
           const foundOrder = await getOrderById(orderId);
           const orderItems: OrderItem[] = foundOrder.orderItems;
@@ -52,7 +54,9 @@ export class SendCommand extends Command {
             resString,
             {
               parse_mode: "HTML",
-              reply_to_message_id: replyId,
+              reply_parameters: {
+                message_id: replyId,
+              },
             }
           );
         } catch (error) {
@@ -70,6 +74,8 @@ export class SendCommand extends Command {
           const orderId = Number(ctx.match[1]);
           // Getting the message ID for the reply
           const replyId = ctx.callbackQuery.message?.message_id;
+          if (!replyId) throw new Error("replyId not found");
+
           // Fetching the order by its ID
           const foundOrder = await getOrderById(orderId);
 
@@ -79,7 +85,9 @@ export class SendCommand extends Command {
             `Тел.: ${foundOrder.customerPhone}\nЭл.почта: ${foundOrder.customerEmail}\nСпособ связи: ${foundOrder.contactMethod}\n`,
             {
               parse_mode: "HTML",
-              reply_to_message_id: replyId,
+              reply_parameters: {
+                message_id: replyId,
+              },
             }
           );
         } catch (error) {

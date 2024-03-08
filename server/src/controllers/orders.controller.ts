@@ -21,20 +21,7 @@ export async function getOrderById(orderId: number) {
       },
       include: {
         // Join order Items
-        orderItems: {
-          include: {
-            // Join catalog item
-            catalogItem: {
-              select: {
-                productTypes: {
-                  select: {
-                    type: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        orderItems: true,
       },
     });
 
@@ -79,6 +66,11 @@ class OrderController {
           mainImage: {
             select: {
               path: true,
+            },
+          },
+          productTypes: {
+            select: {
+              type: true,
             },
           },
         },

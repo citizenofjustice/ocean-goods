@@ -30,7 +30,15 @@ class RolesController {
       const newRole = await prisma.roles.create({
         data: {
           title: title,
-          privelegeIds: priveleges,
+          rolePriveleges: {
+            create: priveleges.map((id) => ({
+              privelege: {
+                connect: {
+                  privelegeId: id,
+                },
+              },
+            })),
+          },
         },
       });
 
@@ -45,17 +53,29 @@ class RolesController {
     try {
       // Query the database to get all roles and their associated privileges
       const roles = await prisma.roles.findMany({
-        select: {
-          roleId: true,
-          title: true,
-          privelegeIds: true,
+        include: {
+          rolePriveleges: {
+            select: {
+              privelege: {
+                select: {
+                  privelegeId: true,
+                },
+              },
+            },
+          },
         },
         orderBy: {
           title: "asc",
         },
       });
 
-      res.status(200).json(roles); // Return the roles
+      const formattedRoles = roles.map((role) => ({
+        roleId: role.roleId,
+        title: role.title,
+        privelegeIds: role.rolePriveleges.map((rp) => rp.privelege.privelegeId),
+      }));
+
+      res.status(200).json(formattedRoles); // Return the roles
     } catch (error) {
       next(error); // Pass the error to the errorHandler middleware
     }
@@ -126,7 +146,18 @@ class RolesController {
         },
         data: {
           title: title,
-          privelegeIds: priveleges,
+          rolePriveleges: {
+            // Disconnect all existing associations
+            deleteMany: {},
+            // Connect the new privileges
+            create: priveleges.map((id) => ({
+              privelege: {
+                connect: {
+                  privelegeId: id,
+                },
+              },
+            })),
+          },
         },
       });
       // Return a 204 status code (request has succeeded but returns no message body)

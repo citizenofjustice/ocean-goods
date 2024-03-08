@@ -4,16 +4,40 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  url       = env("DATABASE_URL")
 }
 
-model Priveleges {
-  privelegeId   Int      @id @default(autoincrement()) @map("id")
-  title         String   @db.VarChar
-  createdAt     DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
-  @@map("priveleges")
+model Privelege {
+  privelegeId     Int             @id @default(autoincrement()) @map("id")
+  title           String          @db.VarChar
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  rolePriveleges  RolePriveleges[]
+
+  @@map("privelege")
+}
+
+model Roles {
+  roleId          Int             @id @default(autoincrement()) @map("id")
+  title           String          @db.VarChar(255)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  users           Users[]
+  rolePriveleges  RolePriveleges[]
+
+  @@map("roles")
+}
+
+model RolePriveleges {
+  roleId      Int       @map("role_id")
+  privelegeId Int       @map("privelege_id")
+  role        Roles     @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  privelege   Privelege @relation(fields: [privelegeId], references: [privelegeId], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@id([roleId, privelegeId])
+  @@map("role_priveleges")
 }
 
 model ProductTypes {
@@ -23,16 +47,6 @@ model ProductTypes {
   updatedAt      DateTime  @default(now()) @db.Timestamptz(6) @map("updated_at")
   catalog        Catalog[]
   @@map("product_types")
-}
-
-model Roles {
-  roleId        Int      @id @default(autoincrement()) @map("id")
-  title         String   @db.VarChar(255)
-  privelegeIds  Int[]    @default([]) @map("privelege_ids")
-  createdAt     DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
-  users         Users[]
-  @@map("roles")
 }
 
 model Users {
@@ -50,12 +64,11 @@ model Users {
 model OrderItem {
   orderItemId   Int      @id @default(autoincrement())  @map("id")
   orderId       Int      @map("order_id")
+  order         Order    @relation(fields: [orderId], references: [orderId])
   productId     Int      @map("product_id")
-  amount        Int
+  amount        Int      
   totalPrice    Int      @map("total_price")
   itemSnapshot  Json     @map("item_snapshot")
-  order         Order    @relation(fields: [orderId], references: [orderId])
-  catalogItem   Catalog  @relation(fields: [productId], references: [productId])
   @@map("order_items")
 }
 
@@ -76,6 +89,7 @@ model Catalog {
   productId        Int            @id @default(autoincrement()) @map("id")
   productName      String         @db.VarChar(255) @map("product_name")
   productTypeId    Int            @map("product_type_id")
+  productTypes     ProductTypes?  @relation(fields: [productTypeId], references: [productTypeId], onDelete: Cascade, onUpdate: NoAction)
   inStock          Boolean        @map("in_stock")
   description      String         @db.VarChar(2000)
   price            Int
@@ -83,11 +97,9 @@ model Catalog {
   weight           Int
   kcal             Int
   mainImageId      Int?           @unique @map("main_image_id")
+  mainImage        Image?         @relation(fields: [mainImageId], references: [imageId])
   createdAt        DateTime       @default(now()) @db.Timestamptz(6) @map("created_at")
   updatedAt        DateTime       @default(now()) @db.Timestamptz(6) @map("updated_at")
-  productTypes     ProductTypes?  @relation(fields: [productTypeId], references: [productTypeId], onDelete: NoAction, onUpdate: NoAction)
-  mainImage        Image?         @relation(fields: [mainImageId], references: [imageId])
-  orderItems       OrderItem[]
   @@map("catalog")
 }
 
