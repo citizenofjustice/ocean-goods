@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useStore } from "../store/root-store-context";
 import { observer } from "mobx-react-lite";
 import axios from "../api/axios";
-import { ButtonLoading } from "./ui/ButtonLoading";
-import { Button } from "./ui/button";
-import ConfirmActionAlert from "./ui/ConfirmActionAlert";
+import { ButtonLoading } from "./UI/ButtonLoading";
+import { Button } from "./UI/button";
+import ConfirmActionAlert from "./UI/ConfirmActionAlert";
 import {
   Form,
   FormControl,
@@ -12,8 +12,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "./UI/form";
+import { Input } from "./UI/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "./UI/select";
 import telegramIcon from "../assets/images/telegram.svg";
 import whatsAppIcon from "../assets/images/whatsapp.svg";
 import viberIcon from "../assets/images/viber.svg";

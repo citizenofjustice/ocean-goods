@@ -6,13 +6,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Column, ColumnDef } from "@tanstack/react-table";
 
 import ErrorPage from "./ErrorPage";
-import { DataTable } from "../ui/DataTable";
+import { DataTable } from "../UI/DataTable";
 import { OrderItem } from "../../types/OrderItem";
 import { CatalogItem } from "../../types/CatalogItem";
 import { ProductType } from "../../types/ProductType";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { SortArrowsIcons } from "../ui/SortArrowsIcons";
-import { TableCell, TableRow } from "../ui/table";
+import { SortArrowsIcons } from "../UI/SortArrowsIcons";
+import { TableCell, TableRow } from "../UI/table";
 
 interface CatalogItemWithType extends CatalogItem {
   productTypes: ProductType;

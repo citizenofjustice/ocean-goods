@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { Privelege } from "../types/Privelege";
-import CustomCheckbox from "./ui/CustomCheckbox";
-import LabeledInputField from "./ui/LabeledInputField";
-import CustomAlertMessage from "./ui/CustomAlertMessage";
-import { Button } from "./ui/button";
-import { ButtonLoading } from "./ui/ButtonLoading";
+import CustomCheckbox from "./UI/CustomCheckbox";
+import LabeledInputField from "./UI/LabeledInputField";
+import CustomAlertMessage from "./UI/CustomAlertMessage";
+import { Button } from "./UI/button";
+import { ButtonLoading } from "./UI/ButtonLoading";
 
 // Define the type for the initial values of the form
 interface editRoleInputs {

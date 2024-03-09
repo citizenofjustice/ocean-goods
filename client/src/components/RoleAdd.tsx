@@ -3,14 +3,14 @@ import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Privelege } from "../types/Privelege";
-import CustomCheckbox from "./ui/CustomCheckbox";
+import CustomCheckbox from "./UI/CustomCheckbox";
 import { RoleInputs } from "../types/form-types";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import LabeledInputField from "./ui/LabeledInputField";
+import LabeledInputField from "./UI/LabeledInputField";
 import { useStore } from "../store/root-store-context";
-import CustomAlertMessage from "./ui/CustomAlertMessage";
-import { Button } from "./ui/button";
-import { ButtonLoading } from "./ui/ButtonLoading";
+import CustomAlertMessage from "./UI/CustomAlertMessage";
+import { Button } from "./UI/button";
+import { ButtonLoading } from "./UI/ButtonLoading";
 
 // Defining the initial values for role inputs
 const emptyInitValues: RoleInputs = {

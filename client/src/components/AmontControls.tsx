@@ -1,5 +1,5 @@
 import { Minus, Plus } from "lucide-react";
-import AmountContolButton from "./ui/AmountContolButton";
+import AmountContolButton from "./UI/AmountContolButton";
 
 /**
  * Component for setting amount of item user whats to buy

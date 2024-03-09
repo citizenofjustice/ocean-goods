@@ -4,7 +4,7 @@ import { useStore } from "../store/root-store-context";
 import AmountControls from "./AmontControls";
 import { observer } from "mobx-react-lite";
 import CatalogItemModel from "../classes/CatalogItemModel";
-import { Button } from "./ui/button";
+import { Button } from "./UI/button";
 
 const AddToCart: React.FC<{
   productId: number;

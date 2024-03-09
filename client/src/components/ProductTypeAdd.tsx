@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LabeledInputField from "./ui/LabeledInputField";
+import LabeledInputField from "./UI/LabeledInputField";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";

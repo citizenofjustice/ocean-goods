@@ -5,14 +5,14 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "./ui/form";
+} from "./UI/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "./UI/select";
 import { Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getProductTypesSelectValues } from "../api/index";

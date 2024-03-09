@@ -13,13 +13,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { ButtonLoading } from "../ui/ButtonLoading";
+} from "../UI/form";
+import { Input } from "../UI/input";
+import { Button } from "../UI/button";
+import { ButtonLoading } from "../UI/ButtonLoading";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useStore } from "../../store/root-store-context";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../UI/card";
 import { Eye, EyeOff } from "lucide-react";
 
 const AuthPage = observer(() => {

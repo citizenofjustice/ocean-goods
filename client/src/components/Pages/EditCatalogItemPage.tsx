@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import axios from "../../api/axios";
 import ErrorPage from "./ErrorPage";
-import LoadingSpinner from "../ui/LoadingSpinner";
+import LoadingSpinner from "../UI/LoadingSpinner";
 import CatalogItemForm from "./CatalogItemForm";
 import { CatalogItemInputs } from "../../types/form-types";
 

@@ -3,15 +3,15 @@ import ItemCard from "../ItemCard";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import { Fragment, useEffect, useRef, useState } from "react";
-import LoadingSpinner from "../ui/LoadingSpinner";
+import LoadingSpinner from "../UI/LoadingSpinner";
 import { AxiosError } from "axios";
 import axios from "../../api/axios";
 import ErrorPage from "./ErrorPage";
-import SimpleSelect, { SelectOptions } from "../ui/SimpleSelect";
+import SimpleSelect, { SelectOptions } from "../UI/SimpleSelect";
 import { useDebounce, useIntersectionObserver } from "usehooks-ts";
 import { SortBy } from "../../types/SortBy";
 import { CatalogItem } from "../../types/CatalogItem";
-import { Input } from "../ui/input";
+import { Input } from "../UI/input";
 import { ChevronDownCircle, ChevronUpCircle, Search } from "lucide-react";
 
 // Initial values for sorting

@@ -12,15 +12,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { Input } from "./ui/input";
+} from "./UI/table";
+import { Input } from "./UI/input";
 import { Order } from "../types/Order";
 import ErrorPage from "./Pages/ErrorPage";
 import { useOrders } from "../hooks/useOrders";
-import { SortArrowsIcons } from "./ui/SortArrowsIcons";
+import { SortArrowsIcons } from "./UI/SortArrowsIcons";
 import { TableColumnHeader } from "../types/TableColumnHeader";
-import { DatePickerWithRange } from "./ui/DatePickerWithRange";
-import SimpleSelect, { SelectOptions } from "./ui/SimpleSelect";
+import { DatePickerWithRange } from "./UI/DatePickerWithRange";
+import SimpleSelect, { SelectOptions } from "./UI/SimpleSelect";
 
 const FILTER_SELECT_OPTIONS: SelectOptions[] = [
   { value: "orderId", content: "по номеру" },

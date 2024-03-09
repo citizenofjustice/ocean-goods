@@ -5,7 +5,7 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarTrigger,
-} from "../ui/menubar";
+} from "../UI/menubar";
 
 interface NavButton {
   path: string;
