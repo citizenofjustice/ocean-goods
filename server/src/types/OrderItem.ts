@@ -1,8 +1,10 @@
+import { Catalog } from "@prisma/client";
+
 export interface OrderItem {
+  orderItemId: number;
+  orderId: number;
   productId: number;
-  productTypeId: number;
-  productName: string;
   amount: number;
-  totalProductPrice: number;
-  mainImage?: string;
+  itemSnapshot: Catalog;
+  totalPrice: number;
 }

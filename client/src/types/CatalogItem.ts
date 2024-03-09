@@ -1,3 +1,5 @@
+import { BasicImage } from "./BasicImage";
+
 // declaring interface for catalog item
 export interface CatalogItem {
   productId: number;
@@ -9,5 +11,5 @@ export interface CatalogItem {
   discount: number;
   weight: number;
   kcal: number;
-  mainImage?: string;
+  mainImage?: BasicImage;
 }

@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 import { makeAutoObservable } from "mobx";
 
 import { CartItem } from "../types/CartItem";
+import { BasicImage } from "src/types/BasicImage";
 
 class CartItemModel implements CartItem {
   cartItemId: string = nanoid();
@@ -15,7 +16,7 @@ class CartItemModel implements CartItem {
   discount: number;
   weight: number;
   kcal: number;
-  mainImage?: string;
+  mainImage?: BasicImage;
 
   // Getter to calculate the final price after discount
   get finalPrice(): number {
@@ -38,7 +39,7 @@ class CartItemModel implements CartItem {
     price: number,
     discount: number,
     kcal: number,
-    mainImage?: string
+    mainImage?: BasicImage
   ) {
     // Making all properties of this class observable for reactive programming
     makeAutoObservable(this);

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
-import FormCard from "./UI/FormCard";
+import FormCard from "./ui/FormCard";
 import ErrorPage from "./Pages/ErrorPage";
 import { Privelege } from "../types/Privelege";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 // Component for displaing the list of all available priveleges
@@ -36,7 +36,7 @@ const Priveleges = () => {
               {dataAvailable && data.length > 0 ? (
                 data.map((item: Privelege) => (
                   <li
-                    className="flex bg-background-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2"
+                    className="flex border bg-background-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2"
                     key={item.privelegeId}
                   >
                     <p className="text-start justify-items-start basis-10/12 px-2 first-letter:capitalize">

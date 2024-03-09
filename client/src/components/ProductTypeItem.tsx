@@ -129,7 +129,7 @@ const ProductTypeItem: React.FC<{
 
   return (
     <>
-      <li className="flex bg-background-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2">
+      <li className="flex bg-background-50 border rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2">
         {isInEdit ? (
           <div className="basis-10/12">
             <input

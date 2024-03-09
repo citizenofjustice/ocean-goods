@@ -106,7 +106,7 @@ const RoleItem: React.FC<{
           initValues={{
             roleId: role.roleId,
             title: role.title,
-            privelegeIds: role.priveleges.map((item) => item.privelegeId),
+            privelegeIds: role.privelegeIds,
           }}
           priveleges={priveleges}
           onFormClose={() => setIsInEdit(false)}

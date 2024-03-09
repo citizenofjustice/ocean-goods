@@ -22,8 +22,8 @@ const CatalogPage = lazy(() => import("./components/Pages/CatalogPage"));
 const NotFoundPage = lazy(() => import("./components/Pages/NotFoundPage"));
 const ProductTypesList = lazy(() => import("./components/ProductTypesList"));
 const DashboardPage = lazy(() => import("./components/Pages/DashboardPage"));
-const AddToCatalogPage = lazy(
-  () => import("./components/Pages/AddToCatalogPage")
+const CatalogItemForm = lazy(
+  () => import("./components/Pages/CatalogItemForm")
 );
 const EditCatalogItemPage = lazy(
   () => import("./components/Pages/EditCatalogItemPage")
@@ -68,7 +68,7 @@ function App() {
                     </Route>
                   </Route>
                   <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
-                    <Route path="new-item" element={<AddToCatalogPage />} />
+                    <Route path="new-item" element={<CatalogItemForm />} />
                   </Route>
                   <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
                     <Route

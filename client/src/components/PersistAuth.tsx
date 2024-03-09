@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import useRefreshToken from "../hooks/useRefreshToken";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import { useStore } from "../store/root-store-context";
 
 const PersistAuth = observer(() => {

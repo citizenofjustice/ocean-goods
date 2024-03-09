@@ -1,47 +1,36 @@
+import { Prisma } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
-import { dbQuery } from "../db";
+import { prisma } from "../db";
 import { ordersBot } from "../index";
-import { Order } from "../types/Order";
+import { OrderItem } from "../types/OrderItem";
 import { handleOrderMessage } from "../bot/commands/orderMessage";
 
-// Defining a string to convert column names to camel case
-const orderCamelCase: string =
-  'id as "orderId", order_details as "orderDetails", customer_name as "customerName", customer_phone as "customerPhone", customer_email as "customerEmail", contact_method as "contactMethod", created_at as "createdAt"';
+interface orderItemPayload {
+  amount: number;
+  productId: number;
+}
 
 // Function to get order by ID
 export async function getOrderById(orderId: number) {
   try {
     // Query the database for the order (join with product types)
-    const orderData = await dbQuery({
-      text: `SELECT 
-        orders.id as "orderId", orders.customer_name as "customerName", orders.customer_phone as "customerPhone",
-        orders.customer_email as "customerEmail", orders.contact_method as "contactMethod", orders.created_at as "createdAt",
-        json_build_object(
-          'orderItems', json_agg(
-            jsonb_set(
-              elems::jsonb, 
-              '{type}', 
-              to_jsonb(product_types.type)
-            )
-          ),
-          'totalPrice', orders.order_details->'totalPrice'
-        ) AS "orderDetails"
-      FROM 
-        orders
-      JOIN 
-        jsonb_array_elements(orders.order_details->'orderItems') AS elems ON TRUE
-      JOIN 
-        product_types ON product_types.id = (elems->'productTypeId')::text::integer
-      WHERE orders.id = $1
-      GROUP BY 
-        orders.id`,
-      values: [orderId],
+    const orderData = await prisma.order.findUnique({
+      where: {
+        orderId: orderId,
+      },
+      include: {
+        // Join order Items
+        orderItems: true,
+      },
     });
-    // Extract the order from the query result
-    const foundOrder = orderData.rows[0];
+
+    // Check if the order exists
+    if (!orderData)
+      throw new Error("Заказа с таким номером не существует базе данных");
+
     // Return the order
-    return foundOrder;
+    return orderData;
   } catch (error) {
     // Log the error and rethrow it
     console.error(error);
@@ -50,45 +39,100 @@ export async function getOrderById(orderId: number) {
 }
 
 class OrderController {
-  // Method to create a new order
+  // Destructure the request body to get customer details and order items
   async createOrder(req: Request, res: Response, next: NextFunction) {
     try {
       // Destructure the request body
       const {
-        orderDetails,
         customerName,
         customerPhone,
         customerEmail,
         contactMethod,
+        orderItems,
       } = req.body;
 
-      // Check if order details is empty
-      if (JSON.parse(orderDetails).orderItems.length === 0)
+      // Parse the order items from the request body
+      const parsedOrderItems = JSON.parse(orderItems);
+
+      // Check if order details is empty and return an error if it is
+      if (parsedOrderItems.length === 0)
         return res.status(422).json({
-          error: "Не удалось создать заказ. В заказе отсутствуют продукты.",
+          error: {
+            message: "Не удалось создать заказ. В заказе отсутствуют продукты.",
+          },
         });
 
-      // Prepare the SQL query
-      const sqlQuery = `
-        INSERT INTO orders (order_details, customer_name, customer_phone, customer_email, contact_method)
-        VALUES ($1, $2, $3, $4, $5) RETURNING ${orderCamelCase}
-      `;
-      // Execute the query and get the result
-      const createOrderQuery = await dbQuery({
-        text: sqlQuery,
-        values: [
-          orderDetails,
+      // Fetch the products from the catalog that match the product IDs in the order items
+      const orderProducts = await prisma.catalog.findMany({
+        include: {
+          mainImage: {
+            select: {
+              path: true,
+            },
+          },
+          productTypes: {
+            select: {
+              type: true,
+            },
+          },
+        },
+        where: {
+          productId: {
+            in: parsedOrderItems.map((item: OrderItem) => item.productId),
+          },
+        },
+      });
+
+      // Calculate the total price for the order and prepare the order items
+      const orderItemsData: OrderItem[] = parsedOrderItems.map(
+        (item: orderItemPayload) => {
+          const product = orderProducts.find(
+            (catalogItem) => catalogItem.productId === item.productId
+          );
+          if (!product)
+            return res.status(409).json({
+              error: {
+                message: `Не удалось создать заказ. Один из продуктов недоступен для заказа.`,
+              },
+            });
+          const finalPrice =
+            product.price -
+            Math.round(product.price * (product.discount / 100));
+          const totalPrice = item.amount * finalPrice;
+          return {
+            productId: item.productId,
+            amount: item.amount,
+            itemSnapshot: product,
+            totalPrice,
+          };
+        }
+      );
+
+      // Calc total order price
+      const totalOrderPrice: number = orderItemsData.reduce(
+        (sum: number, item: OrderItem) => sum + item.totalPrice,
+        0
+      );
+
+      // Prepare the Prisma query to create a new order
+      const newOrder = await prisma.order.create({
+        data: {
           customerName,
           customerPhone,
           customerEmail,
           contactMethod,
-        ],
+          totalOrderPrice,
+          orderItems: {
+            create: orderItemsData,
+          },
+        },
       });
 
-      // Extract the new order from the result
-      const newOrder: Order = createOrderQuery.rows[0];
+      // Prepare the content for the order message
+      const orderMessageContent = { ...newOrder, totalOrderPrice };
+
       // Pass new order to a telegram bot message
-      await handleOrderMessage(ordersBot.bot, newOrder);
+      await handleOrderMessage(ordersBot.bot, orderMessageContent);
       // Send the response status
       res.sendStatus(201);
     } catch (error) {
@@ -100,136 +144,132 @@ class OrderController {
   // Method to get all orders
   async getOrders(req: Request, res: Response, next: NextFunction) {
     try {
-      // Destructure the query parameters from the request
+      // Destructure the query parameters from the request.
+      // These parameters can be used to filter and sort the orders, and to paginate the results.
       const {
-        startDate,
-        endDate,
-        filterType,
-        filter,
-        orderBy,
-        direction,
-        page = 1,
-        limit = 10,
+        startDate: startDateQuery,
+        endDate: endDateQuery,
+        filterType: filterTypeQuery,
+        filter: filterQuery,
+        orderBy: orderByQuery,
+        direction: directionQuery,
+        page: pageQuery = "1",
+        limit: limitQuery = "10",
       } = req.query;
+
+      // Convert query parameters to strings
+      const startDate = startDateQuery as string;
+      const endDate = endDateQuery as string;
+      const filterType = filterTypeQuery as string;
+      const filter = filterQuery as string;
+      const orderBy = orderByQuery as string;
+      const direction = directionQuery as string;
+      const page = pageQuery as string;
+      const limit = limitQuery as string;
 
       // Convert page and limit to numbers
       const pageNum = Number(page);
       const limitNum = Number(limit);
 
-      // Check if page and limit are numbers
-      if (isNaN(pageNum) || isNaN(limitNum)) {
-        return res.status(400).json({
-          error: {
-            message: "Возникла ошибка с параметрами загрузки страницы",
-          },
-        });
-      }
+      // Define a function to validate the 'page' and 'limit' parameters.
+      // These parameters must be positive integers.
+      const validatePageLimit = (value: number, name: string) => {
+        if (isNaN(value) || !Number.isInteger(value) || value <= 0) {
+          throw new Error(`Invalid ${name}`);
+        }
+      };
 
-      // Check if page and limit are natural numbers
-      if (!Number.isInteger(pageNum) || pageNum <= 0) {
-        return res.status(400).json({
-          error: {
-            message: "Номер страницы не должен быть отрицательным",
-          },
-        });
-      }
-      if (!Number.isInteger(limitNum) || limitNum <= 0) {
-        return res.status(400).json({
-          error: {
-            message:
-              "Параметр кол-ва элементов на странице не должен быть отрицательным",
-          },
-        });
-      }
-
-      // Check if orderBy are of certain type
-      let orderByValue:
-        | "created_at"
-        | "totalPrice"
-        | "customer_name"
-        | undefined;
-      if (
-        orderBy === "created_at" ||
-        orderBy === "totalPrice" ||
-        orderBy === "customer_name" ||
-        orderBy === undefined
-      ) {
-        orderByValue = orderBy;
-      } else {
-        return res.status(400).json({
-          error: {
-            message:
-              "Не удалось определить значение, по которому выполняется сортировка",
-          },
-        });
-      }
-
-      // Check if direction are of certain type
-      let directionValue: "ASC" | "DESC" | undefined;
-      if (
-        direction === "ASC" ||
-        direction === "DESC" ||
-        direction === undefined
-      ) {
-        directionValue = direction;
-      } else {
-        return res.status(400).json({
-          error: { message: "Не удалось определить порядок сортировки" },
-        });
-      }
-
-      // Initialize an array to hold our WHERE clauses
-      let whereClauses = [];
-      // If a filter and filterType are provided, add a WHERE clause for the filter
-      if (filter && filterType) {
-        whereClauses.push(`${filterType}::text ILIKE '%${filter}%'`);
-      }
-      // If a startDate and endDate are provided, add a WHERE clause for the date range
-      if (startDate && endDate) {
-        whereClauses.push(`created_at BETWEEN '${startDate}' AND '${endDate}'`);
-      }
-
-      // Initialize the WHERE string
-      let where = "";
-      // If there are any WHERE clauses, join them with " AND " and prepend with "WHERE "
-      if (whereClauses.length > 0) {
-        where = `WHERE ${whereClauses.join(" AND ")}`;
-      }
-
-      // Default ORDER BY clause
-      let orderByQuery = "ORDER BY created_at DESC";
-
-      // If an orderByValue and directionValue are provided, update the ORDER BY clause
-      if (orderByValue && directionValue) {
-        if (orderByValue === "totalPrice") {
-          // If orderByValue is "totalPrice", we need to cast it as an integer
-          orderByQuery = `ORDER BY cast(order_details->>'totalPrice' as integer) ${directionValue}`;
-        } else {
-          // Otherwise, we can just use the provided orderByValue
-          orderByQuery = `ORDER BY ${orderByValue} ${directionValue}`;
+      // Validate the 'page' and 'limit' parameters using the function defined above.
+      try {
+        validatePageLimit(pageNum, "page");
+        validatePageLimit(limitNum, "limit");
+      } catch (error) {
+        // If the 'page' or 'limit' parameters are invalid, return a 400 status code and an error message.
+        if (error instanceof Error) {
+          return res.status(400).json({
+            error: {
+              message: `Возникла ошибка с параметрами загрузки страницы: ${error.message}`,
+            },
+          });
         }
       }
 
       // Calculate the offset for pagination
-      const offset = (pageNum - 1) * limitNum;
+      //  This is the number of orders to skip before starting to return results.
+      const skip = (pageNum - 1) * limitNum;
 
-      // Construct the final query
-      const query = `SELECT COUNT(*) OVER() as total, ${orderCamelCase} FROM orders ${where} ${orderByQuery} LIMIT ${limit} OFFSET ${offset}`;
-      const ordersQuery = await dbQuery({ text: query });
+      // Define the initial query parameters.
+      // These parameters will be used to query the database for orders.
+      let queryParameters: Prisma.OrderFindManyArgs = {
+        take: limitNum,
+        skip: skip,
+        include: {
+          orderItems: true,
+        },
+      };
 
-      // Extract the totalRows and orders from the result set
-      const totalRows = ordersQuery.rows[0]
-        ? Number(ordersQuery.rows[0].total)
-        : 0;
-      const orders = ordersQuery.rows.map((row) => {
-        delete row.total;
-        return row;
-      });
+      // If the 'startDate' and 'endDate' parameters are provided, add a 'where' clause
+      if (startDate && endDate) {
+        queryParameters.where = {
+          ...queryParameters.where,
+          createdAt: {
+            gte: new Date(startDate), // date must be greater than or equal to 'startDate'
+            lte: new Date(endDate), // date must be less than or equal to 'endDate'
+          },
+        };
+      }
 
-      // Calculate the cursor for the next page
+      // Define a mapping from the 'orderBy' parameter to the corresponding field in the database.
+      const orderByMapping: Record<
+        string,
+        keyof Prisma.OrderOrderByWithRelationInput
+      > = {
+        orderId: "orderId",
+        createdAt: "createdAt",
+        customerName: "customerName",
+        totalPrice: "totalOrderPrice",
+      };
+
+      // If the 'orderBy' and 'direction' parameters are valid, add an 'orderBy' clause
+      if (
+        orderBy in orderByMapping &&
+        (direction === "asc" || direction === "desc")
+      ) {
+        queryParameters.orderBy = {
+          [orderByMapping[orderBy]]: direction,
+        };
+      }
+
+      // Define a mapping from the 'filterType' parameter to the corresponding 'where' clause
+      const filterTypeMapping: Record<string, any> = {
+        orderId: { orderId: Number(filter) },
+        customerName: {
+          // Filter by customer name.
+          customerName: {
+            contains: filter,
+            mode: "insensitive", // The filter is case-insensitive.
+          },
+        },
+      };
+
+      // If the 'filterType' and 'filter' parameters are provided, add a 'where' clause
+      if (filterType in filterTypeMapping && filter) {
+        queryParameters.where = {
+          ...queryParameters.where,
+          ...filterTypeMapping[filterType],
+        };
+      }
+
+      // Query the database for orders using the query parameters defined above.
+      const orders = await prisma.order.findMany(queryParameters);
+
+      // Count the total number of orders in the database. This is used for pagination.
+      const totalRows = await prisma.order.count();
+
+      // Calculate the number of the next page, if there is one.
       const nextPage = totalRows > pageNum * limitNum ? pageNum + 1 : null;
 
-      // Include the cursor for the next page in the response
+      // Send the orders, the total number of orders, and the number of the next page as the response.
       res.status(200).json({ totalRows, orders, nextPage });
     } catch (error) {
       // Pass the error to the errorHandler middleware
@@ -245,7 +285,7 @@ class OrderController {
       if (isNaN(Number(id)))
         res
           .status(400)
-          .json({ error: { message: "Не верный идентификатор заказа" } });
+          .json({ error: { message: "Неверный идентификатор заказа" } });
 
       // Get the order
       const foundOrder = await getOrderById(Number(id));

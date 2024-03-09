@@ -4,67 +4,52 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  url       = env("DATABASE_URL")
 }
 
-model catalog {
-  productId     Int            @id @default(autoincrement()) @map("id")
-  productName   String         @db.VarChar(255) @map("product_name")
-  productTypeId Int            @map("product_type_id")
-  inStock       Boolean        @map("in_stock")
-  description   String         @db.VarChar(2000)
-  price         Int
-  discount      Int
-  weight        Int
-  kcal          Int
-  mainImage     String?        @db.VarChar(255) @map("main_image")
-  createdAt     DateTime       @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime       @default(now()) @db.Timestamptz(6) @map("updated_at")
-  productTypes  productTypes?  @relation(fields: [productTypeId], references: [productTypeId], onDelete: NoAction, onUpdate: NoAction)
-  @@map("catalog")
+model Privelege {
+  privelegeId     Int             @id @default(autoincrement()) @map("id")
+  title           String          @db.VarChar
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  rolePriveleges  RolePriveleges[]
+
+  @@map("privelege")
 }
 
-model orders {
-  orderId       Int      @id @default(autoincrement()) @map("id")
-  orderDetails  Json     @map("order_details")
-  customerName  String   @db.VarChar(255) @map("customer_name")
-  customerPhone String   @db.VarChar(255) @map("customer_phone")
-  customerEmail String?  @db.VarChar(255) @map("customer_email")
-  contactMethod String?  @db.VarChar(255) @map("contact_method")
-  createdAt     DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
-  @@map("orders")
+model Roles {
+  roleId          Int             @id @default(autoincrement()) @map("id")
+  title           String          @db.VarChar(255)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  users           Users[]
+  rolePriveleges  RolePriveleges[]
+
+  @@map("roles")
 }
 
-model priveleges {
-  privelegeId   Int      @id @default(autoincrement()) @map("id")
-  title         String   @db.VarChar
-  createdAt     DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
-  @@map("priveleges")
+model RolePriveleges {
+  roleId      Int       @map("role_id")
+  privelegeId Int       @map("privelege_id")
+  role        Roles     @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  privelege   Privelege @relation(fields: [privelegeId], references: [privelegeId], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@id([roleId, privelegeId])
+  @@map("role_priveleges")
 }
 
-model productTypes {
+model ProductTypes {
   productTypeId  Int       @id @default(autoincrement()) @map("id")
   type           String    @db.VarChar(255)
   createdAt      DateTime  @default(now()) @db.Timestamptz(6) @map("created_at")
   updatedAt      DateTime  @default(now()) @db.Timestamptz(6) @map("updated_at")
-  catalog        catalog[]
+  catalog        Catalog[]
   @@map("product_types")
 }
 
-model roles {
-  roleId        Int      @id @default(autoincrement()) @map("id")
-  title         String   @db.VarChar(255)
-  privelegeIds  Int[]    @default([]) @map("privelege_ids")
-  createdAt     DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
-  updatedAt     DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
-  users         users[]
-  @@map("roles")
-}
-
-model users {
+model Users {
   id            Int      @id @default(autoincrement())
   login         String   @unique @db.VarChar(255)
   passwordHash  String   @db.VarChar(255) @map("password_hash")
@@ -72,6 +57,60 @@ model users {
   refreshToken  String?  @db.VarChar(255) @map("refresh_token")
   createdAt     DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
   updatedAt     DateTime @default(now()) @db.Timestamptz(6) @map("updated_at")
-  roles         roles    @relation(fields: [roleId], references: [roleId], onDelete: NoAction, onUpdate: NoAction)
+  roles         Roles    @relation(fields: [roleId], references: [roleId], onDelete: NoAction, onUpdate: NoAction)
   @@map("users")
+}
+
+model OrderItem {
+  orderItemId   Int      @id @default(autoincrement())  @map("id")
+  orderId       Int      @map("order_id")
+  order         Order    @relation(fields: [orderId], references: [orderId])
+  productId     Int      @map("product_id")
+  amount        Int      
+  totalPrice    Int      @map("total_price")
+  itemSnapshot  Json     @map("item_snapshot")
+  @@map("order_items")
+}
+
+model Order {
+  orderId            Int         @id @default(autoincrement())  @map("id")
+  customerName       String      @db.VarChar(255)  @map("customer_name")
+  customerPhone      String      @db.VarChar(255)  @map("customer_phone")
+  customerEmail      String?     @db.VarChar(255)  @map("customer_email")
+  contactMethod      String?     @db.VarChar(255)  @map("contact_method")
+  totalOrderPrice    Int         @map("total_order_price")
+  createdAt          DateTime    @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt          DateTime    @default(now()) @db.Timestamptz(6) @map("updated_at")
+  orderItems         OrderItem[]
+  @@map("orders")
+}
+
+model Catalog {
+  productId        Int            @id @default(autoincrement()) @map("id")
+  productName      String         @db.VarChar(255) @map("product_name")
+  productTypeId    Int            @map("product_type_id")
+  productTypes     ProductTypes?  @relation(fields: [productTypeId], references: [productTypeId], onDelete: Cascade, onUpdate: NoAction)
+  inStock          Boolean        @map("in_stock")
+  description      String         @db.VarChar(2000)
+  price            Int
+  discount         Int
+  weight           Int
+  kcal             Int
+  mainImageId      Int?           @unique @map("main_image_id")
+  mainImage        Image?         @relation(fields: [mainImageId], references: [imageId])
+  createdAt        DateTime       @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt        DateTime       @default(now()) @db.Timestamptz(6) @map("updated_at")
+  @@map("catalog")
+}
+
+model Image {
+  imageId        Int           @id @default(autoincrement()) @map("id")
+  path           String        
+  filename       String        
+  originalName   String        @map("original_name")
+  mimetype       String        
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt      DateTime      @default(now()) @db.Timestamptz(6) @map("updated_at")
+  catalog        Catalog?
+  @@map("images")
 }

@@ -2,14 +2,15 @@ import { useState } from "react";
 import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import DefaultButton from "./UI/DefaultButton";
 import { Privelege } from "../types/Privelege";
-import CustomCheckbox from "./UI/CustomCheckbox";
+import CustomCheckbox from "./ui/CustomCheckbox";
 import { RoleInputs } from "../types/form-types";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import LabeledInputField from "./UI/LabeledInputField";
+import LabeledInputField from "./ui/LabeledInputField";
 import { useStore } from "../store/root-store-context";
-import CustomAlertMessage from "./UI/CustomAlertMessage";
+import CustomAlertMessage from "./ui/CustomAlertMessage";
+import { Button } from "./ui/button";
+import { ButtonLoading } from "./ui/ButtonLoading";
 
 // Defining the initial values for role inputs
 const emptyInitValues: RoleInputs = {
@@ -109,12 +110,12 @@ const RoleAdd: React.FC<{
           )}
           {checkboxAlert && <CustomAlertMessage message={checkboxAlert} />}
           <div className="flex gap-4">
-            <DefaultButton type="button" onClick={onFormClose}>
-              Отмена
-            </DefaultButton>
-            <DefaultButton type="submit" isPending={mutation.isPending}>
-              Сохранить
-            </DefaultButton>
+            <Button onClick={onFormClose}>Отмена</Button>
+            {mutation.isPending ? (
+              <ButtonLoading />
+            ) : (
+              <Button type="submit">Сохранить</Button>
+            )}
           </div>
         </div>
       </form>

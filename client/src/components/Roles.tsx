@@ -4,10 +4,10 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 import RoleAdd from "./RoleAdd";
 import RoleItem from "./RoleItem";
-import FormCard from "./UI/FormCard";
+import FormCard from "./ui/FormCard";
 import { Role } from "../types/Role";
 import ErrorPage from "./Pages/ErrorPage";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Roles = () => {

@@ -1,43 +1,79 @@
+import { z } from "zod";
 import { useState } from "react";
-import DefaultButton from "../UI/DefaultButton";
-import LabeledInputField from "../UI/LabeledInputField";
-import FormCard from "../UI/FormCard";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useStore } from "../../store/root-store-context";
-import { observer } from "mobx-react-lite";
-import PasswordInputField from "../UI/PasswordInputField";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { AxiosError } from "axios";
+import { useForm } from "react-hook-form";
+import { observer } from "mobx-react-lite";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const initValues = {
-  email: "",
-  password: "",
-};
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { ButtonLoading } from "../ui/ButtonLoading";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useStore } from "../../store/root-store-context";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Eye, EyeOff } from "lucide-react";
 
 const AuthPage = observer(() => {
-  const [inputValues, setInputValues] = useState(initValues);
   const navigate = useNavigate();
   const [isPending, setIsPending] = useState(false);
+  const [isPasswordShown, setIsPasswordShown] = useState(false);
   const location = useLocation();
   const { auth, alert } = useStore();
   const { authData } = auth;
   const from = location.state?.from.pathname || "/";
   const axiosPrivate = useAxiosPrivate();
 
-  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setInputValues({ ...inputValues, [name]: value });
-  };
+  const formSchema = z.object({
+    email: z.string().email("Неверная электонная почта"),
+    password: z.string().min(2, {
+      message: "Password must be at least 2 characters.",
+    }),
+    // Disabled temporarily
+    // password: z.string().refine(
+    //   (password) => {
+    //     const hasSymbol = /\W/.test(password);
+    //     const hasNumber = /\d/.test(password);
+    //     const hasUppercase = /[A-Z]/.test(password);
+    //     const hasLowercase = /[a-z]/.test(password);
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    //     return hasSymbol && hasNumber && hasUppercase && hasLowercase;
+    //   },
+    //   {
+    //     message:
+    //       "Пароль должен состоять из букв верхнего и нижнего регисторв латинского алфавита, цифр и символов",
+    //   }
+    // ),
+  });
+
+  // Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  // Define a submit handler.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    const fData = new FormData(event.currentTarget);
+    const fData = new FormData();
+    fData.append("email", values.email);
+    fData.append("password", values.password);
     try {
       const response = await axiosPrivate.post(`/login`, fData);
       const { user, accessToken, role } = response.data;
       auth.setAuthData({ ...authData, user, accessToken, roles: [role] });
-      setInputValues(initValues);
+      form.reset();
       navigate(from, { replace: true });
     } catch (error) {
       // display error alert if request failed
@@ -53,33 +89,77 @@ const AuthPage = observer(() => {
         });
     }
     setIsPending(false);
-  };
+  }
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-[60vh]">
-        <FormCard>
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <LabeledInputField
-              inputId="auth-form-email"
-              title="Электронная почта"
-              name="email"
-              inputType="email"
-              value={inputValues.email}
-              onInputChange={handleValueChange}
-            />
-            <PasswordInputField
-              inputId="auth-form-password"
-              title="Пароль"
-              name="password"
-              value={inputValues.password}
-              onInputChange={handleValueChange}
-            />
-            <DefaultButton type="submit" isPending={isPending}>
-              Войти
-            </DefaultButton>
-          </form>
-        </FormCard>
+      <div className="w-full flex justify-center">
+        <Card className="mt-[10vh] min-w-[200px] w-[400px] mx-4">
+          <CardHeader>
+            <CardTitle className="text-center">Авторизация</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Эл. почта:</FormLabel>
+                      <FormControl>
+                        <Input placeholder="email@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Пароль:</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            className="pr-10"
+                            type={isPasswordShown ? "text" : "password"}
+                            {...field}
+                          />
+                          {isPasswordShown ? (
+                            <EyeOff
+                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                              onClick={() => setIsPasswordShown(false)}
+                            />
+                          ) : (
+                            <Eye
+                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                              onClick={() => setIsPasswordShown(true)}
+                            />
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex justify-center">
+                  {isPending ? (
+                    <ButtonLoading />
+                  ) : (
+                    <Button className="px-8" type="submit">
+                      Войти
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
       </div>
     </>
   );

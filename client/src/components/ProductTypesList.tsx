@@ -1,20 +1,30 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
-
-import FormCard from "./UI/FormCard";
 import ErrorPage from "./Pages/ErrorPage";
-import ProductTypeAdd from "./ProductTypeAdd";
 import ProductTypeItem from "./ProductTypeItem";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "./ui/LoadingSpinner";
 import { ProductType } from "../types/ProductType";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { zodProductTypeForm } from "../lib/zodProductTypeForm";
+import ProductTypeDialog from "./ProductTypeDialog";
+import { useProductTypes } from "../hooks/useProductTypes";
+import { useState } from "react";
 
 const ProductTypesList = () => {
   // Using custom hook to get an instance of axios with credentials
   const axiosPrivate = useAxiosPrivate();
-  // Local state for managing visibility of the form
-  const [isFormShown, setIsFormShown] = useState(false);
+  // Define your form.
+  const form = useForm<z.infer<typeof zodProductTypeForm>>({
+    resolver: zodResolver(zodProductTypeForm),
+    defaultValues: {
+      type: "",
+    },
+  });
+  const { mutation } = useProductTypes(form);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Using useQuery hook to fetch product types
   const { isLoading, isError, error, data } = useQuery({
@@ -29,46 +39,49 @@ const ProductTypesList = () => {
   // prevent potential errors if the request fails and data is undefined
   const dataAvailable = data !== null && data !== undefined;
 
+  async function onSubmit(values: z.infer<typeof zodProductTypeForm>) {
+    const fData = new FormData();
+    fData.append("type", values.type);
+    mutation.mutate(fData);
+    setIsDialogOpen(false);
+  }
+
   return (
     <>
       {!isError && (
-        <FormCard>
+        <Card className="mt-4 w-full">
           {isLoading && <LoadingSpinner />}
           {!isLoading && !isError && (
             <>
-              <div className="w-full flex justify-center items-center relative">
-                <p className="font-medium w-3/5">Список типов продуктов:</p>
-                {!isFormShown && (
-                  <div className="absolute right-0">
-                    <PlusCircleIcon
-                      onClick={() => setIsFormShown(true)}
-                      className="w-8 h-8 text-primary-800 hover:cursor-pointer "
+              <div className="">
+                <CardHeader className="font-medium">
+                  <span className="flex justify-between items-center">
+                    Список типов продуктов:
+                    <ProductTypeDialog
+                      form={form}
+                      onSubmit={onSubmit}
+                      isOpen={isDialogOpen}
+                      onClose={() => setIsDialogOpen(false)}
+                      onOpen={() => setIsDialogOpen(true)}
                     />
-                  </div>
-                )}
+                  </span>
+                </CardHeader>
+                <CardContent>
+                  {dataAvailable && data.length > 0 ? (
+                    data.map((item: ProductType) => (
+                      <ProductTypeItem
+                        key={item.productTypeId}
+                        productType={item}
+                      />
+                    ))
+                  ) : (
+                    <h1 className="mt-4">Список типов продуктов пуст</h1>
+                  )}
+                </CardContent>
               </div>
-              <ul>
-                {isFormShown && (
-                  <li>
-                    <ProductTypeAdd
-                      onAdditionCancel={() => setIsFormShown(false)}
-                    />
-                  </li>
-                )}
-                {dataAvailable && data.length > 0 ? (
-                  data.map((item: ProductType) => (
-                    <ProductTypeItem
-                      key={item.productTypeId}
-                      productType={item}
-                    />
-                  ))
-                ) : (
-                  <h1 className="mt-4">Список типов продуктов пуст</h1>
-                )}
-              </ul>
             </>
           )}
-        </FormCard>
+        </Card>
       )}
       {isError && (
         <ErrorPage

@@ -1,16 +1,21 @@
 import { AxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 
 import AddToCart from "./AddToCart";
-import TextCrossed from "./UI/TextCrossed";
-import ItemInfoCard from "./UI/ItemInfoCard";
 import { useStore } from "../store/root-store-context";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CatalogItemModel from "../classes/CatalogItemModel";
-import CatalogItemDropdown from "./UI/CatalogItemDropdown";
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { MoreHorizontal, SquarePen, Trash } from "lucide-react";
+import ConfirmActionAlert from "./ui/ConfirmActionAlert";
 
 /**
  * Renders catalog item card
@@ -21,6 +26,7 @@ const ItemCard: React.FC<{
   catalogItem: CatalogItemModel;
 }> = observer(({ catalogItem }) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   // Calling a custom axios hook
   const axiosPrivate = useAxiosPrivate();
   // Using store context
@@ -50,64 +56,70 @@ const ItemCard: React.FC<{
 
   return (
     <>
-      <div className="w-full my-2 px-2 flex">
-        <div className={`${auth.isAuth ? "w-10/12" : "w-full"}`}>
-          <p className="text-center font-medium px-1 vsm:px-3">
+      <Card className="grid content-between">
+        <CardHeader className="flex flex-row items-center justify-between px-4">
+          <p className="w-full text-center font-medium px-1 vsm:px-3">
             <Link to={`item/${catalogItem.productId}`}>
               {catalogItem.productName}
             </Link>
           </p>
-        </div>
-        {auth.isAuth && (
-          <div className="w-2/12 text-slate-400">
-            <CatalogItemDropdown>
-              <Link
-                to={`edit-item/${catalogItem.productId}`}
-                className="py-2 p-2 flex items-center justify-between"
-              >
-                <p>Изменить</p>
-                <PencilSquareIcon className="w-6 h-6 text-primary-800" />
-              </Link>
-              <div
-                className="py-2 p-2 flex items-center justify-between hover:cursor-pointer"
-                onClick={() => mutation.mutate(catalogItem.productId)}
-              >
-                <p>Удалить</p>
-                <TrashIcon className="w-6 h-6 text-primary-800" />
-              </div>
-            </CatalogItemDropdown>
-          </div>
-        )}
-      </div>
-      <div className="flex px-3 vsm:px-4 gap-3 vsm:gap-4 justify-center">
-        <div className="rounded overflow-hidden min-w-[60px] flex items-center ">
-          {catalogItem.mainImage && (
-            <img className="rounded" src={catalogItem.mainImage} />
+          {auth.isAuth && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <MoreHorizontal className="w-5 w-5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="translate-x-[-20%]">
+                <DropdownMenuItem
+                  className="gap-2"
+                  onClick={() => navigate(`edit-item/${catalogItem.productId}`)}
+                >
+                  <SquarePen className="w-5 h-5" />
+                  <p>Изменить</p>
+                </DropdownMenuItem>
+
+                <ConfirmActionAlert
+                  onConfirm={() => mutation.mutate(catalogItem.productId)}
+                  question="Вы уверены что хотите продолжить?"
+                  message="Это действие навсегда удалит данную запись."
+                >
+                  <DropdownMenuItem
+                    className="gap-2"
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <Trash className="w-5 h-5" />
+                    <p>Удалить</p>
+                  </DropdownMenuItem>
+                </ConfirmActionAlert>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
-        </div>
-        <div className="flex items-center">
-          <div className="flex flex-col justify-end">
-            <ItemInfoCard>{`${catalogItem.weight} гр.`}</ItemInfoCard>
-            <ItemInfoCard>{`${catalogItem.kcal} ккал.`}</ItemInfoCard>
-            <ItemInfoCard>
-              {catalogItem.discount > 0 ? (
-                <div className="flex flex-col">
-                  <TextCrossed>{`${catalogItem.price} руб.`}</TextCrossed>
-                  <p>{catalogItem.finalPrice} руб.</p>
-                </div>
-              ) : (
-                <>{`${catalogItem.price} руб.`}</>
-              )}
-            </ItemInfoCard>
-          </div>
-        </div>
-      </div>
-      <div className="my-2 vsm:my-3 h-8 flex items-center">
-        <AddToCart
-          productId={catalogItem.productId}
-          catalogItem={catalogItem}
-        />
-      </div>
+        </CardHeader>
+        <CardContent className="relative px-4">
+          {catalogItem.mainImage?.path && (
+            <img
+              className="rounded"
+              src={
+                import.meta.env.VITE_REACT_SERVER_URL +
+                catalogItem.mainImage.path
+              }
+            />
+          )}
+          {catalogItem.discount > 0 && (
+            <div className="absolute bottom-8 right-8 flex items-center px-2 bg-destructive rounded-md font-semibold text-white">
+              - {catalogItem.discount} %
+            </div>
+          )}
+        </CardContent>
+        <CardFooter className="flex gap-2 justify-between px-4">
+          <AddToCart
+            productId={catalogItem.productId}
+            catalogItem={catalogItem}
+          />
+          <span className="font-semibold text-end">
+            {catalogItem.finalPrice} руб.
+          </span>
+        </CardFooter>
+      </Card>
     </>
   );
 });

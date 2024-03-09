@@ -1,39 +1,47 @@
 import { NextFunction, Request, Response } from "express";
-import { Prisma, catalog } from "@prisma/client";
+import { Image, Prisma } from "@prisma/client";
 
-import { dbQuery, prisma } from "../db";
-import { uploadPictureAndGetUrl } from "../upload";
+import { prisma } from "../db";
+import { sortByFinalPrice } from "../utils/sortByPrice";
 
 class CatalogController {
   // method for creating a new catalogItem
   async createCatalogItem(req: Request, res: Response, next: NextFunction) {
     try {
       // Get the item details from the request body
-      const item = await req.body;
-      let imageLink: string = "";
+      const item = req.body;
+      let image;
+
       // If there is a file in the request, upload it and get the URL
-      if (req.file) imageLink = await uploadPictureAndGetUrl(req.file);
+      if (req.file) {
+        // First, create an image record
+        image = await prisma.image.create({
+          data: {
+            path: req.file.path,
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            mimetype: req.file.mimetype,
+          },
+        });
+      }
 
       // Insert the new item into the database
-      const newItem = await dbQuery({
-        text: `INSERT INTO catalog
-      (product_name, product_type_id, in_stock, description, price, discount, weight, kcal, main_image)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)  RETURNING *`,
-        values: [
-          item.productName,
-          item.productTypeId,
-          item.inStock ? true : false,
-          item.description,
-          item.price,
-          item.discount,
-          item.weight,
-          item.kcal,
-          imageLink,
-        ],
+      const newItem = await prisma.catalog.create({
+        data: {
+          productName: item.productName,
+          productTypeId: Number(item.productTypeId),
+          inStock: !!item.inStock,
+          description: item.description,
+          price: Number(item.price),
+          discount: Number(item.discount),
+          weight: Number(item.weight),
+          kcal: Number(item.kcal),
+          mainImageId: image ? Number(image.imageId) : null,
+        },
       });
 
       // Send the newly created item as the response
-      res.status(201).json(newItem.rows[0]);
+      res.status(201).json(newItem);
     } catch (error) {
       // Pass the error to the errorHandler middleware
       next(error);
@@ -54,9 +62,16 @@ class CatalogController {
       const skip = (pageNum - 1) * limitNum;
 
       // Define the query parameters
-      let queryParameters: Prisma.catalogFindManyArgs = {
+      let queryParameters: Prisma.CatalogFindManyArgs = {
         take: limitNum,
         skip: skip,
+        include: {
+          mainImage: {
+            select: {
+              path: true,
+            },
+          },
+        },
       };
 
       // If a search string is provided, add a WHERE clause to the query
@@ -118,14 +133,37 @@ class CatalogController {
   async getCatalogItem(req: Request, res: Response, next: NextFunction) {
     try {
       // Get the item ID from the request parameters
-      const id = req.params.id;
-      // Query the database for the specific item
-      const catalogItem = await dbQuery({
-        text: `SELECT catalog.id as "productId", catalog.product_name as "productName", catalog.product_type_id as "productTypeId", catalog.in_stock as "inStock", catalog.description, catalog.price, catalog.discount, catalog.weight, catalog.kcal, catalog.main_image as "mainImage", catalog.created_at as "createdAt", catalog.updated_at as "updatedAt", product_types.type FROM catalog JOIN product_types ON catalog.product_type_id = product_types.id WHERE catalog.id = $1`,
-        values: [id],
+      const id = parseInt(req.params.id);
+
+      // The findUnique method is used to retrieve a single record that matches the where clause
+      // The include option is used to include the related productTypes records in the result
+      const catalogItem = await prisma.catalog.findUnique({
+        where: { productId: id },
+        include: {
+          productTypes: {
+            select: {
+              type: true,
+            },
+          },
+          mainImage: {
+            select: {
+              path: true,
+            },
+          },
+        },
       });
+
+      // If the catalogItem is not found in the database, return a 404 status code and an error message
+      if (!catalogItem)
+        return res.status(404).json({
+          error: {
+            message:
+              "В базе данных отсутствует продукт с данным идентификатором",
+          },
+        });
+
       // Send the catalog item as the response
-      res.status(200).json(catalogItem.rows[0]);
+      res.status(200).json(catalogItem);
     } catch (error) {
       // Pass the error to the errorHandler middleware
       next(error);
@@ -136,45 +174,48 @@ class CatalogController {
   async updateCatalogItem(req: Request, res: Response, next: NextFunction) {
     try {
       // Get the item ID from the request parameters
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
+
       // Get the updated item details from the request body
       const item = await req.body;
 
-      let imageLink: string = "";
+      // If there is a new file in the request, upload it and get the URL, otherwise keep old value
+      let image: Image | undefined | null;
+
       // If there is a file in the request, upload it and get the URL
       if (req.file) {
-        imageLink = await uploadPictureAndGetUrl(req.file);
+        // First, create an image record
+        image = await prisma.image.create({
+          data: {
+            path: req.file.path,
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            mimetype: req.file.mimetype,
+          },
+        });
       } else {
-        imageLink = item.mainImage;
+        if (typeof item.mainImage === "string" && item.mainImage === "") {
+          image = null;
+        } else image = undefined;
       }
 
-      // Update the item in the database
-      await dbQuery({
-        text: `UPDATE catalog SET 
-          product_name = $1,
-          product_type_id = $2,
-          in_stock = $3,
-          description = $4,
-          price = $5,
-          discount = $6,
-          weight = $7,
-          kcal = $8,
-          main_image = $9,
-          updated_at = NOW()
-          WHERE id = $10 RETURNING *`,
-        values: [
-          item.productName,
-          item.productTypeId,
-          item.inStock,
-          item.description,
-          item.price,
-          item.discount,
-          item.weight,
-          item.kcal,
-          imageLink,
-          id,
-        ],
+      // Update the item in the database using Prisma
+      await prisma.catalog.update({
+        where: { productId: id },
+        data: {
+          productName: item.productName,
+          productTypeId: Number(item.productTypeId),
+          inStock: item.inStock === "true" ? true : false,
+          description: item.description,
+          price: Number(item.price),
+          discount: Number(item.discount),
+          weight: Number(item.weight),
+          kcal: Number(item.kcal),
+          mainImageId: image ? Number(image.imageId) : image,
+          updatedAt: new Date(),
+        },
       });
+
       // Send a success status
       res.sendStatus(204);
     } catch (error) {
@@ -187,12 +228,15 @@ class CatalogController {
   async deleteCatalogItem(req: Request, res: Response, next: NextFunction) {
     try {
       // Get the item ID from the request parameters
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
+
       // Delete the item from the database
-      await dbQuery({
-        text: `DELETE FROM catalog WHERE id = $1`,
-        values: [id],
+      await prisma.catalog.delete({
+        where: {
+          productId: id,
+        },
       });
+
       // Send a success status
       res.sendStatus(204);
     } catch (error) {
@@ -201,41 +245,5 @@ class CatalogController {
     }
   }
 }
-
-/**
- * This function sorts an array of catalog items by their final price.
- * The final price is calculated as the original price minus the discount.
- *
- * @param catalogItems - An array of catalog items to sort.
- * @param direction - The direction to sort the items. Can be "asc" for ascending or "desc" for descending.
- * @throws {Error} Will throw an error if the direction is not "asc" or "desc".
- * @returns An array of catalog items sorted by their final price.
- */
-const sortByFinalPrice = (
-  catalogItems: catalog[],
-  direction: "asc" | "desc"
-) => {
-  // Calculate the final price for each item
-  const itemsWithFinalPrice = catalogItems.map((item) => ({
-    ...item,
-    finalPrice: item.price - Math.round((item.price * item.discount) / 100),
-  }));
-
-  // Sort the items by the final price in the specified direction
-  switch (direction) {
-    case "asc":
-      itemsWithFinalPrice.sort((a, b) => a.finalPrice - b.finalPrice);
-      break;
-    case "desc":
-      itemsWithFinalPrice.sort((a, b) => b.finalPrice - a.finalPrice);
-      break;
-    default:
-      throw new Error(
-        `Invalid sort direction: ${direction}. Expected "asc" or "desc".`
-      );
-  }
-
-  return itemsWithFinalPrice;
-};
 
 export default new CatalogController();

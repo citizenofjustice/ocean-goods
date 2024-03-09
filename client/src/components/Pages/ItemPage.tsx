@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import axios from "../../api/axios";
-import LoadingSpinner from "../UI/LoadingSpinner";
+import LoadingSpinner from "../ui/LoadingSpinner";
 import { observer } from "mobx-react-lite";
-import TextCrossed from "../UI/TextCrossed";
+import TextCrossed from "../ui/TextCrossed";
 import AddToCart from "../AddToCart";
 import { useMediaQuery } from "usehooks-ts";
 import CatalogItemModel from "../../classes/CatalogItemModel";
@@ -53,11 +53,16 @@ const ItemPage = observer(() => {
             <>
               <div className="fixed top-[4.5rem] bottom-[4rem] sm:bottom-0 overflow-y-auto content-scroll grid gap-4 sm:gap-0 grid-cols-none sm:grid-cols-12 items-center justify-center w-full mt-0 sm:mt-4 pb-4">
                 <div className="col-span-1 sm:col-start-1 sm:col-span-6 lg:col-start-2 lg:col-span-4 px-4 place-self-center">
-                  <img
-                    className="w-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
-                    src={catalogItem.mainImage}
-                    alt={catalogItem.productName}
-                  />
+                  {catalogItem.mainImage?.path && (
+                    <img
+                      className="w-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
+                      src={
+                        import.meta.env.VITE_REACT_SERVER_URL +
+                        catalogItem.mainImage?.path
+                      }
+                      alt={catalogItem.productName}
+                    />
+                  )}
                 </div>
                 <div className="sm:col-span-6 flex flex-col gap-6 px-4">
                   <div className="w-full flex items-center">

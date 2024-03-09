@@ -1,36 +1,27 @@
-import AmountContolButton from "./UI/AmountContolButton";
+import { Minus, Plus } from "lucide-react";
+import AmountContolButton from "./ui/AmountContolButton";
 
 /**
  * Component for setting amount of item user whats to buy
  * @param currentValue - current amount of added items
- * @param isVertical - optional / for tweaking style of controls wrapper
  * @returns
  */
 const AmountControls: React.FC<{
   currentValue: number;
-  isVertical?: boolean;
   onDecrement: () => void;
   onIncrement: () => void;
-}> = ({ currentValue, isVertical = false, onDecrement, onIncrement }) => {
+}> = ({ currentValue, onDecrement, onIncrement }) => {
   return (
-    <div
-      className={`flex ${
-        isVertical
-          ? "flex-col-reverse justify-end w-4 vsm:w-6 "
-          : "flex-row justify-between h-4 vsm:h-6"
-      } rounded items-center text-sm vsm:text-base`}
-    >
-      <AmountContolButton buttonText="-" buttonAction={onDecrement} />
-      <span
-        className={`rounded bg-background-0 font-medium ${
-          isVertical
-            ? "h-8 vsm:h-10 flex items-center justify-center my-1 w-full"
-            : "w-8 vsm:w-10 text-center mx-1 px-2"
-        }`}
-      >
+    <div className="flex h-8 sm:h-10 px-1 border rounded-md rounded items-center text-sm sm:text-base">
+      <AmountContolButton buttonAction={onDecrement}>
+        <Minus className="w-3 h-3" />
+      </AmountContolButton>
+      <span className="rounded bg-background-0 font-medium w-8 sm:w-10 text-center mx-0 px-2">
         {currentValue}
       </span>
-      <AmountContolButton buttonText="+" buttonAction={onIncrement} />
+      <AmountContolButton buttonAction={onIncrement}>
+        <Plus className="w-3 h-3" />
+      </AmountContolButton>
     </div>
   );
 };

@@ -1,18 +1,18 @@
 import { observer } from "mobx-react-lite";
-
 import ItemCard from "../ItemCard";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import { Fragment, useEffect, useRef, useState } from "react";
-import LoadingSpinner from "../UI/LoadingSpinner";
+import LoadingSpinner from "../ui/LoadingSpinner";
 import { AxiosError } from "axios";
 import axios from "../../api/axios";
 import ErrorPage from "./ErrorPage";
-import CatalogFilter from "../CatalogFilter";
-import SimpleSelect, { SelectOptions } from "../UI/SimpleSelect";
+import SimpleSelect, { SelectOptions } from "../ui/SimpleSelect";
 import { useDebounce, useIntersectionObserver } from "usehooks-ts";
 import { SortBy } from "../../types/SortBy";
 import { CatalogItem } from "../../types/CatalogItem";
+import { Input } from "../ui/input";
+import { ChevronDownCircle, ChevronUpCircle, Search } from "lucide-react";
 
 // Initial values for sorting
 const initSortValues: SortBy = {
@@ -20,25 +20,48 @@ const initSortValues: SortBy = {
   direction: "asc",
 };
 
+interface SortSelectOption extends SelectOptions {
+  dbField: string;
+  direction: "asc" | "desc";
+}
+
 // Options for sorting
-const sortOptions: SelectOptions[] = [
+const sortOptions: SortSelectOption[] = [
   {
-    value: "productName/asc",
+    value: "productNameUp",
+    dbField: "productName",
     content: "по названию (возр.)",
+    direction: "asc",
   },
   {
-    value: "productName/desc",
+    value: "productNameDown",
+    dbField: "productName",
     content: "по названию (убыв.)",
+    direction: "desc",
   },
-  { value: "createdAt/asc", content: "по дате (возр.)" },
   {
-    value: "createdAt/desc",
+    value: "createdAtUp",
+    dbField: "createdAt",
+    content: "по дате (возр.)",
+    direction: "asc",
+  },
+  {
+    value: "createdAtDown",
+    dbField: "createdAt",
     content: "по дате (убыв.)",
+    direction: "desc",
   },
-  { value: "finalPrice/asc", content: "по цене (возр.)" },
   {
-    value: "finalPrice/desc",
+    value: "finalPriceUp",
+    dbField: "finalPrice",
+    content: "по цене (возр.)",
+    direction: "asc",
+  },
+  {
+    value: "finalPriceDown",
+    dbField: "finalPrice",
     content: "по цене (убыв.)",
+    direction: "desc",
   },
 ];
 
@@ -51,7 +74,8 @@ const CatalogPage = observer(() => {
   const [filterBy, setFilterBy] = useState<string>("");
   const debounceFilter = useDebounce(filterBy, 750);
   const [sortBy, setSortBy] = useState(initSortValues);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [isFiltersShown, setIsFiltersShown] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string>("createdAtDown");
   const queryClient = useQueryClient();
 
   // IntersectionObserver for inifinite page loading
@@ -138,27 +162,54 @@ const CatalogPage = observer(() => {
   // Handler for select change
   const handleSelect = async (value: string) => {
     setSelectedOption(value);
-    const values = value.split("/");
     await queryClient.invalidateQueries({ queryKey: ["orders"] });
-    setSortBy({ orderBy: values[0], direction: values[1] });
+    const option = sortOptions.find((item) => item.value === value);
+    if (!option) throw new Error("Could not find seleted option");
+    setSortBy({ orderBy: option.dbField, direction: option.direction });
   };
 
   return (
-    <div className="p-4">
-      <div className="grid gap-0 vsm:gap-4 grid-cols-none vsm:grid-cols-2 mb-4 h-28 vsm:h-14 items-center">
-        <div className="m-auto vsm:m-0 vsm:ml-auto">
-          <CatalogFilter
-            filterBy={filterBy}
-            handleFilterInput={(e) => setFilterBy(e.target.value)}
-          />
-        </div>
-        <div className="m-auto vsm:m-0 vsm:mr-auto">
-          <SimpleSelect
-            options={sortOptions}
-            selectedOption={selectedOption}
-            onOptionSelect={handleSelect}
-          />
-        </div>
+    <div className="px-4">
+      <div
+        className={`m-auto z-30 max-w-screen-lg sticky top-0 bg-white flex gap-4 justify-center items-center`}
+      >
+        {!isFiltersShown && (
+          <span
+            className="my-4 flex justify-center gap-2 hover:cursor-pointer text-gray-500"
+            onClick={() => setIsFiltersShown(true)}
+          >
+            <ChevronDownCircle /> Показать фильтр
+          </span>
+        )}
+        {isFiltersShown && (
+          <>
+            <span
+              className="flex justify-center gap-2 hover:cursor-pointer text-gray-500"
+              onClick={() => setIsFiltersShown(false)}
+            >
+              <ChevronUpCircle />
+            </span>
+            <div className="my-2 h-28 vsm:h-20 grid gap-0 vsm:gap-4 grid-cols-none vsm:grid-cols-2 items-center">
+              <div className="m-auto vsm:m-0 vsm:ml-auto relative">
+                <Input
+                  placeholder={`Поиск по названию`}
+                  value={filterBy}
+                  onChange={(e) => setFilterBy(e.target.value)}
+                  className="max-w-[260px] pr-8"
+                />
+                <Search className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5" />
+              </div>
+              <div className="m-auto vsm:m-0 vsm:mr-auto">
+                <SimpleSelect
+                  options={sortOptions}
+                  placeholder="Сортировать по"
+                  selectedOption={selectedOption}
+                  onOptionSelect={handleSelect}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
       {status === "pending" ? (
         <LoadingSpinner />
@@ -169,16 +220,11 @@ const CatalogPage = observer(() => {
         />
       ) : (
         data.pages[0].totalRows > 0 && (
-          <div className="grid gap-4 vsm:grid-cols-2 sm:grid-cols-3 sm:max-w-screen-lg m-auto">
+          <div className="grid gap-4 vsm:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 sm:max-w-screen-lg px-2 m-auto">
             {data.pages.map((group, i) => (
               <Fragment key={i}>
                 {group.catalog.map((item: CatalogItemModel) => (
-                  <div
-                    key={item.productId}
-                    className="flex flex-col gap-1 items-center justify-between bg-background-100 border-background-200 border-2 rounded-lg"
-                  >
-                    <ItemCard key={item.productId} catalogItem={item} />
-                  </div>
+                  <ItemCard key={item.productId} catalogItem={item} />
                 ))}
               </Fragment>
             ))}

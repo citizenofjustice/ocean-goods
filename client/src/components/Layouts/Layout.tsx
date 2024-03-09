@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite";
-import PopupMessageBlock from "../UI/PopupMessageBlock";
+import PopupMessageBlock from "../ui/PopupMessageBlock";
 import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
 import { useStore } from "../../store/root-store-context";
 import { Suspense } from "react";
-import LoadingSpinner from "../UI/LoadingSpinner";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 const Layout = observer(() => {
   const { alert } = useStore();

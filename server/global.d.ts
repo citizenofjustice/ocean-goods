@@ -22,6 +22,8 @@ namespace NodeJS {
     POSTGRES_HOST: string;
     POSTGRES_DATABASE: string;
     POSTGRES_URL: string;
+    ADMIN_EMAIL: string;
+    ADMIN_PASSWORD: string;
   }
 }
 

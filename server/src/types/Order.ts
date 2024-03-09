@@ -2,13 +2,12 @@ import { OrderItem } from "./OrderItem";
 
 export interface Order {
   orderId: number;
-  orderDetails: {
-    orderItems: OrderItem[];
-    totalPrice: number;
-  };
+  totalPrice: number;
+  orderItems: OrderItem[];
   customerName: string;
   customerPhone: string;
-  customerEmail: string;
-  contactMethod: string;
-  createdAt: string;
+  customerEmail: string | null;
+  contactMethod: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-import { dbQuery } from "../db";
+import { prisma } from "../db";
 
 class AuthController {
   // method to authenticate user
@@ -20,21 +20,19 @@ class AuthController {
         });
 
       // Query to select user from database
-      const selectQuery = await dbQuery({
-        text: `SELECT * FROM users WHERE login = $1`,
-        values: [email],
+      const foundUser = await prisma.users.findUnique({
+        where: {
+          login: email,
+        },
       });
 
       // Check if user exists
-      const foundUser = selectQuery.rows[0];
       if (!foundUser)
         return res.status(400).json({
           error: { message: "Введена неверная эл. почта" },
         });
 
-      // Check if password is valid
-      const passwordHash = foundUser.password_hash;
-      const isValid = await bcrypt.compare(password, passwordHash);
+      const isValid = await bcrypt.compare(password, foundUser.passwordHash);
       if (!isValid)
         return res.status(400).json({
           error: { message: "Введен неверный пароль" },
@@ -45,7 +43,7 @@ class AuthController {
         {
           userInfo: {
             user: foundUser.id,
-            role: foundUser.role_id,
+            role: foundUser.roleId,
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
@@ -57,7 +55,7 @@ class AuthController {
         {
           userInfo: {
             user: foundUser.id,
-            role: foundUser.role_id,
+            role: foundUser.roleId,
           },
         },
         process.env.REFRESH_TOKEN_SECRET,
@@ -66,16 +64,26 @@ class AuthController {
         }
       );
 
-      // Remove password hash from user object
-      delete foundUser.password_hash;
       // Update the user's refresh token in the database
-      const updateQuery = await dbQuery({
-        text: `UPDATE users SET refresh_token = $1 WHERE id = $2 RETURNING login, role_id as "roleId"`,
-        values: [refreshToken, foundUser.id],
+      const userWithToken = await prisma.users.update({
+        where: {
+          id: foundUser.id,
+        },
+        data: {
+          refreshToken: refreshToken,
+        },
+        select: {
+          login: true,
+          roleId: true,
+        },
       });
 
+      if (!userWithToken)
+        return res.status(400).json({
+          error: { message: "Проблема с сохранением токена авторизации" },
+        });
+
       // Send the response with the access token, refresh token, and user info
-      const userWithToken = updateQuery.rows[0];
       res.cookie("token", refreshToken, {
         httpOnly: true,
         sameSite: "none",
@@ -106,12 +114,13 @@ class AuthController {
       const refreshToken = cookies.token;
 
       // Query the database for the user with the provided refresh token
-      const selectQuery = await dbQuery({
-        text: `SELECT * FROM users WHERE refresh_token = $1`,
-        values: [refreshToken],
+      const foundUser = await prisma.users.findFirst({
+        where: {
+          refreshToken: refreshToken,
+        },
       });
+
       // Check if user exists
-      const foundUser = selectQuery.rows[0];
       if (!foundUser)
         return res.status(403).json({
           error: {
@@ -152,7 +161,7 @@ class AuthController {
           res.json({
             user: foundUser.login,
             accessToken,
-            role: foundUser.role_id,
+            role: foundUser.roleId,
           });
         }
       );
@@ -179,11 +188,11 @@ class AuthController {
       }
 
       // Query the database for the user with the provided refresh token
-      const selectQuery = await dbQuery({
-        text: `SELECT * FROM users WHERE refresh_token = $1`,
-        values: [refreshToken],
+      const foundUser = await prisma.users.findFirst({
+        where: {
+          refreshToken: refreshToken,
+        },
       });
-      const foundUser = selectQuery.rows[0];
 
       // If no user found, clear the cookie and return
       if (!foundUser) {
@@ -196,9 +205,13 @@ class AuthController {
       }
 
       // Delete refresh token in the database
-      await dbQuery({
-        text: `UPDATE users SET refresh_token = '' WHERE refresh_token = $1`,
-        values: [refreshToken],
+      await prisma.users.updateMany({
+        where: {
+          refreshToken: refreshToken,
+        },
+        data: {
+          refreshToken: "",
+        },
       });
 
       // Clear the cookie and return
