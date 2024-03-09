@@ -3,7 +3,7 @@ import { useLockBodyScroll } from "@uidotdev/usehooks";
 
 import CartElement from "./CartElement";
 import { useStore } from "../store/root-store-context";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea } from "./UI/scroll-area";
 
 /**
  * Component rendering list of cart items

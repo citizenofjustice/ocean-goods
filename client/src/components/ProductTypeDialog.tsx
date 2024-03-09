@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
+} from "./UI/dialog";
 import {
   Form,
   FormControl,
@@ -13,10 +13,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "./UI/form";
+import { Input } from "./UI/input";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "./ui/button";
+import { Button } from "./UI/button";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { zodProductTypeForm } from "../lib/zodProductTypeForm";

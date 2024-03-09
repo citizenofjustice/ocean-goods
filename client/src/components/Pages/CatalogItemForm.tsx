@@ -9,24 +9,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
+} from "../UI/form";
 import { CatalogItemInputs } from "../../types/form-types";
-import { Button } from "../ui/button";
+import { Button } from "../UI/button";
 import { useForm } from "react-hook-form";
-import { Switch } from "../ui/switch";
-import { Textarea } from "../ui/textarea";
+import { Switch } from "../UI/switch";
+import { Textarea } from "../UI/textarea";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useStore } from "../../store/root-store-context";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { ButtonLoading } from "../ui/ButtonLoading";
-import ImageDropzone from "../ui/ImageDropzone";
+import { ButtonLoading } from "../UI/ButtonLoading";
+import ImageDropzone from "../UI/ImageDropzone";
 import ProductTypeSelect from "../ProductTypeSelect";
 import { zodCatalogItemForm } from "../../lib/zodCatalogItemForm";
 import CatalogItemFormInputs from "../CatalogItemFormInputs";
-import ConfirmActionAlert from "../ui/ConfirmActionAlert";
+import ConfirmActionAlert from "../UI/ConfirmActionAlert";
 
 const emptyInitValues: CatalogItemInputs = {
   productName: "",

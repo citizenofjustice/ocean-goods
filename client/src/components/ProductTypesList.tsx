@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "./Pages/ErrorPage";
 import ProductTypeItem from "./ProductTypeItem";
-import LoadingSpinner from "./ui/LoadingSpinner";
+import LoadingSpinner from "./UI/LoadingSpinner";
 import { ProductType } from "../types/ProductType";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { Card, CardContent, CardHeader } from "./ui/card";
+import { Card, CardContent, CardHeader } from "./UI/card";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";

@@ -1,4 +1,4 @@
-import { SelectValue } from "../../types/SelectValue";
+import { SelectValueProp } from "../../types/SelectValue";
 import LoadingSpinner from "./LoadingSpinner";
 
 const SelectField: React.FC<{
@@ -9,7 +9,7 @@ const SelectField: React.FC<{
   value: string;
   isLoading: boolean;
   isError: boolean;
-  options: SelectValue[];
+  options: SelectValueProp[];
 }> = ({
   inputId,
   title,

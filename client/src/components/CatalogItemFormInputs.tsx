@@ -5,8 +5,8 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+} from "./UI/form";
+import { Input } from "./UI/input";
 import { z } from "zod";
 import { zodCatalogItemForm } from "src/lib/zodCatalogItemForm";
 

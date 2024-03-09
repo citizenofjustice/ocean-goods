@@ -7,15 +7,15 @@ import AddToCart from "./AddToCart";
 import { useStore } from "../store/root-store-context";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import CatalogItemModel from "../classes/CatalogItemModel";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "./UI/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "./UI/dropdown-menu";
 import { MoreHorizontal, SquarePen, Trash } from "lucide-react";
-import ConfirmActionAlert from "./ui/ConfirmActionAlert";
+import ConfirmActionAlert from "./UI/ConfirmActionAlert";
 
 /**
  * Renders catalog item card

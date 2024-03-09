@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import axios from "../../api/axios";
-import LoadingSpinner from "../ui/LoadingSpinner";
+import LoadingSpinner from "../UI/LoadingSpinner";
 import { observer } from "mobx-react-lite";
-import TextCrossed from "../ui/TextCrossed";
+import TextCrossed from "../UI/TextCrossed";
 import AddToCart from "../AddToCart";
 import { useMediaQuery } from "usehooks-ts";
 import CatalogItemModel from "../../classes/CatalogItemModel";

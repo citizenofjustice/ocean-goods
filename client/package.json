@@ -32,7 +32,7 @@
     "@types/react-datepicker": "^4.19.5",
     "@uidotdev/usehooks": "^2.4.1",
     "autoprefixer": "^10.4.16",
-    "axios": "^1.6.2",
+    "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",

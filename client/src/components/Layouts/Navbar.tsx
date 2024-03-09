@@ -13,8 +13,8 @@ import Cart from "../Cart";
 import MenuList from "../MenuList";
 import { MenuItem } from "../../types/MenuItem";
 import { useStore } from "../../store/root-store-context";
-import UserDropdownMenu from "../ui/UserDropdownMenu";
-import SignInSVG from "../ui/SignInSVG";
+import UserDropdownMenu from "../UI/UserDropdownMenu";
+import SignInSVG from "../UI/SignInSVG";
 import Logo from "../../assets/images/Logo.svg";
 import { useMediaQuery } from "usehooks-ts";
 import {
@@ -24,10 +24,10 @@ import {
   SheetClose,
   SheetFooter,
   SheetHeader,
-} from "../ui/sheet";
+} from "../UI/sheet";
 import { X } from "lucide-react";
 import CustomerDataForm from "../CustomerDataForm";
-import { Button } from "../ui/button";
+import { Button } from "../UI/button";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [

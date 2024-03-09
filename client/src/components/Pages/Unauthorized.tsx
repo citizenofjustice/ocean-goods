@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "../ui/button";
+import { Button } from "../UI/button";
 
 const Unauthorized = () => {
   const navigate = useNavigate();
