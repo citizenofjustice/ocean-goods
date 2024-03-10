@@ -12,6 +12,7 @@ import { zodProductTypeForm } from "../lib/zodProductTypeForm";
 import ProductTypeDialog from "./ProductTypeDialog";
 import { useProductTypes } from "../hooks/useProductTypes";
 import { useState } from "react";
+import { PlusCircleIcon } from "lucide-react";
 
 const ProductTypesList = () => {
   // Using custom hook to get an instance of axios with credentials
@@ -63,7 +64,9 @@ const ProductTypesList = () => {
                       isOpen={isDialogOpen}
                       onClose={() => setIsDialogOpen(false)}
                       onOpen={() => setIsDialogOpen(true)}
-                    />
+                    >
+                      <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer " />
+                    </ProductTypeDialog>
                   </span>
                 </CardHeader>
                 <CardContent>

@@ -20,10 +20,12 @@ import { Button } from "./UI/button";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { zodProductTypeForm } from "../lib/zodProductTypeForm";
-import { PlusCircleIcon } from "lucide-react";
+import { useOnClickOutside } from "usehooks-ts";
+import { useRef } from "react";
 
 interface ProductTypeDialogProps {
   form: UseFormReturn<z.infer<typeof zodProductTypeForm>>;
+  children: React.ReactNode;
   onSubmit: (values: z.infer<typeof zodProductTypeForm>) => void;
   isOpen: boolean;
   onClose: () => void;
@@ -32,19 +34,23 @@ interface ProductTypeDialogProps {
 
 const ProductTypeDialog: React.FC<ProductTypeDialogProps> = ({
   form,
+  children,
   onSubmit,
   isOpen,
   onClose,
   onOpen,
 }) => {
+  const dialogRef = useRef(null);
+  useOnClickOutside(dialogRef, onClose);
+
   return (
     <Dialog open={isOpen}>
       <DialogTrigger asChild>
-        <Button variant="link" onClick={onOpen}>
-          <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer " />
+        <Button className="p-0" variant="link" onClick={onOpen}>
+          {children}
         </Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col">
+      <DialogContent ref={dialogRef} className="flex flex-col">
         <DialogHeader>
           <DialogTitle>Введите название типа продукта</DialogTitle>
         </DialogHeader>

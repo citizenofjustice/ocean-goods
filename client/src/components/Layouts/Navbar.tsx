@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Bars3Icon,
   Squares2X2Icon,
@@ -16,7 +16,7 @@ import { useStore } from "../../store/root-store-context";
 import UserDropdownMenu from "../UI/UserDropdownMenu";
 import SignInSVG from "../UI/SignInSVG";
 import Logo from "../../assets/images/Logo.svg";
-import { useMediaQuery } from "usehooks-ts";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import {
   Sheet,
   SheetContent,
@@ -56,6 +56,11 @@ const Navbar = observer(() => {
   const tablet = useMediaQuery("(min-width: 768px)"); // media query for conditional rendering of navbar
   const { cart, auth } = useStore();
 
+  const menuSheetRef = useRef(null);
+  const cartSheetRef = useRef(null);
+  useOnClickOutside(menuSheetRef, () => setIsMenuOpen(false));
+  useOnClickOutside(cartSheetRef, () => setIsCartOpen(false));
+
   return (
     <>
       <header className="hearer-sticky h-[4.5rem] z-50 bg-background-0 border-b-2 border-background-200 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex items-center flex-row py-4">
@@ -70,10 +75,14 @@ const Navbar = observer(() => {
                   <Bars3Icon className="w-6 h-6 text-primary-800" />
                 </div>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[240px] sm:w-[540px]">
+              <SheetContent
+                ref={menuSheetRef}
+                side="left"
+                className="w-[240px] sm:w-[540px]"
+              >
                 <SheetClose
                   onClick={() => setIsMenuOpen(false)}
-                  className="left-6 top-6 rounded-sm ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
+                  className="left-6 top-6 rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary"
                 >
                   <X className="w-6 h-6" />
                   <span className="sr-only">Close</span>
@@ -133,6 +142,7 @@ const Navbar = observer(() => {
               </div>
             </SheetTrigger>
             <SheetContent
+              ref={cartSheetRef}
               side="right"
               className="w-full sm:min-w-[600px] px-0 vsm:px-4"
             >
@@ -141,10 +151,12 @@ const Navbar = observer(() => {
                   <div className="ml-4 text-lg font-semibold">Корзина:</div>
                   <SheetClose
                     onClick={() => setIsCartOpen(false)}
-                    className="mr-4 vsm:mr-0 rounded-sm ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
+                    className="mr-4 vsm:mr-0 rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary"
                   >
-                    <X className="w-6 h-6" />
-                    <span className="sr-only">Close</span>
+                    <Button variant="link">
+                      <X className="w-6 h-6" />
+                      <span className="sr-only">Close</span>
+                    </Button>
                   </SheetClose>
                 </div>
               </SheetHeader>
