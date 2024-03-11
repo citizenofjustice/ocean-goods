@@ -39,10 +39,9 @@ const CartElement: React.FC<{
               {cartItem.mainImage?.path && (
                 <img
                   className="rounded"
-                  src={
-                    import.meta.env.VITE_REACT_SERVER_URL +
+                  src={`${import.meta.env.VITE_REACT_SERVER_URL}${
                     cartItem.mainImage?.path
-                  }
+                  }`}
                 />
               )}
             </div>

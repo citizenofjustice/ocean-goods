@@ -52,7 +52,9 @@ const ImageDropzone: React.FC<{
                       className="max-w-[100%] max-h-[100%] rounded"
                       src={
                         typeof field.value === "string"
-                          ? import.meta.env.VITE_REACT_SERVER_URL + field.value
+                          ? `${import.meta.env.VITE_REACT_SERVER_URL}${
+                              field.value
+                            }`
                           : URL.createObjectURL(field.value)
                       }
                     />

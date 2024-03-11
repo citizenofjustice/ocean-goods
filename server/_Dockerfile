@@ -1,0 +1,44 @@
+FROM ubuntu
+
+# nvm requirements
+RUN apt-get update
+RUN echo "y" | apt-get install curl
+# nvm env vars
+RUN mkdir -p /usr/local/nvm
+ENV NVM_DIR /usr/local/nvm
+# IMPORTANT: set the exact version
+ENV NODE_VERSION v20.10.0
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+# add node and npm to the PATH
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
+ENV PATH $NODE_PATH:$PATH
+
+# Install PostgreSQL without interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -y postgresql postgresql-contrib
+
+ARG DB_NAME
+ARG DB_USER
+ARG DB_PASS
+
+# Create a script to start PostgreSQL and setup the database
+RUN echo "#!/bin/bash\n\
+service postgresql start\n\
+su - postgres -c \"psql -c \\\"CREATE DATABASE $DB_NAME;\\\"\"\n\
+su - postgres -c \"psql -c \\\"CREATE USER $DB_USER WITH ENCRYPTED PASSWORD '$DB_PASS';\\\"\"\n\
+su - postgres -c \"psql -c \\\"GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;\\\"\"\n\
+npx prisma generate\n\
+npx prisma migrate reset -f\n\
+npm run serve" > /start.sh
+RUN chmod +x /start.sh
+
+RUN mkdir -p /app/server
+WORKDIR /app/server
+COPY . .
+RUN npm install
+
+# Expose a port
+EXPOSE 8080
+
+CMD ["/start.sh"]

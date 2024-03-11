@@ -98,10 +98,9 @@ const ItemCard: React.FC<{
           {catalogItem.mainImage?.path && (
             <img
               className="rounded"
-              src={
-                import.meta.env.VITE_REACT_SERVER_URL +
+              src={`${import.meta.env.VITE_REACT_SERVER_URL}${
                 catalogItem.mainImage.path
-              }
+              }`}
             />
           )}
           {catalogItem.discount > 0 && (

@@ -56,10 +56,9 @@ const ItemPage = observer(() => {
                   {catalogItem.mainImage?.path && (
                     <img
                       className="w-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
-                      src={
-                        import.meta.env.VITE_REACT_SERVER_URL +
+                      src={`${import.meta.env.VITE_REACT_SERVER_URL}${
                         catalogItem.mainImage?.path
-                      }
+                      }`}
                       alt={catalogItem.productName}
                     />
                   )}
