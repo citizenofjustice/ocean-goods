@@ -40,7 +40,7 @@ const emptyInitValues: CatalogItemInputs = {
   mainImage: undefined,
 };
 
-const AddToCatalogPage: React.FC<{
+const CatalogItemForm: React.FC<{
   actionType?: "CREATE" | "UPDATE";
   editItemId?: number;
   editInitValues?: CatalogItemInputs;
@@ -233,4 +233,4 @@ const AddToCatalogPage: React.FC<{
     );
   }
 );
-export default AddToCatalogPage;
+export default CatalogItemForm;

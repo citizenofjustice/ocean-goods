@@ -108,7 +108,8 @@ class RolesController {
   // This function updates a role
   async updateRole(req: Request, res: Response, next: NextFunction) {
     try {
-      const { roleId, title, privelegeIds } = req.body;
+      const roleId = req.params.id;
+      const { title, privelegeIds } = req.body;
 
       let priveleges: number[];
       let roleIdValue: number;

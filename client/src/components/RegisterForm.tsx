@@ -8,7 +8,7 @@ import PasswordInputField from "./UI/PasswordInputField";
 import { AxiosError } from "axios";
 import { useStore } from "../store/root-store-context";
 import { SelectValueProp } from "../types/SelectValue";
-import { Button } from "./ui/button";
+import { Button } from "./UI/button";
 import { ButtonLoading } from "./UI/ButtonLoading";
 
 const initValues = {

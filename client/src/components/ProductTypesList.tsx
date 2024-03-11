@@ -54,34 +54,32 @@ const ProductTypesList = () => {
           {isLoading && <LoadingSpinner />}
           {!isLoading && !isError && (
             <>
-              <div className="">
-                <CardHeader className="font-medium">
-                  <span className="flex justify-between items-center">
-                    Список типов продуктов:
-                    <ProductTypeDialog
-                      form={form}
-                      onSubmit={onSubmit}
-                      isOpen={isDialogOpen}
-                      onClose={() => setIsDialogOpen(false)}
-                      onOpen={() => setIsDialogOpen(true)}
-                    >
-                      <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer " />
-                    </ProductTypeDialog>
-                  </span>
-                </CardHeader>
-                <CardContent>
-                  {dataAvailable && data.length > 0 ? (
-                    data.map((item: ProductType) => (
-                      <ProductTypeItem
-                        key={item.productTypeId}
-                        productType={item}
-                      />
-                    ))
-                  ) : (
-                    <h1 className="mt-4">Список типов продуктов пуст</h1>
-                  )}
-                </CardContent>
-              </div>
+              <CardHeader className="font-medium">
+                <span className="flex justify-between items-center">
+                  Список типов продуктов:
+                  <ProductTypeDialog
+                    form={form}
+                    onSubmit={onSubmit}
+                    isOpen={isDialogOpen}
+                    onClose={() => setIsDialogOpen(false)}
+                    onOpen={() => setIsDialogOpen(true)}
+                  >
+                    <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer " />
+                  </ProductTypeDialog>
+                </span>
+              </CardHeader>
+              <CardContent>
+                {dataAvailable && data.length > 0 ? (
+                  data.map((item: ProductType) => (
+                    <ProductTypeItem
+                      key={item.productTypeId}
+                      productType={item}
+                    />
+                  ))
+                ) : (
+                  <h1 className="mt-4">Список типов продуктов пуст</h1>
+                )}
+              </CardContent>
             </>
           )}
         </Card>
