@@ -83,7 +83,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({ control }) => {
             </FormControl>
             <FormMessage />
             {!isLoading && !isError && (
-              <SelectContent>
+              <SelectContent key={Math.random()}>
                 {data.map((item: SelectValueProp) => (
                   <SelectItem key={item.id} value={String(item.id)}>
                     {item.optionValue}

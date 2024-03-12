@@ -21,6 +21,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useStore } from "../../store/root-store-context";
 import { Card, CardContent, CardHeader, CardTitle } from "../UI/card";
 import { Eye, EyeOff } from "lucide-react";
+import { zodAuthUserForm } from "../../lib/zodAuthUserForm";
 
 const AuthPage = observer(() => {
   const navigate = useNavigate();
@@ -32,31 +33,9 @@ const AuthPage = observer(() => {
   const from = location.state?.from.pathname || "/";
   const axiosPrivate = useAxiosPrivate();
 
-  const formSchema = z.object({
-    email: z.string().email("Неверная электонная почта"),
-    password: z.string().min(2, {
-      message: "Password must be at least 2 characters.",
-    }),
-    // Disabled temporarily
-    // password: z.string().refine(
-    //   (password) => {
-    //     const hasSymbol = /\W/.test(password);
-    //     const hasNumber = /\d/.test(password);
-    //     const hasUppercase = /[A-Z]/.test(password);
-    //     const hasLowercase = /[a-z]/.test(password);
-
-    //     return hasSymbol && hasNumber && hasUppercase && hasLowercase;
-    //   },
-    //   {
-    //     message:
-    //       "Пароль должен состоять из букв верхнего и нижнего регисторв латинского алфавита, цифр и символов",
-    //   }
-    // ),
-  });
-
   // Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof zodAuthUserForm>>({
+    resolver: zodResolver(zodAuthUserForm),
     defaultValues: {
       email: "",
       password: "",
@@ -64,7 +43,7 @@ const AuthPage = observer(() => {
   });
 
   // Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof zodAuthUserForm>) {
     setIsPending(true);
     const fData = new FormData();
     fData.append("email", values.email);
@@ -109,9 +88,16 @@ const AuthPage = observer(() => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Эл. почта:</FormLabel>
+                      <FormLabel htmlFor="auth-user-email">
+                        Эл. почта:
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="email@example.com" {...field} />
+                        <Input
+                          id="auth-user-email"
+                          autoComplete="on"
+                          placeholder="email@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -122,10 +108,13 @@ const AuthPage = observer(() => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Пароль:</FormLabel>
+                      <FormLabel htmlFor="auth-user-password">
+                        Пароль:
+                      </FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
+                            id="auth-user-password"
                             className="pr-10"
                             type={isPasswordShown ? "text" : "password"}
                             {...field}

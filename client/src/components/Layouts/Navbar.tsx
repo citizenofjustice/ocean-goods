@@ -153,10 +153,8 @@ const Navbar = observer(() => {
                     onClick={() => setIsCartOpen(false)}
                     className="mr-4 vsm:mr-0 rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary"
                   >
-                    <Button variant="link">
-                      <X className="w-6 h-6" />
-                      <span className="sr-only">Close</span>
-                    </Button>
+                    <X className="w-6 h-6" />
+                    <span className="sr-only">Close</span>
                   </SheetClose>
                 </div>
               </SheetHeader>

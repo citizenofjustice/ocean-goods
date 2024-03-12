@@ -96,12 +96,14 @@ const ItemCard: React.FC<{
         </CardHeader>
         <CardContent className="relative px-4">
           {catalogItem.mainImage?.path && (
-            <img
-              className="rounded"
-              src={`${import.meta.env.VITE_REACT_SERVER_URL}${
-                catalogItem.mainImage.path
-              }`}
-            />
+            <Link to={`/item/${catalogItem.productId}`}>
+              <img
+                className="rounded"
+                src={`${import.meta.env.VITE_REACT_SERVER_URL}${
+                  catalogItem.mainImage.path
+                }`}
+              />
+            </Link>
           )}
           {catalogItem.discount > 0 && (
             <div className="absolute bottom-8 right-8 flex items-center px-2 bg-destructive rounded-md font-semibold text-white">

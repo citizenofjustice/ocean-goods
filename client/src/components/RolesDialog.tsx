@@ -133,9 +133,9 @@ const RolesForm: React.FC<{
             name="title"
             render={({ field }) => (
               <FormItem className="mb-4">
-                <FormLabel>Наименование роли:</FormLabel>
+                <FormLabel htmlFor="role-title">Наименование роли:</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input id="role-title" autoComplete="on" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -147,7 +147,9 @@ const RolesForm: React.FC<{
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel>Привилегии:</FormLabel>
+                  <FormLabel htmlFor="role-priveleges-input">
+                    Привилегии:
+                  </FormLabel>
                   <FormDescription>
                     Выберите привилегии которые хотите назначить для роли.
                   </FormDescription>

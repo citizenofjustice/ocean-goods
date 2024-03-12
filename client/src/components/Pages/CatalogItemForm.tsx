@@ -194,12 +194,14 @@ const CatalogItemForm: React.FC<{
                 control={form.control}
                 name="inStock"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel htmlFor="toggle">Имеется в наличии:</FormLabel>
+                  <FormItem className="flex flex-col gap-2">
+                    <FormLabel htmlFor="product-is-stock-toggle">
+                      Имеется в наличии:
+                    </FormLabel>
                     <FormControl>
                       <div className="flex gap-2">
                         <Switch
-                          id="toggle"
+                          id="product-is-stock-toggle"
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
