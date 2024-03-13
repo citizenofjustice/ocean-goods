@@ -41,7 +41,7 @@ const ImageDropzone: React.FC<{
                 />
               </>
             </FormControl>
-            <Card className="flex w-[100%] h-[100%] justify-center max-h-[140px]">
+            <Card className="flex w-[100%] h-[100%] justify-center h-[140px]">
               <label
                 htmlFor="fileInput"
                 className="hover:cursor-pointer w-full"

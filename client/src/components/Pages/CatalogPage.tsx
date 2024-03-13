@@ -12,7 +12,7 @@ import { useDebounce, useIntersectionObserver } from "usehooks-ts";
 import { SortBy } from "../../types/SortBy";
 import { CatalogItem } from "../../types/CatalogItem";
 import { Input } from "../UI/input";
-import { ChevronDownCircle, ChevronUpCircle, Search } from "lucide-react";
+import { ChevronDownCircle, Search } from "lucide-react";
 
 // Initial values for sorting
 const initSortValues: SortBy = {
@@ -77,6 +77,7 @@ const CatalogPage = observer(() => {
   const [isFiltersShown, setIsFiltersShown] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>("createdAtDown");
   const queryClient = useQueryClient();
+  const filtersRef = useRef<HTMLDivElement>(null);
 
   // IntersectionObserver for inifinite page loading
   const entry = useIntersectionObserver(ref, { threshold: 0.5 });
@@ -171,35 +172,43 @@ const CatalogPage = observer(() => {
   return (
     <div className="px-4">
       <div
-        className={`m-auto z-30 max-w-screen-lg sticky top-0 bg-white flex gap-4 justify-center items-center`}
+        className={`m-auto z-30 max-w-screen-lg sticky top-0 bg-white flex justify-center items-center`}
       >
-        {!isFiltersShown && (
+        <div className="mb-4">
           <span
-            className="my-4 flex justify-center gap-2 hover:cursor-pointer text-gray-500"
-            onClick={() => setIsFiltersShown(true)}
+            className="transition ease-in-out delay-150 mt-4 mb-2 flex justify-center gap-2 hover:cursor-pointer text-gray-500"
+            onClick={() => setIsFiltersShown((prevVal) => !prevVal)}
           >
-            <ChevronDownCircle /> Показать фильтр
+            <ChevronDownCircle
+              className={`transition-transform duration-300 ${
+                isFiltersShown ? "rotate-180" : ""
+              }`}
+            />
+            Показать фильтр
           </span>
-        )}
-        {isFiltersShown && (
-          <>
-            <span
-              className="flex justify-center gap-2 hover:cursor-pointer text-gray-500"
-              onClick={() => setIsFiltersShown(false)}
+          <div
+            className="overflow-y-hidden transition-all duration-300"
+            style={{
+              height: isFiltersShown
+                ? filtersRef.current?.offsetHeight || 0
+                : 0,
+            }}
+          >
+            <div
+              className="grid gap-0 vsm:gap-4 grid-cols-1 vsm:grid-cols-2 items-center "
+              ref={filtersRef}
             >
-              <ChevronUpCircle />
-            </span>
-            <div className="my-2 h-28 vsm:h-20 grid gap-0 vsm:gap-4 grid-cols-none vsm:grid-cols-2 items-center">
-              <div className="m-auto vsm:m-0 vsm:ml-auto relative">
+              <div className="flex justify-start items-center p-2 relative">
                 <Input
                   placeholder={`Поиск по названию`}
                   value={filterBy}
                   onChange={(e) => setFilterBy(e.target.value)}
                   className="max-w-[260px] pr-8"
                 />
-                <Search className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5" />
+                <Search className="absolute top-[50%] translate-y-[-50%] right-4 w-5 h-5" />
               </div>
-              <div className="m-auto vsm:m-0 vsm:mr-auto">
+              <div className="flex justify-start items-center gap-2 flex-col vvsm:flex-row p-2">
+                <p className="font-medium text-sm">Сортировка:</p>
                 <SimpleSelect
                   options={sortOptions}
                   placeholder="Сортировать по"
@@ -208,8 +217,8 @@ const CatalogPage = observer(() => {
                 />
               </div>
             </div>
-          </>
-        )}
+          </div>
+        </div>
       </div>
       {status === "pending" ? (
         <LoadingSpinner />

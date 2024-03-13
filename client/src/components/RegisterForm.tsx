@@ -103,7 +103,7 @@ const RegisterForm = () => {
     <>
       <Card className="w-full mt-4">
         <CardHeader>
-          <p>Регистрация пользователя:</p>
+          <p className="font-medium text-center">Регистрация пользователя:</p>
         </CardHeader>
         <CardContent>
           <Form {...form}>

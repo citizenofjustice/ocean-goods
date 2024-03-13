@@ -3,19 +3,24 @@ import { useParams } from "react-router-dom";
 import axios from "../../api/axios";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import { observer } from "mobx-react-lite";
-import TextCrossed from "../UI/TextCrossed";
 import AddToCart from "../AddToCart";
 import { useMediaQuery } from "usehooks-ts";
 import CatalogItemModel from "../../classes/CatalogItemModel";
 import { useState } from "react";
 import ErrorPage from "./ErrorPage";
 import { AxiosError } from "axios";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { Separator } from "../UI/separator";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { ScrollBar } from "../UI/scroll-area";
+import { Card } from "../UI/card";
 
 const ItemPage = observer(() => {
   const params = useParams();
   const { id } = params;
   const [catalogItem, setCatalogItem] = useState<CatalogItemModel>();
-  const matches = useMediaQuery("(min-width: 640px)");
+  const [catalogItemProductType, setCatalogItemProductType] = useState("");
+  const nonMobile = useMediaQuery("(min-width: 1024px)");
 
   const { isLoading, isError, error } = useQuery({
     queryKey: ["catalog-item"],
@@ -38,6 +43,7 @@ const ItemPage = observer(() => {
           data.mainImage
         );
         setCatalogItem(item);
+        setCatalogItemProductType(data.productTypes.type);
       }
       return response.data;
     },
@@ -49,70 +55,77 @@ const ItemPage = observer(() => {
       {isLoading && <LoadingSpinner />}
       {!isLoading && !isError && (
         <>
-          {catalogItem && (
-            <>
-              <div className="fixed top-[4.5rem] bottom-[4rem] sm:bottom-0 overflow-y-auto content-scroll grid gap-4 sm:gap-0 grid-cols-none sm:grid-cols-12 items-center justify-center w-full mt-0 sm:mt-4 pb-4">
-                <div className="col-span-1 sm:col-start-1 sm:col-span-6 lg:col-start-2 lg:col-span-4 px-4 place-self-center">
-                  {catalogItem.mainImage?.path && (
-                    <img
-                      className="w-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
-                      src={`${import.meta.env.VITE_REACT_SERVER_URL}${
-                        catalogItem.mainImage?.path
-                      }`}
-                      alt={catalogItem.productName}
-                    />
-                  )}
-                </div>
-                <div className="sm:col-span-6 flex flex-col gap-6 px-4">
-                  <div className="w-full flex items-center">
-                    <p className="text-2xl sm:text-3xl font-serif font-bold first-letter:capitalize first-letter:text-primary-600">
+          {!nonMobile ? (
+            <ScrollArea className="flex justify-center">
+              {catalogItem && (
+                <div className="grid items-center gap-y-4 grid-cols-1 lg:grid-cols-2 sm:max-w-xl lg:max-w-5xl lg:gap-8 py-6 px-4">
+                  <ItemPageMainImage catalogItem={catalogItem} />
+                  <div>
+                    <p className="font-bold text-xl first-letter:capitalize">
                       {catalogItem.productName}
                     </p>
+                    <div className="flex items-center space-x-3">
+                      <p className="font-medium opacity-70 line-through">
+                        {catalogItem.price} РУБ.
+                      </p>
+                      <p className="font-medium">
+                        {catalogItem.finalPrice} РУБ. / ШТ.
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-lg font-serif w-full flex items-start justify-around gap-2">
-                    <div>
-                      <p className="text-center">Цена:</p>
-                      {catalogItem.discount ? (
-                        <div className="flex items-center flex-col lg:flex-row lg:gap-4">
-                          <p className="text-text-500">
-                            <TextCrossed>{`${catalogItem.price}\u00A0руб.`}</TextCrossed>
+                  <ItemPageProductInfo
+                    catalogItem={catalogItem}
+                    catalogItemProductType={catalogItemProductType}
+                    nonMobile={nonMobile}
+                  />
+                  <div className="w-full flex justify-center items-center mt-4">
+                    <AddToCart
+                      productId={catalogItem.productId}
+                      catalogItem={catalogItem}
+                    />
+                  </div>
+                </div>
+              )}
+            </ScrollArea>
+          ) : (
+            <div className="flex justify-center h-[80vh]">
+              {catalogItem && (
+                <div className="grid grid-cols-2 items-center sm:gap-4 lg:gap-8 p-4 max-w-5xl">
+                  <ItemPageMainImage catalogItem={catalogItem} />
+                  <div className="">
+                    <div className="flex justify-between gap-2 my-4">
+                      <div className="px-4">
+                        <p className="font-bold text-xl first-letter:capitalize">
+                          {catalogItem.productName}
+                        </p>
+                        <div className="flex items-center space-x-3">
+                          <p className="font-medium opacity-70 line-through">
+                            {catalogItem.price} РУБ.
                           </p>
-                          <p>{catalogItem.finalPrice} руб.</p>
+                          <p className="font-medium">
+                            {catalogItem.finalPrice} РУБ. / ШТ.
+                          </p>
                         </div>
-                      ) : (
-                        <p>{catalogItem.price} руб.</p>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <p>Вес:</p>
-                      <p>{catalogItem.weight} гр.</p>
-                    </div>
-
-                    <div className="flex flex-col items-center">
-                      <p>{`Ккал (100 гр.):`}</p>
-                      <p>{catalogItem.kcal}</p>
-                    </div>
-                  </div>
-                  <div className="w-full font-serif flex flex-col justify-center">
-                    <p>Описание:</p>
-                    <p className="text-gray-500">{catalogItem.description}</p>
-                  </div>
-                  {matches && (
-                    <div className="h-16 w-full flex justify-center items-center">
+                      </div>
                       <AddToCart
-                        productId={Number(id)}
+                        productId={catalogItem.productId}
                         catalogItem={catalogItem}
                       />
                     </div>
-                  )}
-                </div>
-              </div>
-              {!matches && (
-                <div className="fixed bottom-0 h-[4rem] w-full bg-background-100 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex justify-center items-center">
-                  <AddToCart productId={Number(id)} catalogItem={catalogItem} />
+                    <Card>
+                      <ScrollArea className="content-scroll max-h-[60vh] p-4 overflow-y-auto">
+                        <ItemPageProductInfo
+                          catalogItem={catalogItem}
+                          catalogItemProductType={catalogItemProductType}
+                          nonMobile={nonMobile}
+                        />
+                        <ScrollBar orientation="vertical" />
+                      </ScrollArea>
+                    </Card>
+                  </div>
                 </div>
               )}
-            </>
+            </div>
           )}
         </>
       )}
@@ -127,5 +140,79 @@ const ItemPage = observer(() => {
     </>
   );
 });
+
+const ItemPageMainImage: React.FC<{
+  catalogItem: CatalogItemModel;
+}> = ({ catalogItem }) => {
+  return (
+    <div className="w-fit h-fit mx-auto">
+      {catalogItem.mainImage?.path && (
+        <img
+          className="w-full h-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
+          src={`${import.meta.env.VITE_REACT_SERVER_URL}${
+            catalogItem.mainImage?.path
+          }`}
+          alt={catalogItem.productName}
+        />
+      )}
+    </div>
+  );
+};
+
+const ItemPageProductInfo: React.FC<{
+  catalogItem: CatalogItemModel;
+  catalogItemProductType: string;
+  nonMobile: boolean;
+}> = ({ catalogItem, catalogItemProductType, nonMobile }) => {
+  const [descriptionIsOpen, setDescriptionIsOpen] = useState(false);
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1 flex flex-col">
+        <span className="flex justify-between gap-2">
+          <p className="font-medium">Тип продукта:</p>
+          <p className="text-end">{catalogItemProductType}</p>
+        </span>
+        <Separator />
+        <span className="flex justify-between gap-2">
+          <p className="font-medium">Вес:</p>
+          <p className="text-end">{catalogItem.weight} гр.</p>
+        </span>
+        <Separator />
+        <span className="flex justify-between gap-2">
+          <p className="font-medium">Ккал (100 гр.): </p>
+          <p className="text-end">{catalogItem.kcal} ккал.</p>
+        </span>
+        <Separator />
+        <span className="flex justify-between gap-2">
+          <p className="font-medium">Описание:</p>
+        </span>
+        <span className="flex">
+          <p className={`${descriptionIsOpen || nonMobile ? "" : "truncate"}`}>
+            {catalogItem.description}
+          </p>
+          {!descriptionIsOpen && !nonMobile && (
+            <p
+              role="button"
+              className="opacity-70 flex items-center"
+              onClick={() => setDescriptionIsOpen(true)}
+            >
+              развернуть <ChevronDown className="w-4 h-4" />
+            </p>
+          )}
+        </span>
+        {descriptionIsOpen && !nonMobile && (
+          <p
+            role="button"
+            className="opacity-70 flex justify-end items-center"
+            onClick={() => setDescriptionIsOpen(false)}
+          >
+            свернуть <ChevronUp className="w-4 h-4" />
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default ItemPage;

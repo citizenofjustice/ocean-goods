@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon } from "lucide-react";
 
 import RoleItem from "./RoleItem";
 import { Role } from "../types/Role";

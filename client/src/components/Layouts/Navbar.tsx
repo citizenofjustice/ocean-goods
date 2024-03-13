@@ -63,26 +63,24 @@ const Navbar = observer(() => {
 
   return (
     <>
-      <header className="hearer-sticky h-[4.5rem] z-50 bg-background-0 border-b-2 border-background-200 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex items-center flex-row py-4">
-        <nav className="basis-2/12 flex justify-start">
+      <header className="hearer-sticky h-[4.5rem] z-50 bg-background-0 border-b-2 border-background-200 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex items-center flex-row justify-between px-4 py-4">
+        <div className="basis-2/12 flex justify-start">
           {!tablet ? (
             <Sheet open={isMenuOpen}>
               <SheetTrigger>
-                <div
+                <Bars3Icon
                   onClick={() => setIsMenuOpen(true)}
-                  className="flex items-center justify-end h-10 w-12 hover:cursor-pointer"
-                >
-                  <Bars3Icon className="w-6 h-6 text-primary-800" />
-                </div>
+                  className="w-6 h-6 text-primary-800"
+                />
               </SheetTrigger>
               <SheetContent
                 ref={menuSheetRef}
                 side="left"
-                className="w-[240px] sm:w-[540px]"
+                className="px-4 w-[240px] sm:w-[540px]"
               >
                 <SheetClose
                   onClick={() => setIsMenuOpen(false)}
-                  className="left-6 top-6 rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary"
+                  className="rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary"
                 >
                   <X className="w-6 h-6" />
                   <span className="sr-only">Close</span>
@@ -95,11 +93,11 @@ const Navbar = observer(() => {
             </Sheet>
           ) : (
             // if screen width bigger than tablets show app name
-            <div className="flex items-center justify-end h-10 ml-[1.625rem] whitespace-nowrap">
+            <div className="flex items-center justify-end h-10 whitespace-nowrap">
               <WebAppLogo />
             </div>
           )}
-        </nav>
+        </div>
         <div className="basis-8/12 flex justify-center">
           {!tablet ? (
             // if screen width smaller than tablets show app name
@@ -113,7 +111,7 @@ const Navbar = observer(() => {
         </div>
         <div className="basis-2/12 flex items-center justify-end">
           {auth.isAuth ? (
-            <div className="relative mr-3">
+            <div className="relative mr-4">
               <UserDropdownMenu />
             </div>
           ) : (
@@ -125,21 +123,19 @@ const Navbar = observer(() => {
             </NavLink>
           )}
           <Sheet open={isCartOpen}>
-            <SheetTrigger>
-              <div
-                onClick={() => setIsCartOpen(true)}
-                className="flex items-center justify-start h-10 w-12 hover:cursor-pointer"
-              >
-                <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
-                {/* small highlight with counter if cart is not empty */}
-                {cart.totalQuantity > 0 && (
-                  <div className="relative top-[-10px] right-[10px] bg-red-500 rounded-full min-w-[16px] min-h-[16px] px-[3px] outline outline-white outline-2">
-                    <p className="text-center text-white font-bold align-middle text-xs">
-                      {cart.totalQuantity}
-                    </p>
-                  </div>
-                )}
-              </div>
+            <SheetTrigger
+              onClick={() => setIsCartOpen(true)}
+              className="relative"
+            >
+              <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
+              {/* small highlight with counter if cart is not empty */}
+              {cart.totalQuantity > 0 && (
+                <div className="absolute top-[-6px] right-[-4px] bg-red-500 rounded-full min-w-[16px] min-h-[16px] px-[3px] outline outline-white outline-2">
+                  <p className="text-center text-white font-bold align-middle text-xs">
+                    {cart.totalQuantity}
+                  </p>
+                </div>
+              )}
             </SheetTrigger>
             <SheetContent
               ref={cartSheetRef}

@@ -17,6 +17,7 @@ export const theme = {
   extend: {
     screens: {
       vsm: "425px",
+      vvsm: "320px",
     },
     colors: {
       border: "hsl(var(--border))",

@@ -32,7 +32,7 @@ const Priveleges = () => {
         {!isLoading && !isError && (
           <>
             <CardHeader>
-              <p className="font-medium">Перечень полномочий:</p>
+              <p className="font-medium text-center">Перечень полномочий:</p>
             </CardHeader>
             <CardContent>
               <ul>

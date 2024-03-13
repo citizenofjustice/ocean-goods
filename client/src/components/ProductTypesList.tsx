@@ -55,8 +55,8 @@ const ProductTypesList = () => {
           {!isLoading && !isError && (
             <>
               <CardHeader className="font-medium">
-                <span className="flex justify-between items-center">
-                  Список типов продуктов:
+                <div className="w-full flex justify-between items-center">
+                  <p className="font-medium">Список типов продуктов:</p>
                   <ProductTypeDialog
                     form={form}
                     onSubmit={onSubmit}
@@ -64,9 +64,9 @@ const ProductTypesList = () => {
                     onClose={() => setIsDialogOpen(false)}
                     onOpen={() => setIsDialogOpen(true)}
                   >
-                    <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer " />
+                    <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer" />
                   </ProductTypeDialog>
-                </span>
+                </div>
               </CardHeader>
               <CardContent>
                 {dataAvailable && data.length > 0 ? (
