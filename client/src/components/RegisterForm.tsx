@@ -198,11 +198,13 @@ const RegisterForm = () => {
                   </FormItem>
                 )}
               />
-              {isPending ? (
-                <ButtonLoading />
-              ) : (
-                <Button>Зарегистрировать</Button>
-              )}
+              <div className="text-center">
+                {isPending ? (
+                  <ButtonLoading />
+                ) : (
+                  <Button>Зарегистрировать</Button>
+                )}
+              </div>
             </form>
           </Form>
         </CardContent>

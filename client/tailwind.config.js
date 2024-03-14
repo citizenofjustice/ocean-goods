@@ -71,10 +71,28 @@ export const theme = {
         from: { height: "var(--radix-accordion-content-height)" },
         to: { height: "0" },
       },
+      "slide-in": {
+        "0%": { transform: "translateX(var(--tw-translate-x))" },
+        "100%": { transform: "translateX(0)" },
+      },
+      "slide-out": {
+        "100%": { transform: "translateX(var(--tw-translate-x))" },
+        "0%": { transform: "translateX(0)" },
+      },
+      "fade-in": {
+        "0%": { opacity: "0" },
+        "100%": { opacity: "1" },
+      },
     },
     animation: {
       "accordion-down": "accordion-down 0.2s ease-out",
       "accordion-up": "accordion-up 0.2s ease-out",
+      "slide-in": "slide-in 0.5s ease-in-out forwards",
+      "slide-out": "slide-out 0.5s ease-in-out forwards",
+    },
+    translate: {
+      "off-screen-right": "100vw",
+      "off-screen-left": "-100vw",
     },
   },
 };
