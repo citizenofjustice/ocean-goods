@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./alert-dialog";
+} from "@/components/UI/shadcn/alert-dialog";
 import { useOnClickOutside } from "usehooks-ts";
 
 const ConfirmActionAlert: React.FC<{

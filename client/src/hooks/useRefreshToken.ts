@@ -1,5 +1,5 @@
-import axios from "../api/axios";
-import { useStore } from "../store/root-store-context";
+import axios from "@/api/axios";
+import { useStore } from "@/store/root-store-context";
 
 // Hook for refreshing access token
 const useRefreshToken = () => {

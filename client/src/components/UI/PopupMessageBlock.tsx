@@ -1,6 +1,7 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { X } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { PopupMessage } from "../../types/Popup";
+
+import { PopupMessage } from "@/types/Popup";
 
 const PopupMessageBlock: React.FC<{
   popup: PopupMessage;
@@ -36,7 +37,7 @@ const PopupMessageBlock: React.FC<{
     >
       <div className="px-4 text-center">{popup.message}</div>
       <div className="px-1">
-        <XMarkIcon
+        <X
           onClick={handleMessageClose}
           className="w-6 h-6 hover:cursor-pointer"
         />

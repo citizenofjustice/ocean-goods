@@ -1,5 +1,4 @@
-"use client";
-
+import { useState } from "react";
 import {
   ColumnDef,
   SortingState,
@@ -8,7 +7,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -17,8 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./table";
-import { useState } from "react";
+} from "@/components/UI/shadcn/table";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

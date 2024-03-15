@@ -1,12 +1,12 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
-import { Card } from "../UI/card";
 import { nanoid } from "nanoid";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../UI/accordion";
+} from "@/components/UI/shadcn/accordion";
+import { Card } from "@/components/UI/shadcn/card";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 interface DashboradSubMenu {
   path: string;

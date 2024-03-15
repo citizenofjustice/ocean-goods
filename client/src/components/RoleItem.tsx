@@ -1,19 +1,20 @@
+import { z } from "zod";
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-
-import { Role } from "../types/Role";
-import { Privelege } from "../types/Privelege";
-import { useStore } from "../store/root-store-context";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import ConfirmActionAlert from "./UI/ConfirmActionAlert";
-import { Button } from "./UI/button";
+import { Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodRolesForm } from "../lib/zodRolesForm";
 import { zodResolver } from "@hookform/resolvers/zod";
-import RolesDialog from "./RolesDialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { Button } from "@/components/UI/shadcn/button";
+
+import { Role } from "@/types/Role";
+import { Privelege } from "@/types/Privelege";
+import { zodRolesForm } from "@/lib/zodRolesForm";
+import RolesDialog from "@/components/RolesDialog";
+import { useStore } from "@/store/root-store-context";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import ConfirmActionAlert from "@/components/UI/ConfirmActionAlert";
 
 const RoleItem: React.FC<{
   priveleges: Privelege[];
@@ -120,7 +121,7 @@ const RoleItem: React.FC<{
             onConfirm={() => removeMutation.mutate(role.roleId)}
           >
             <Button className="p-0" variant="link">
-              <TrashIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+              <Trash2 className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>
         </div>

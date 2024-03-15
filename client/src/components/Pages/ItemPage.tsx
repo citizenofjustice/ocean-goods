@@ -1,19 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import axios from "../../api/axios";
-import LoadingSpinner from "../UI/LoadingSpinner";
-import { observer } from "mobx-react-lite";
-import AddToCart from "../AddToCart";
-import { useMediaQuery } from "usehooks-ts";
-import CatalogItemModel from "../../classes/CatalogItemModel";
 import { useState } from "react";
-import ErrorPage from "./ErrorPage";
 import { AxiosError } from "axios";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { Separator } from "../UI/separator";
+import { observer } from "mobx-react-lite";
+import { useMediaQuery } from "usehooks-ts";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/UI/shadcn/card";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { ScrollBar } from "../UI/scroll-area";
-import { Card } from "../UI/card";
+import { Separator } from "@/components/UI/shadcn/separator";
+import { ScrollBar } from "@/components/UI/shadcn/scroll-area";
+
+import axios from "@/api/axios";
+import ErrorPage from "@/components/Pages/ErrorPage";
+import CartAddButton from "@/components/CartAddButton";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import CatalogItemModel from "@/classes/CatalogItemModel";
+import LoadingSpinner from "@/components/UI/LoadingSpinner";
 
 const ItemPage = observer(() => {
   const params = useParams();
@@ -79,7 +80,7 @@ const ItemPage = observer(() => {
                     nonMobile={nonMobile}
                   />
                   <div className="w-full flex justify-center items-center mt-4">
-                    <AddToCart
+                    <CartAddButton
                       productId={catalogItem.productId}
                       catalogItem={catalogItem}
                     />
@@ -107,7 +108,7 @@ const ItemPage = observer(() => {
                           </p>
                         </div>
                       </div>
-                      <AddToCart
+                      <CartAddButton
                         productId={catalogItem.productId}
                         catalogItem={catalogItem}
                       />
@@ -149,7 +150,7 @@ const ItemPageMainImage: React.FC<{
       {catalogItem.mainImage?.path && (
         <img
           className="w-full h-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
-          src={`${import.meta.env.VITE_REACT_SERVER_URL}${
+          src={`${import.meta.env.VITE_SERVER_URL}${
             catalogItem.mainImage?.path
           }`}
           alt={catalogItem.productName}

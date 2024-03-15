@@ -1,7 +1,7 @@
 import { makeAutoObservable, action, observable, computed } from "mobx";
 
-import { CatalogItem } from "../types/CatalogItem";
-import CatalogItemModel from "../classes/CatalogItemModel";
+import { CatalogItem } from "@/types/CatalogItem";
+import CatalogItemModel from "@/classes/CatalogItemModel";
 
 // Class for the catalog store
 class CatalogStore {

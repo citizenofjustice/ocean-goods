@@ -1,17 +1,18 @@
-import { UploadCloud, X } from "lucide-react";
-import { Card } from "./card";
+import { z } from "zod";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./form";
-import { Input } from "./input";
-import { Button } from "./button";
+} from "@/components/UI/shadcn/form";
 import { Control } from "react-hook-form";
-import { zodCatalogItemForm } from "../../lib/zodCatalogItemForm";
-import { z } from "zod";
+import { UploadCloud, X } from "lucide-react";
+import { Card } from "@/components/UI/shadcn/card";
+import { Input } from "@/components/UI/shadcn/input";
+import { Button } from "@/components/UI/shadcn/button";
+
+import { zodCatalogItemForm } from "@/lib/zodCatalogItemForm";
 
 const ImageDropzone: React.FC<{
   control: Control<z.infer<typeof zodCatalogItemForm>>;
@@ -52,9 +53,7 @@ const ImageDropzone: React.FC<{
                       className="max-w-[100%] max-h-[100%] rounded"
                       src={
                         typeof field.value === "string"
-                          ? `${import.meta.env.VITE_REACT_SERVER_URL}${
-                              field.value
-                            }`
+                          ? `${import.meta.env.VITE_SERVER_URL}${field.value}`
                           : URL.createObjectURL(field.value)
                       }
                     />

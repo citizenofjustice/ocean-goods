@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import useRefreshToken from "../hooks/useRefreshToken";
-import LoadingSpinner from "./UI/LoadingSpinner";
-import { useStore } from "../store/root-store-context";
+import { useEffect, useState } from "react";
+
+import useRefreshToken from "@/hooks/useRefreshToken";
+import { useStore } from "@/store/root-store-context";
+import LoadingSpinner from "@/components/UI/LoadingSpinner";
 
 const PersistAuth = observer(() => {
   const [isLoading, setIsLoading] = useState(true);

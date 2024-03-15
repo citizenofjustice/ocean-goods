@@ -1,11 +1,5 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./UI/dialog";
+import { z } from "zod";
+import { useRef } from "react";
 import {
   Form,
   FormControl,
@@ -13,15 +7,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./UI/form";
-import { Input } from "./UI/input";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "./UI/button";
-import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-import { zodProductTypeForm } from "../lib/zodProductTypeForm";
-import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
-import { useRef } from "react";
+} from "@/components/UI/shadcn/form";
 import {
   Drawer,
   DrawerClose,
@@ -30,7 +16,22 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "./UI/drawer";
+} from "@/components/UI/shadcn/drawer";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/UI/shadcn/dialog";
+import { UseFormReturn } from "react-hook-form";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
+
+import { Input } from "@/components/UI/shadcn/input";
+import { Button } from "@/components/UI/shadcn/button";
+import { zodProductTypeForm } from "@/lib/zodProductTypeForm";
 
 interface ProductTypeDialogProps {
   form: UseFormReturn<z.infer<typeof zodProductTypeForm>>;

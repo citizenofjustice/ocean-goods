@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-import { axiosPrivate } from "../api/axios";
-import useRefreshToken from "./useRefreshToken";
-import { useStore } from "../store/root-store-context";
+import { axiosPrivate } from "@/api/axios";
+import { useStore } from "@/store/root-store-context";
+import useRefreshToken from "@/hooks/useRefreshToken";
 
 // Hook for using axios with private routes
 const useAxiosPrivate = () => {

@@ -1,11 +1,6 @@
 import { z } from "zod";
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { useForm } from "react-hook-form";
-import { observer } from "mobx-react-lite";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocation, useNavigate } from "react-router-dom";
-
 import {
   Form,
   FormControl,
@@ -13,15 +8,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../UI/form";
-import { Input } from "../UI/input";
-import { Button } from "../UI/button";
-import { ButtonLoading } from "../UI/ButtonLoading";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useStore } from "../../store/root-store-context";
-import { Card, CardContent, CardHeader, CardTitle } from "../UI/card";
+} from "@/components/UI/shadcn/form";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/UI/shadcn/card";
+import { useForm } from "react-hook-form";
+import { observer } from "mobx-react-lite";
 import { Eye, EyeOff } from "lucide-react";
-import { zodAuthUserForm } from "../../lib/zodAuthUserForm";
+import { Input } from "@/components/UI/shadcn/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/UI/shadcn/button";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useStore } from "@/store/root-store-context";
+import { zodAuthUserForm } from "@/lib/zodAuthUserForm";
+import { ButtonLoading } from "@/components/UI/ButtonLoading";
 
 const AuthPage = observer(() => {
   const navigate = useNavigate();

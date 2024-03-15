@@ -6,7 +6,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "./select";
+} from "@/components/UI/shadcn/select";
 
 export interface SelectOptions {
   value: string;

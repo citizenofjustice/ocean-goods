@@ -1,18 +1,19 @@
-import { observer } from "mobx-react-lite";
-import ItemCard from "../ItemCard";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import CatalogItemModel from "../../classes/CatalogItemModel";
-import { Fragment, useEffect, useRef, useState } from "react";
-import LoadingSpinner from "../UI/LoadingSpinner";
 import { AxiosError } from "axios";
-import axios from "../../api/axios";
-import ErrorPage from "./ErrorPage";
-import SimpleSelect, { SelectOptions } from "../UI/SimpleSelect";
-import { useDebounce, useIntersectionObserver } from "usehooks-ts";
-import { SortBy } from "../../types/SortBy";
-import { CatalogItem } from "../../types/CatalogItem";
-import { Input } from "../UI/input";
+import { observer } from "mobx-react-lite";
+import { Input } from "@/components/UI/shadcn/input";
 import { ChevronDownCircle, Search } from "lucide-react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { useDebounce, useIntersectionObserver } from "usehooks-ts";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+
+import axios from "@/api/axios";
+import { SortBy } from "@/types/SortBy";
+import { CatalogItem } from "@/types/CatalogItem";
+import ErrorPage from "@/components/Pages/ErrorPage";
+import CatalogItemModel from "@/classes/CatalogItemModel";
+import CatalogItemCard from "@/components/CatalogItemCard";
+import LoadingSpinner from "@/components/UI/LoadingSpinner";
+import SimpleSelect, { SelectOptions } from "@/components/UI/SimpleSelect";
 
 // Initial values for sorting
 const initSortValues: SortBy = {
@@ -233,7 +234,7 @@ const CatalogPage = observer(() => {
             {data.pages.map((group, i) => (
               <Fragment key={i}>
                 {group.catalog.map((item: CatalogItemModel) => (
-                  <ItemCard key={item.productId} catalogItem={item} />
+                  <CatalogItemCard key={item.productId} catalogItem={item} />
                 ))}
               </Fragment>
             ))}

@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import { Button } from "./button";
+import { Button } from "@/components/UI/shadcn/button";
 
 export const ButtonLoading: React.FC<{
   children?: string;

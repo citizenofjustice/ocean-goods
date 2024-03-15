@@ -3,11 +3,11 @@ import { observer } from "mobx-react-lite";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
-import axios from "../../api/axios";
-import ErrorPage from "./ErrorPage";
-import LoadingSpinner from "../UI/LoadingSpinner";
-import CatalogItemForm from "./CatalogItemForm";
-import { CatalogItemInputs } from "../../types/form-types";
+import axios from "@/api/axios";
+import ErrorPage from "@/components/Pages/ErrorPage";
+import LoadingSpinner from "@/components/UI/LoadingSpinner";
+import { CatalogItemInputs } from "@/types/CatalogItemInputs";
+import CatalogItemFormPage from "@/components/Pages/CatalogItemFormPage";
 
 const EditCatalogItemPage = observer(() => {
   const { id } = useParams(); // Get the item ID from the route parameters
@@ -59,7 +59,7 @@ const EditCatalogItemPage = observer(() => {
     <>
       {isLoading && <LoadingSpinner />}
       {!isLoading && beforeEditData && !isError && (
-        <CatalogItemForm
+        <CatalogItemFormPage
           actionType="UPDATE"
           editItemId={itemId}
           editInitValues={beforeEditData}

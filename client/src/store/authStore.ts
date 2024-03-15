@@ -1,6 +1,6 @@
 import { action, makeAutoObservable } from "mobx";
 
-import axios from "../api/axios";
+import axios from "@/api/axios";
 
 // Interface for the authentication data
 interface AuthData {

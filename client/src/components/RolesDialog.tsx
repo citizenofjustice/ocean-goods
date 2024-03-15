@@ -1,11 +1,14 @@
+import { z } from "zod";
+import { useRef } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./UI/dialog";
+} from "@/components/UI/shadcn/dialog";
 import {
   Form,
   FormControl,
@@ -14,15 +17,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./UI/form";
-import { Input } from "./UI/input";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "./UI/button";
-import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-import { zodRolesForm } from "../lib/zodRolesForm";
-import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
-import { useRef } from "react";
+} from "@/components/UI/shadcn/form";
 import {
   Drawer,
   DrawerClose,
@@ -31,10 +26,16 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "./UI/drawer";
-import { Checkbox } from "./UI/checkbox";
-import { Privelege } from "../types/Privelege";
-import { ScrollArea } from "./UI/scroll-area";
+} from "@/components/UI/shadcn/drawer";
+import { UseFormReturn } from "react-hook-form";
+import { Input } from "@/components/UI/shadcn/input";
+import { Button } from "@/components/UI/shadcn/button";
+import { Checkbox } from "@/components/UI/shadcn/checkbox";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
+import { ScrollArea } from "@/components/UI/shadcn/scroll-area";
+
+import { Privelege } from "@/types/Privelege";
+import { zodRolesForm } from "@/lib/zodRolesForm";
 
 interface RolesDialogProps {
   form: UseFormReturn<z.infer<typeof zodRolesForm>>;

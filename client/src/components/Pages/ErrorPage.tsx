@@ -1,13 +1,17 @@
 import { AxiosError } from "axios";
-import { observer } from "mobx-react-lite";
-import { Alert, AlertDescription, AlertTitle } from "../UI/alert";
-import { AlertCircle } from "lucide-react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/UI/shadcn/alert";
 import {
   Accordion,
   AccordionContent,
   AccordionTrigger,
   AccordionItem,
-} from "../UI/accordion";
+} from "@/components/UI/shadcn/accordion";
+import { observer } from "mobx-react-lite";
+import { AlertCircle } from "lucide-react";
 
 const ErrorPage: React.FC<{
   error: Error | null;

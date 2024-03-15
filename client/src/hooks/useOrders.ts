@@ -1,10 +1,11 @@
 import { useState } from "react";
-import useAxiosPrivate from "./useAxiosPrivate";
-import { useDebounce } from "usehooks-ts";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useDebounce } from "usehooks-ts";
 import { DateRange } from "react-day-picker";
-import { SortBy } from "src/types/SortBy";
+import { useInfiniteQuery } from "@tanstack/react-query";
+
+import { SortBy } from "@/types/SortBy";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 const LIMIT = 20;
 

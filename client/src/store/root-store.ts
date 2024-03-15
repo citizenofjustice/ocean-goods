@@ -1,15 +1,15 @@
 // Importing stores
-import AuthStore from "./authStore";
-import cartStore from "./cartStore";
-import catalogStore from "./catalogStore";
-import popupStore from "./popupStore";
+import AuthStore from "@/store/AuthStore";
+import CartStore from "@/store/CartStore";
+import CatalogStore from "@/store/CatalogStore";
+import PopupStore from "@/store/PopupStore";
 
 // root store class for uniting all stores for convenience
 class RootStore {
   auth = AuthStore;
-  cart = cartStore;
-  catalog = catalogStore;
-  alert = popupStore;
+  cart = CartStore;
+  catalog = CatalogStore;
+  alert = PopupStore;
 
   constructor() {
     // Error handling: Check if all stores are defined

@@ -1,7 +1,7 @@
 import { makeAutoObservable, action, observable, computed } from "mobx";
 
-import CartItemModel from "../classes/CartItemModel";
-import CatalogItemModel from "../classes/CatalogItemModel";
+import CartItemModel from "@/classes/CartItemModel";
+import CatalogItemModel from "@/classes/CatalogItemModel";
 
 // Loading cart items from local storage
 const cartItemsFromLStorage: CartItemModel[] = JSON.parse(
@@ -9,7 +9,7 @@ const cartItemsFromLStorage: CartItemModel[] = JSON.parse(
 );
 
 // creating store class for keeping cart items
-class cartStore {
+class CartStore {
   // Observable array of cart items
   cartItems: CartItemModel[] = cartItemsFromLStorage;
 
@@ -32,7 +32,7 @@ class cartStore {
     return summedPrice;
   }
 
-  // Constructor for the cartStore class
+  // Constructor for the CartStore class
   constructor() {
     this.cartItems = cartItemsFromLStorage.map(
       (item) =>
@@ -150,4 +150,4 @@ class cartStore {
   }
 }
 
-export default new cartStore();
+export default new CartStore();

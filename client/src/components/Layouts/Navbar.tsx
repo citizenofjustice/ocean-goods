@@ -1,22 +1,4 @@
 import { nanoid } from "nanoid";
-import { useRef, useState } from "react";
-import {
-  Bars3Icon,
-  Squares2X2Icon,
-  PhoneIcon,
-} from "@heroicons/react/24/outline";
-import { Link, NavLink } from "react-router-dom";
-import { observer } from "mobx-react-lite";
-import { ShoppingCartIcon } from "@heroicons/react/24/solid";
-
-import Cart from "../Cart";
-import MenuList from "../MenuList";
-import { MenuItem } from "../../types/MenuItem";
-import { useStore } from "../../store/root-store-context";
-import UserDropdownMenu from "../UI/UserDropdownMenu";
-import SignInSVG from "../UI/SignInSVG";
-import Logo from "../../assets/images/Logo.svg";
-import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import {
   Sheet,
   SheetContent,
@@ -24,10 +6,22 @@ import {
   SheetClose,
   SheetFooter,
   SheetHeader,
-} from "../UI/sheet";
-import { X } from "lucide-react";
-import CustomerDataForm from "../CustomerDataForm";
-import { Button } from "../UI/button";
+} from "@/components/UI/shadcn/sheet";
+import { useRef, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { Link, NavLink } from "react-router-dom";
+import { Button } from "@/components/UI/shadcn/button";
+import { ShoppingCartIcon } from "@heroicons/react/24/solid";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
+import { BookOpenText, LogIn, Menu, PhoneIncoming, X } from "lucide-react";
+
+import Cart from "@/components/Cart";
+import { MenuItem } from "@/types/MenuItem";
+import Logo from "@/assets/images/Logo.svg";
+import MenuList from "@/components/Layouts/MenuList";
+import { useStore } from "@/store/root-store-context";
+import UserDropdownMenu from "@/components/UI/UserDropdownMenu";
+import CartCustomerDataForm from "@/components/CartCustomerDataForm";
 
 // setting menuItems with values
 const menuItems: MenuItem[] = [
@@ -35,13 +29,13 @@ const menuItems: MenuItem[] = [
     id: nanoid(),
     title: "Каталог",
     path: "/",
-    icon: <Squares2X2Icon className="w-6 h-6" />,
+    icon: <BookOpenText className="w-5 h-5" />,
   },
   {
     id: nanoid(),
     title: "Контакты",
     path: "/contact",
-    icon: <PhoneIcon className="w-6 h-6" />,
+    icon: <PhoneIncoming className="w-5 h-5" />,
   },
 ];
 
@@ -68,7 +62,7 @@ const Navbar = observer(() => {
           {!tablet ? (
             <Sheet open={isMenuOpen}>
               <SheetTrigger>
-                <Bars3Icon
+                <Menu
                   onClick={() => setIsMenuOpen(true)}
                   className="w-6 h-6 text-primary-800"
                 />
@@ -119,7 +113,7 @@ const Navbar = observer(() => {
               to="/auth"
               className="mx-4 flex flex-row items-center text-primary-800"
             >
-              <SignInSVG className="w-6 h-6" />
+              <LogIn className="w-6 h-6" />
             </NavLink>
           )}
           <Sheet open={isCartOpen}>
@@ -155,7 +149,7 @@ const Navbar = observer(() => {
                 </div>
               </SheetHeader>
               {isContactFormActive ? (
-                <CustomerDataForm
+                <CartCustomerDataForm
                   onPreviousPage={() => setIsContactFormActive(false)}
                   onOrderSend={() => setIsCartOpen(false)}
                 />

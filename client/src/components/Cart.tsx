@@ -1,9 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { useLockBodyScroll } from "@uidotdev/usehooks";
+import { ScrollArea } from "@/components/UI/shadcn/scroll-area";
 
-import CartElement from "./CartElement";
-import { useStore } from "../store/root-store-context";
-import { ScrollArea } from "./UI/scroll-area";
+import CartElement from "@/components/CartElement";
+import { useStore } from "@/store/root-store-context";
 
 /**
  * Component rendering list of cart items
@@ -13,8 +12,6 @@ const Cart = observer(() => {
   // getting cart state from store
   const { cart } = useStore();
   const { cartItems } = cart;
-
-  useLockBodyScroll(); // disabling body scroll
 
   return (
     <>

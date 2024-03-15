@@ -1,11 +1,11 @@
 import { action } from "mobx";
+import { Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
+import { useLocalStorage } from "usehooks-ts";
 
-import AmountControls from "./AmontControls";
-import CartItemModel from "../classes/CartItemModel";
-import { useStore } from "../store/root-store-context";
-import { useLocalStorage } from "@uidotdev/usehooks";
-import { Trash } from "lucide-react";
+import CartItemModel from "@/classes/CartItemModel";
+import { useStore } from "@/store/root-store-context";
+import CartAmontControls from "@/components/CartAmontControls";
 
 /**
  * Component for rendering each cart element
@@ -39,7 +39,7 @@ const CartElement: React.FC<{
               {cartItem.mainImage?.path && (
                 <img
                   className="rounded"
-                  src={`${import.meta.env.VITE_REACT_SERVER_URL}${
+                  src={`${import.meta.env.VITE_SERVER_URL}${
                     cartItem.mainImage?.path
                   }`}
                 />
@@ -50,7 +50,7 @@ const CartElement: React.FC<{
             <div className="flex gap-2 justify-between items-center">
               <div className="font-medium">{cartItem.productName}</div>
               <div className="flex items-center">
-                <Trash
+                <Trash2
                   onClick={handleCartItemRemoval}
                   className="w-5 h-5 text-primary-800 hover:cursor-pointer"
                 />
@@ -62,7 +62,7 @@ const CartElement: React.FC<{
         <div className="flex justify-between items-center">
           <div>Цена: {cartItem.totalProductPrice}&nbsp;руб.</div>
           <div>
-            <AmountControls
+            <CartAmontControls
               currentValue={cartItem.amount}
               onDecrement={action(() => {
                 const filteredItems: CartItemModel[] | undefined =

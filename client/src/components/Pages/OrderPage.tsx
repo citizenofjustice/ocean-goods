@@ -1,18 +1,18 @@
 import { format } from "date-fns";
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
 import { Column, ColumnDef } from "@tanstack/react-table";
+import { TableCell, TableRow } from "@/components/UI/shadcn/table";
 
-import ErrorPage from "./ErrorPage";
-import { DataTable } from "../UI/DataTable";
-import { OrderItem } from "../../types/OrderItem";
-import { CatalogItem } from "../../types/CatalogItem";
-import { ProductType } from "../../types/ProductType";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { SortArrowsIcons } from "../UI/SortArrowsIcons";
-import { TableCell, TableRow } from "../UI/table";
+import { OrderItem } from "@/types/OrderItem";
+import { CatalogItem } from "@/types/CatalogItem";
+import { ProductType } from "@/types/ProductType";
+import ErrorPage from "@/components/Pages/ErrorPage";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { DataTable } from "@/components/UI/DataTable";
+import { SortArrowsIcons } from "@/components/UI/SortArrowsIcons";
 
 interface CatalogItemWithType extends CatalogItem {
   productTypes: ProductType;
@@ -55,7 +55,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
       <div className="overflow-hidden min-w-[40px] max-w-[100px] rounded-md">
         <Link to={`/item/${tableProps.row.original.productId}`}>
           <img
-            src={`${import.meta.env.VITE_REACT_SERVER_URL}${
+            src={`${import.meta.env.VITE_SERVER_URL}${
               tableProps.row.original.itemSnapshot.mainImage?.path
             }`}
           />

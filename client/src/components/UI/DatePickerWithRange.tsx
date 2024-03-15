@@ -1,16 +1,17 @@
-"use client";
-
-import { format, endOfDay } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
-
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { ru } from "date-fns/locale";
-import { Button } from "./button";
-import { Calendar } from "./calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/UI/shadcn/popover";
 import { useRef, useState } from "react";
+import { format, endOfDay } from "date-fns";
+import { DateRange } from "react-day-picker";
 import { useOnClickOutside } from "usehooks-ts";
+import { Button } from "@/components/UI/shadcn/button";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/UI/shadcn/calendar";
 
 export const DatePickerWithRange: React.FC<{
   onDateChange: (dateRange: DateRange | undefined) => void;

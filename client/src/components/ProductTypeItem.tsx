@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { ProductType } from "../types/ProductType";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { useStore } from "../store/root-store-context";
-import { AxiosError } from "axios";
-import ProductTypeDialog from "./ProductTypeDialog";
-import { zodProductTypeForm } from "../lib/zodProductTypeForm";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
+import { AxiosError } from "axios";
+import { useForm } from "react-hook-form";
+import { FilePenLine, Trash2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import ConfirmActionAlert from "./UI/ConfirmActionAlert";
-import { Button } from "./UI/button";
+import { Button } from "@/components/UI/shadcn/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ConfirmActionAlert from "@/components/UI/ConfirmActionAlert";
+
+import { ProductType } from "@/types/ProductType";
+import { useStore } from "@/store/root-store-context";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { zodProductTypeForm } from "@/lib/zodProductTypeForm";
+import ProductTypeDialog from "@/components/ProductTypeDialog";
 
 const ProductTypeItem: React.FC<{
   productType: ProductType;
@@ -128,7 +128,7 @@ const ProductTypeItem: React.FC<{
             onClose={() => setIsDialogOpen(false)}
             onSubmit={onSubmit}
           >
-            <PencilSquareIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+            <FilePenLine className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
           </ProductTypeDialog>
           <ConfirmActionAlert
             question="Вы уверены что хотите удалить тип продукта?"
@@ -136,7 +136,7 @@ const ProductTypeItem: React.FC<{
             onConfirm={removeProductTypeHandler}
           >
             <Button className="p-0" variant="link">
-              <TrashIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+              <Trash2 className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>
         </div>

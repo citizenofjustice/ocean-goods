@@ -1,25 +1,26 @@
-import { Control } from "react-hook-form";
+import { z } from "zod";
+import { AxiosError } from "axios";
+import { Loader2 } from "lucide-react";
 import {
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
-} from "./UI/form";
+} from "@/components/UI/shadcn/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./UI/select";
-import { Loader2 } from "lucide-react";
+} from "@/components/UI/shadcn/select";
+import { Control } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import { getProductTypesSelectValues } from "../api/index";
-import { AxiosError } from "axios";
-import { useStore } from "../store/root-store-context";
-import { z } from "zod";
-import { zodCatalogItemForm } from "../lib/zodCatalogItemForm";
+
+import { useStore } from "@/store/root-store-context";
+import { getProductTypesSelectValues } from "@/api/index";
+import { zodCatalogItemForm } from "@/lib/zodCatalogItemForm";
 
 interface SelectValueProp {
   id: string;

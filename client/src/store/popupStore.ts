@@ -1,5 +1,6 @@
 import { action, makeAutoObservable } from "mobx";
-import { PopupMessage } from "../types/Popup";
+
+import { PopupMessage } from "@/types/Popup";
 
 // Class for the popup store
 class PopupStore {
