@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { verifyRole } from "../middleware/verifyRole";
+import { verifyAccess } from "../middleware/verifyAccess";
 import { verifyToken } from "../middleware/verifyToken";
 import OrdersController from "../controllers/orders.controller";
 
@@ -10,10 +10,25 @@ const router = Router();
 // Public route for making an order
 router.post(``, OrdersController.createOrder);
 
-// Protected routes that require token and roles
-router.get(`/all`, verifyToken, verifyRole, OrdersController.getOrders);
-router.get(`/:id`, verifyToken, verifyRole, OrdersController.getOneOrder);
-router.put(``, verifyToken, verifyRole, OrdersController.updateOrder);
-router.delete(``, verifyToken, verifyRole, OrdersController.deleteOrder);
+// Protected routes that require token and priveleges
+router.get(
+  `/all`,
+  verifyToken,
+  verifyAccess([1, 5]),
+  OrdersController.getOrders
+);
+router.get(
+  `/:id`,
+  verifyToken,
+  verifyAccess([1, 5]),
+  OrdersController.getOneOrder
+);
+router.put(``, verifyToken, verifyAccess([1, 5]), OrdersController.updateOrder);
+router.delete(
+  ``,
+  verifyToken,
+  verifyAccess([1, 5]),
+  OrdersController.deleteOrder
+);
 
 export default router;

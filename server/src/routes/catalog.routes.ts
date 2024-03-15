@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { upload } from "../middleware/multer";
 import { verifyToken } from "../middleware/verifyToken";
-import { verifyRole } from "../middleware/verifyRole";
+import { verifyAccess } from "../middleware/verifyAccess";
 import CatalogConroller from "../controllers/catalog.conroller";
 
 // Creating a new router
@@ -12,25 +12,25 @@ const router = Router();
 router.get("", CatalogConroller.getCatalog);
 router.get("/:id", CatalogConroller.getCatalogItem);
 
-// Protected routes that require token and roles
+// Protected routes that require token and priveleges
 router.post(
   "/create",
   verifyToken,
-  verifyRole,
+  verifyAccess([1, 3]),
   upload.single("mainImage"),
   CatalogConroller.createCatalogItem
-); // Content-type check
+);
 router.put(
   "/:id",
   verifyToken,
-  verifyRole,
+  verifyAccess([1, 3]),
   upload.single("mainImage"),
   CatalogConroller.updateCatalogItem
-); // Content-type check
+);
 router.delete(
   "/:id",
   verifyToken,
-  verifyRole,
+  verifyAccess([1, 3]),
   CatalogConroller.deleteCatalogItem
 );
 

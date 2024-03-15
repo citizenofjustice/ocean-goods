@@ -6,7 +6,7 @@ import axios from "../api/axios";
 interface AuthData {
   user: string | undefined;
   accessToken: string | undefined;
-  roles: number[] | undefined;
+  priveleges: number[] | undefined;
 }
 
 // Class for the authentication store
@@ -15,7 +15,7 @@ class AuthStore {
   authData: AuthData = {
     user: undefined,
     accessToken: undefined,
-    roles: undefined,
+    priveleges: undefined,
   };
 
   // Getter to check if the user is authenticated
@@ -50,7 +50,7 @@ class AuthStore {
       if (isLoggedOut) {
         this.authData.user = undefined;
         this.authData.accessToken = undefined;
-        this.authData.roles = undefined;
+        this.authData.priveleges = undefined;
       }
       return isLoggedOut;
     } catch (error) {

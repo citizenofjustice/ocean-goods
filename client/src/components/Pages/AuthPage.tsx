@@ -50,8 +50,13 @@ const AuthPage = observer(() => {
     fData.append("password", values.password);
     try {
       const response = await axiosPrivate.post(`/login`, fData);
-      const { user, accessToken, role } = response.data;
-      auth.setAuthData({ ...authData, user, accessToken, roles: [role] });
+      const { user, accessToken, priveleges } = response.data;
+      auth.setAuthData({
+        ...authData,
+        user,
+        accessToken,
+        priveleges,
+      });
       form.reset();
       navigate(from, { replace: true });
     } catch (error) {

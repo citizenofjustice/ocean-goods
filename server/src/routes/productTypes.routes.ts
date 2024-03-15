@@ -1,6 +1,6 @@
 import { Router } from "express";
 import ProductTypesController from "../controllers/productTypes.controller";
-import { verifyRole } from "../middleware/verifyRole";
+import { verifyAccess } from "../middleware/verifyAccess";
 import { verifyToken } from "../middleware/verifyToken";
 
 const router = Router();
@@ -11,30 +11,35 @@ router.get(
   ProductTypesController.getProductTypesSelectValues
 );
 
-// Protected routes that require token and roles
+// Protected routes that require token and priveleges
 router.post(
   "/create",
   verifyToken,
-  verifyRole,
+  verifyAccess([1, 3]),
   ProductTypesController.createProductType
 );
-router.get("", verifyToken, verifyRole, ProductTypesController.getProductTypes);
+router.get(
+  "",
+  verifyToken,
+  verifyAccess([1, 3]),
+  ProductTypesController.getProductTypes
+);
 router.get(
   "/:id",
   verifyToken,
-  verifyRole,
+  verifyAccess([1, 3]),
   ProductTypesController.getOneProductType
 );
 router.put(
   "/:id",
   verifyToken,
-  verifyRole,
+  verifyAccess([1, 3]),
   ProductTypesController.updateProductType
 );
 router.delete(
   "/:id",
   verifyToken,
-  verifyRole,
+  verifyAccess([1, 3]),
   ProductTypesController.deleteProductType
 );
 

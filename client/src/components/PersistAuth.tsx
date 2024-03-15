@@ -17,7 +17,7 @@ const PersistAuth = observer(() => {
       try {
         await refresh();
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         isMounted && setIsLoading(false);
       }

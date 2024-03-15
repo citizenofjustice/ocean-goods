@@ -8,10 +8,12 @@ const Unauthorized = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-[60vh]">
+      <div className="flex flex-col items-center justify-center h-[60vh] px-6">
         <p className="font-bold text-xl">Нет доступа</p>
         <br />
-        <p>Пользователю с вашими правами не доступна данная страница</p>
+        <p className="text-center">
+          Пользователю с вашими правами не доступна данная страница
+        </p>
         <br />
         <Button onClick={goBack}>Вернуться назад</Button>
       </div>

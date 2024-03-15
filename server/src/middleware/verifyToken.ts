@@ -22,9 +22,9 @@ export const verifyToken = async (
       (error: any, decoded: any) => {
         // If there is an error (invalid token), return a 403 status
         if (error) return res.sendStatus(403);
-        // If the token is valid, set the user and role in the request
+        // If the token is valid, set the user and priveleges in the request
         req.user = decoded.userInfo.user;
-        req.role = decoded.userInfo.role;
+        req.priveleges = decoded.userInfo.priveleges;
         // Call the next middleware
         next();
       }

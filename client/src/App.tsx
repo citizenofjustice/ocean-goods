@@ -51,32 +51,32 @@ function App() {
 
                   {/* protected routes */}
                   <Route path="dashboard" element={<DashboardPage />}>
-                    <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
+                    <Route element={<RequireAuth allowedPriveleges={[1, 3]} />}>
                       <Route
                         path="product-types"
                         element={<ProductTypesList />}
                       />
                     </Route>
-                    <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
+                    <Route element={<RequireAuth allowedPriveleges={[1, 2]} />}>
                       <Route path="roles" element={<Roles />} />
                     </Route>
-                    <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
+                    <Route element={<RequireAuth allowedPriveleges={[1, 2]} />}>
                       <Route path="priveleges" element={<Priveleges />} />
                     </Route>
-                    <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
+                    <Route element={<RequireAuth allowedPriveleges={[1, 4]} />}>
                       <Route path="register-user" element={<RegisterForm />} />
                     </Route>
                   </Route>
-                  <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
+                  <Route element={<RequireAuth allowedPriveleges={[1, 3]} />}>
                     <Route path="new-item" element={<CatalogItemForm />} />
                   </Route>
-                  <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
+                  <Route element={<RequireAuth allowedPriveleges={[1, 3]} />}>
                     <Route
                       path="edit-item/:id"
                       element={<EditCatalogItemPage />}
                     />
                   </Route>
-                  <Route element={<RequireAuth allowedRoles={[1, 19]} />}>
+                  <Route element={<RequireAuth allowedPriveleges={[1, 5]} />}>
                     <Route path="orders" element={<OrdersList />} />
                     <Route path="orders/:id" element={<OrderPage />} />
                   </Route>

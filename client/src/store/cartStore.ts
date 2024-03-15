@@ -91,7 +91,7 @@ class cartStore {
         );
         this.cartItems.push(newItem);
       } catch (error) {
-        console.log("Failed to add item to cart: ", error);
+        console.error("Failed to add item to cart: ", error);
       }
     }
   }

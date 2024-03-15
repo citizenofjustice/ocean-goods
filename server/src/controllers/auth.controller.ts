@@ -24,6 +24,17 @@ class AuthController {
         where: {
           login: email,
         },
+        include: {
+          roles: {
+            include: {
+              rolePriveleges: {
+                select: {
+                  privelegeId: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       // Check if user exists
@@ -38,12 +49,16 @@ class AuthController {
           error: { message: "Введен неверный пароль" },
         });
 
+      const privelegeIds = foundUser.roles.rolePriveleges.map(
+        (rp) => rp.privelegeId
+      );
+
       // Create JWTs
       const accessToken = jwt.sign(
         {
           userInfo: {
             user: foundUser.id,
-            role: foundUser.roleId,
+            priveleges: privelegeIds,
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
@@ -51,11 +66,12 @@ class AuthController {
           expiresIn: "10m",
         }
       );
+
       const refreshToken = jwt.sign(
         {
           userInfo: {
             user: foundUser.id,
-            role: foundUser.roleId,
+            priveleges: privelegeIds,
           },
         },
         process.env.REFRESH_TOKEN_SECRET,
@@ -72,10 +88,6 @@ class AuthController {
         data: {
           refreshToken: refreshToken,
         },
-        select: {
-          login: true,
-          roleId: true,
-        },
       });
 
       if (!userWithToken)
@@ -91,9 +103,9 @@ class AuthController {
         maxAge: 24 * 60 * 60 * 1000,
       });
       res.status(200).json({
-        user: userWithToken.login,
+        user: foundUser.login,
         accessToken,
-        role: userWithToken.roleId,
+        priveleges: privelegeIds,
       });
     } catch (error) {
       // Pass the error to the errorHandler middleware
@@ -118,6 +130,17 @@ class AuthController {
         where: {
           refreshToken: refreshToken,
         },
+        include: {
+          roles: {
+            include: {
+              rolePriveleges: {
+                select: {
+                  privelegeId: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       // Check if user exists
@@ -127,6 +150,10 @@ class AuthController {
             message: "Возникла проблема при обновлении токена авторизации",
           },
         });
+
+      const privelegeIds = foundUser.roles.rolePriveleges.map(
+        (rp) => rp.privelegeId
+      );
 
       // Verify the refresh token
       jwt.verify(
@@ -148,7 +175,7 @@ class AuthController {
             {
               userInfo: {
                 user: decoded.userInfo.user,
-                role: decoded.userInfo.role,
+                priveleges: privelegeIds,
               },
             },
             process.env.ACCESS_TOKEN_SECRET,
@@ -161,7 +188,7 @@ class AuthController {
           res.json({
             user: foundUser.login,
             accessToken,
-            role: foundUser.roleId,
+            priveleges: privelegeIds,
           });
         }
       );

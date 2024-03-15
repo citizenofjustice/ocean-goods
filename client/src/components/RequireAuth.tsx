@@ -3,15 +3,17 @@ import { useStore } from "../store/root-store-context";
 import { observer } from "mobx-react-lite";
 
 const RequireAuth: React.FC<{
-  allowedRoles: number[];
-}> = observer(({ allowedRoles }) => {
+  allowedPriveleges: number[];
+}> = observer(({ allowedPriveleges }) => {
   const location = useLocation();
   const { auth } = useStore();
   const { isAuth, authData } = auth;
 
   return (
     <>
-      {authData?.roles?.find((role) => allowedRoles?.includes(role)) ? (
+      {authData?.priveleges?.find((privelege) =>
+        allowedPriveleges?.includes(privelege)
+      ) ? (
         <Outlet />
       ) : (
         <>
