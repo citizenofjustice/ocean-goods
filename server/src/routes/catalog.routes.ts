@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { upload } from "../middleware/multer";
+import { convertToWebp, upload } from "../middleware/multer";
 import { verifyToken } from "../middleware/verifyToken";
 import { verifyAccess } from "../middleware/verifyAccess";
 import CatalogConroller from "../controllers/catalog.conroller";
@@ -18,6 +18,7 @@ router.post(
   verifyToken,
   verifyAccess([1, 3]),
   upload.single("mainImage"),
+  convertToWebp,
   CatalogConroller.createCatalogItem
 );
 router.put(
@@ -25,6 +26,7 @@ router.put(
   verifyToken,
   verifyAccess([1, 3]),
   upload.single("mainImage"),
+  convertToWebp,
   CatalogConroller.updateCatalogItem
 );
 router.delete(
