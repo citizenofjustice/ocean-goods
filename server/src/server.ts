@@ -20,7 +20,7 @@ export default class Server {
     // Defining CORS options
     const corsOptions: CorsOptions = {
       // Setting the origin based on whether the app is hosted locally
-      origin: "http://localhost:5173",
+      origin: ["http://localhost:5173", "http://localhost:4173"],
       // Allowing credentials
       credentials: true,
       methods: "POST, GET, PUT, DELETE, OPTIONS",

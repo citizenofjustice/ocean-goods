@@ -7,12 +7,12 @@ import {
   SheetFooter,
   SheetHeader,
 } from "@/components/UI/shadcn/sheet";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { observer } from "mobx-react-lite";
+import { useMediaQuery } from "usehooks-ts";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/UI/shadcn/button";
 import { ShoppingCartIcon } from "@heroicons/react/24/solid";
-import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { BookOpenText, LogIn, Menu, PhoneIncoming, X } from "lucide-react";
 
 import Cart from "@/components/Cart";
@@ -50,32 +50,17 @@ const Navbar = observer(() => {
   const tablet = useMediaQuery("(min-width: 768px)"); // media query for conditional rendering of navbar
   const { cart, auth } = useStore();
 
-  const menuSheetRef = useRef(null);
-  const cartSheetRef = useRef(null);
-  useOnClickOutside(menuSheetRef, () => setIsMenuOpen(false));
-  useOnClickOutside(cartSheetRef, () => setIsCartOpen(false));
-
   return (
     <>
       <header className="hearer-sticky h-[4.5rem] z-50 bg-background-0 border-b-2 border-background-200 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] flex items-center flex-row justify-between px-4 py-4">
         <div className="basis-2/12 flex justify-start">
           {!tablet ? (
-            <Sheet open={isMenuOpen}>
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger>
-                <Menu
-                  onClick={() => setIsMenuOpen(true)}
-                  className="w-6 h-6 text-primary-800"
-                />
+                <Menu className="w-6 h-6 text-primary-800" />
               </SheetTrigger>
-              <SheetContent
-                ref={menuSheetRef}
-                side="left"
-                className="px-4 w-[240px] sm:w-[540px]"
-              >
-                <SheetClose
-                  onClick={() => setIsMenuOpen(false)}
-                  className="rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary"
-                >
+              <SheetContent side="left" className="px-4 w-[240px] sm:w-[540px]">
+                <SheetClose className="rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary">
                   <X className="w-6 h-6" />
                   <span className="sr-only">Close</span>
                 </SheetClose>
@@ -116,9 +101,12 @@ const Navbar = observer(() => {
               <LogIn className="w-6 h-6" />
             </NavLink>
           )}
-          <Sheet open={isCartOpen}>
+          <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
             <SheetTrigger
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => {
+                setIsCartOpen(false);
+                setIsContactFormActive(false);
+              }}
               className="relative"
             >
               <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
@@ -132,17 +120,13 @@ const Navbar = observer(() => {
               )}
             </SheetTrigger>
             <SheetContent
-              ref={cartSheetRef}
               side="right"
               className="w-full sm:min-w-[600px] px-0 vsm:px-4"
             >
               <SheetHeader>
                 <div className="flex justify-between">
                   <div className="ml-4 text-lg font-semibold">Корзина:</div>
-                  <SheetClose
-                    onClick={() => setIsCartOpen(false)}
-                    className="mr-4 vsm:mr-0 rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary"
-                  >
+                  <SheetClose className="mr-4 vsm:mr-0 rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary">
                     <X className="w-6 h-6" />
                     <span className="sr-only">Close</span>
                   </SheetClose>
@@ -151,7 +135,10 @@ const Navbar = observer(() => {
               {isContactFormActive ? (
                 <CartCustomerDataForm
                   onPreviousPage={() => setIsContactFormActive(false)}
-                  onOrderSend={() => setIsCartOpen(false)}
+                  onOrderSend={() => {
+                    setIsCartOpen(false);
+                    setIsContactFormActive(false);
+                  }}
                 />
               ) : (
                 <div className="mt-0 vsm:mt-4">

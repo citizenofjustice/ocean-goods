@@ -7,6 +7,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogOverlay,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/UI/shadcn/alert-dialog";
@@ -22,6 +23,11 @@ const ConfirmActionAlert: React.FC<{
   const alertRef = useRef(null);
   useOnClickOutside(alertRef, () => setOpen(false));
 
+  const handleConfirm = () => {
+    setOpen(false);
+    onConfirm();
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
@@ -33,10 +39,10 @@ const ConfirmActionAlert: React.FC<{
           )}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setOpen(false)}>
-            Отмена
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Подтвердить</AlertDialogAction>
+          <AlertDialogCancel>Отмена</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm}>
+            Подтвердить
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

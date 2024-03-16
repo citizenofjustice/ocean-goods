@@ -69,7 +69,7 @@ const ProductTypeDialog: React.FC<ProductTypeDialogProps> = ({
           <ProductTypeForm form={form} onSubmit={onSubmit} />
           <DialogFooter>
             <Button form="type-add-form" type="submit">
-              Добавить тип
+              Сохранить
             </Button>
             <DialogClose asChild>
               <Button onClick={onClose} type="button" variant="outline">

@@ -1,12 +1,11 @@
 import { z } from "zod";
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { Trash2 } from "lucide-react";
+import { FilePenLine, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/UI/shadcn/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Role } from "@/types/Role";
 import { Privelege } from "@/types/Privelege";
@@ -113,7 +112,7 @@ const RoleItem: React.FC<{
             onSubmit={onSubmit}
             priveleges={priveleges}
           >
-            <PencilSquareIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+            <FilePenLine className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
           </RolesDialog>
           <ConfirmActionAlert
             question="Вы уверены что хотите удалить роль пользователя?"
