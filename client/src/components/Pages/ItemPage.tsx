@@ -150,6 +150,9 @@ const ItemPageMainImage: React.FC<{
       {catalogItem.mainImage?.path && (
         <img
           className="w-full h-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
+          loading="lazy"
+          width={`${catalogItem.mainImage.width}px`}
+          height={`${catalogItem.mainImage.height}px`}
           src={`${import.meta.env.VITE_SERVER_URL}${
             catalogItem.mainImage?.path
           }`}

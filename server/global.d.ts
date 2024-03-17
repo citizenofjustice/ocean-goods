@@ -31,5 +31,9 @@ namespace Express {
   interface Request {
     user: string | JwtPayload;
     priveleges: string | JwtPayload;
+    imageDimensions?: {
+      width: number;
+      height: number;
+    };
   }
 }

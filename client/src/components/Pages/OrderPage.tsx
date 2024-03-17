@@ -54,11 +54,16 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
     cell: (tableProps) => (
       <div className="overflow-hidden min-w-[40px] max-w-[100px] rounded-md">
         <Link to={`/item/${tableProps.row.original.productId}`}>
-          <img
-            src={`${import.meta.env.VITE_SERVER_URL}${
-              tableProps.row.original.itemSnapshot.mainImage?.path
-            }`}
-          />
+          {tableProps.row.original.itemSnapshot.mainImage && (
+            <img
+              loading="lazy"
+              width={`${tableProps.row.original.itemSnapshot.mainImage.width}px`}
+              height={`${tableProps.row.original.itemSnapshot.mainImage.height}px`}
+              src={`${import.meta.env.VITE_SERVER_URL}${
+                tableProps.row.original.itemSnapshot.mainImage.path
+              }`}
+            />
+          )}
         </Link>
       </div>
     ),

@@ -51,6 +51,7 @@ const ImageDropzone: React.FC<{
                   {field.value ? (
                     <img
                       className="max-w-[100%] max-h-[100%] rounded"
+                      loading="lazy"
                       src={
                         typeof field.value === "string"
                           ? `${import.meta.env.VITE_SERVER_URL}${field.value}`

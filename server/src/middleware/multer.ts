@@ -65,8 +65,23 @@ export const convertToWebp = async (
   try {
     const { file } = req;
     if (file) {
-      const webpImage = await sharp(file.path).webp().toBuffer();
-      fs.promises.writeFile(file.path, webpImage);
+      // Convert image to webp format and get metadata
+      const image = sharp(file.path);
+      const webpImage = await image.webp().toBuffer();
+      const metadata = await image.metadata();
+      if (metadata.width && metadata.height) {
+        // Attach the image dimensions to the request object
+        req.imageDimensions = {
+          width: metadata.width,
+          height: metadata.height,
+        };
+      } else
+        return res
+          .status(400)
+          .json({ error: { message: "Не удалось обработать изображение" } });
+
+      // Write the converted image to the file system
+      await fs.promises.writeFile(file.path, webpImage);
     }
     next();
   } catch (error) {

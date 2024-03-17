@@ -103,7 +103,10 @@ const CatalogItemCard: React.FC<{
           {catalogItem.mainImage?.path && (
             <Link to={`/item/${catalogItem.productId}`}>
               <img
-                className="rounded"
+                className="rounded border"
+                width={`${catalogItem.mainImage.width}px`}
+                height={`${catalogItem.mainImage.height}px`}
+                loading="lazy"
                 src={`${import.meta.env.VITE_SERVER_URL}${
                   catalogItem.mainImage.path
                 }`}

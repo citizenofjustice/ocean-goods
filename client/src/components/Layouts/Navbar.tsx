@@ -12,8 +12,14 @@ import { observer } from "mobx-react-lite";
 import { useMediaQuery } from "usehooks-ts";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/UI/shadcn/button";
-import { ShoppingCartIcon } from "@heroicons/react/24/solid";
-import { BookOpenText, LogIn, Menu, PhoneIncoming, X } from "lucide-react";
+import {
+  BookOpenText,
+  LogIn,
+  Menu,
+  PhoneIncoming,
+  X,
+  ShoppingCart,
+} from "lucide-react";
 
 import Cart from "@/components/Cart";
 import { MenuItem } from "@/types/MenuItem";
@@ -109,7 +115,7 @@ const Navbar = observer(() => {
               }}
               className="relative"
             >
-              <ShoppingCartIcon className="h-6 w-6 text-primary-800" />
+              <ShoppingCart className="h-6 w-6 text-primary-800" />
               {/* small highlight with counter if cart is not empty */}
               {cart.totalQuantity > 0 && (
                 <div className="absolute top-[-6px] right-[-4px] bg-red-500 rounded-full min-w-[16px] min-h-[16px] px-[3px] outline outline-white outline-2">
@@ -174,6 +180,7 @@ const WebAppLogo = () => {
       <div className="logo-filter w-20 h-16">
         <img
           src={Logo}
+          loading="eager"
           className="w-fit h-fit"
           alt="website logo Ocean Goods"
         />

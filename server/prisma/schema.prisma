@@ -109,6 +109,8 @@ model Image {
   filename       String        
   originalName   String        @map("original_name")
   mimetype       String        
+  width          Int
+  height         Int
   createdAt      DateTime      @default(now()) @db.Timestamptz(6) @map("created_at")
   updatedAt      DateTime      @default(now()) @db.Timestamptz(6) @map("updated_at")
   catalog        Catalog?
