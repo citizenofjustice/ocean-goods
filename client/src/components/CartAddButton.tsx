@@ -39,7 +39,7 @@ const CartAddButton: React.FC<{
     <>
       {!inCartProduct && (
         <Button
-          className="px-2 h-8 sm:h-10 sm:px-4"
+          className="h-8 px-2 sm:h-10 sm:px-4"
           disabled={!catalogItem.inStock}
           onClick={handleItemCartAddition}
         >

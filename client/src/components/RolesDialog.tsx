@@ -164,12 +164,12 @@ const RolesForm: React.FC<{
                       return (
                         <FormItem
                           key={privelege.privelegeId}
-                          className="flex flex-row items-start space-x-3 space-y-0 my-3"
+                          className="my-3 flex flex-row items-start space-x-3 space-y-0"
                         >
                           <FormControl>
                             <Checkbox
                               checked={field.value?.includes(
-                                privelege.privelegeId
+                                privelege.privelegeId,
                               )}
                               onCheckedChange={(checked) => {
                                 return checked
@@ -180,8 +180,8 @@ const RolesForm: React.FC<{
                                   : field.onChange(
                                       field.value?.filter(
                                         (value) =>
-                                          value !== privelege.privelegeId
-                                      )
+                                          value !== privelege.privelegeId,
+                                      ),
                                     );
                               }}
                             />

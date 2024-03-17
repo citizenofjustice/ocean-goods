@@ -82,8 +82,8 @@ const AuthPage = observer(() => {
 
   return (
     <>
-      <div className="w-full flex justify-center">
-        <Card className="mt-[10vh] min-w-[200px] w-[400px] mx-4">
+      <div className="flex w-full justify-center">
+        <Card className="mx-4 mt-[10vh] w-[400px] min-w-[200px]">
           <CardHeader>
             <CardTitle className="text-center">Авторизация</CardTitle>
           </CardHeader>
@@ -131,12 +131,12 @@ const AuthPage = observer(() => {
                           />
                           {isPasswordShown ? (
                             <EyeOff
-                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                              className="absolute right-2 top-[50%] h-5 w-5 translate-y-[-50%] hover:cursor-pointer"
                               onClick={() => setIsPasswordShown(false)}
                             />
                           ) : (
                             <Eye
-                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                              className="absolute right-2 top-[50%] h-5 w-5 translate-y-[-50%] hover:cursor-pointer"
                               onClick={() => setIsPasswordShown(true)}
                             />
                           )}

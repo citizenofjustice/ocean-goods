@@ -116,7 +116,7 @@ const CatalogItemFormPage: React.FC<{
               type: "error",
             });
             throw new Error(
-              "Не обнаружен идентификатор редактируемого продукта"
+              "Не обнаружен идентификатор редактируемого продукта",
             );
           }
 
@@ -126,7 +126,7 @@ const CatalogItemFormPage: React.FC<{
               fData,
               {
                 headers: { "Content-Type": "multipart/form-data" },
-              }
+              },
             );
             if (response.status === 204)
               alert.setPopup({
@@ -157,11 +157,11 @@ const CatalogItemFormPage: React.FC<{
 
     return (
       <>
-        <div className="w-full mt-6 mb-6 flex justify-center">
+        <div className="mb-6 mt-6 flex w-full justify-center">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full px-4 gap-x-4 sm:w-[80vw] max-w-4xl grid vsm:grid-cols-2 sm:gap-x-8 gap-y-4"
+              className="grid w-full max-w-4xl gap-x-4 gap-y-4 px-4 vsm:grid-cols-2 sm:w-[80vw] sm:gap-x-8"
             >
               <ProductTypeSelect control={form.control} />
               <CatalogItemFormInputs control={form.control} />
@@ -233,6 +233,6 @@ const CatalogItemFormPage: React.FC<{
         </div>
       </>
     );
-  }
+  },
 );
 export default CatalogItemFormPage;

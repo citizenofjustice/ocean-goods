@@ -13,7 +13,7 @@ const RequireAuth: React.FC<{
   return (
     <>
       {authData?.priveleges?.find((privelege) =>
-        allowedPriveleges?.includes(privelege)
+        allowedPriveleges?.includes(privelege),
       ) ? (
         <Outlet />
       ) : (

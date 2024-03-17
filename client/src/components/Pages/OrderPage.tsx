@@ -33,7 +33,7 @@ const TableHeadSort: React.FC<{
       <span
         className={`${
           column.getIsSorted() ? "text-black" : ""
-        } flex items-center shrink-0 hover:cursor-pointer`}
+        } flex shrink-0 items-center hover:cursor-pointer`}
         role="button"
         tabIndex={0}
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -52,7 +52,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
   {
     accessorKey: "itemSnapshot.mainImage",
     cell: (tableProps) => (
-      <div className="overflow-hidden min-w-[40px] max-w-[100px] rounded-md">
+      <div className="min-w-[40px] max-w-[100px] overflow-hidden rounded-md">
         <Link to={`/item/${tableProps.row.original.productId}`}>
           {tableProps.row.original.itemSnapshot.mainImage && (
             <img
@@ -89,7 +89,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
   {
     accessorKey: "amount",
     cell: (tableProps) => (
-      <p className="text-center pr-4">{tableProps.row.original.amount}</p>
+      <p className="pr-4 text-center">{tableProps.row.original.amount}</p>
     ),
     header: ({ column }) => {
       return <TableHeadSort column={column}>Кол.-во</TableHeadSort>;
@@ -98,7 +98,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
   {
     accessorKey: "finalPrice",
     cell: (tableProps) => (
-      <p className="text-end pr-4">
+      <p className="pr-4 text-end">
         {tableProps.row.original.finalPrice}&nbsp;руб.
       </p>
     ),
@@ -125,10 +125,10 @@ const OrderPage = () => {
             const finalPrice =
               item.itemSnapshot.price -
               Math.round(
-                item.itemSnapshot.price * (item.itemSnapshot.discount / 100)
+                item.itemSnapshot.price * (item.itemSnapshot.discount / 100),
               );
             return { ...item, finalPrice };
-          }
+          },
         );
         return { ...response.data, orderItems: fetchedOrderItems };
       }
@@ -143,7 +143,7 @@ const OrderPage = () => {
           {isLoading && <Loader2 className="m-auto h-8 w-8 animate-spin" />}
           {!isLoading && !isError && (
             <>
-              <div className="mb-4 font-body text-base flex flex-col items-center justify-center sm:flex-row sm:divide-x sm:divide-solid sm:divide-background-700">
+              <div className="font-body sm:divide-background-700 mb-4 flex flex-col items-center justify-center text-base sm:flex-row sm:divide-x sm:divide-solid">
                 <p className="sm:px-4">
                   Дата заказа:{" "}
                   {format(new Date(data.createdAt), "dd.MM.y HH:mm")}

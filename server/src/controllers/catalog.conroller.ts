@@ -125,8 +125,6 @@ class CatalogController {
         catalog = sortByFinalPrice(catalogQuery, direction);
       } else catalog = catalogQuery;
 
-      console.log(catalog);
-
       // Send the catalog items as the response
       res.status(200).json({ totalRows, catalog, nextPage });
     } catch (error) {

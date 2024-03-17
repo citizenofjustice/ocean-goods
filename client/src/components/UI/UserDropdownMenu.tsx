@@ -14,19 +14,19 @@ const menuItems: MenuItem[] = [
     id: nanoid(),
     title: "Создать",
     path: "/new-item",
-    icon: <Plus className="w-6 h-6" />,
+    icon: <Plus className="h-6 w-6" />,
   },
   {
     id: nanoid(),
     title: "Управление",
     path: "/dashboard",
-    icon: <Settings className="w-6 h-6" />,
+    icon: <Settings className="h-6 w-6" />,
   },
   {
     id: nanoid(),
     title: "Заказы",
     path: "/orders",
-    icon: <List className="w-6 h-6" />,
+    icon: <List className="h-6 w-6" />,
   },
 ];
 
@@ -54,22 +54,22 @@ const UserDropdownMenu = observer(() => {
   return (
     <>
       <button
-        className="flex text-sm bg-primary rounded-full p-2 h-fit"
+        className="flex h-fit rounded-full bg-primary p-2 text-sm"
         type="button"
         onClick={() => setIsShown(true)}
       >
         <span className="sr-only">Открыть меню пользователя</span>
-        <User className="text-secondary h-4 w-4" />
+        <User className="h-4 w-4 text-secondary" />
       </button>
 
       {isShown && (
         <div
           ref={dropdownRef}
-          className="absolute top-[2.5rem] left-[-6.5rem] z-10 rounded-lg shadow-lg w-44 bg-primary px-2"
+          className="absolute left-[-6.5rem] top-[2.5rem] z-10 w-44 rounded-lg bg-primary px-2 shadow-lg"
         >
           <div className="divide-y divide-secondary">
-            <div className="px-4 py-3 text-sm flex items-center text-secondary">
-              <p className="font-medium truncate first-letter:capitalize">
+            <div className="flex items-center px-4 py-3 text-sm text-secondary">
+              <p className="truncate font-medium first-letter:capitalize">
                 {auth.authData.user}
               </p>
             </div>
@@ -86,7 +86,7 @@ const UserDropdownMenu = observer(() => {
                 </li>
               ))}
             </ul>
-            <div className="py-2 px-4 flex items-center text-secondary hover:text-white">
+            <div className="flex items-center px-4 py-2 text-secondary hover:text-white">
               <LogOut className="h-6 w-6" />
               <span
                 onClick={handleLogout}

@@ -42,15 +42,15 @@ const ImageDropzone: React.FC<{
                 />
               </>
             </FormControl>
-            <Card className="flex w-[100%] h-[100%] justify-center h-[140px]">
+            <Card className="flex h-[100%] h-[140px] w-[100%] justify-center">
               <label
                 htmlFor="fileInput"
-                className="hover:cursor-pointer w-full"
+                className="w-full hover:cursor-pointer"
               >
-                <span className="py-2 w-[100%] h-[100%] flex flex-col items-center justify-center">
+                <span className="flex h-[100%] w-[100%] flex-col items-center justify-center py-2">
                   {field.value ? (
                     <img
-                      className="max-w-[100%] max-h-[100%] rounded"
+                      className="max-h-[100%] max-w-[100%] rounded"
                       loading="lazy"
                       src={
                         typeof field.value === "string"
@@ -59,10 +59,10 @@ const ImageDropzone: React.FC<{
                       }
                     />
                   ) : (
-                    <div className="flex flex-col justify-center items-center grow">
-                      <UploadCloud strokeWidth={0.95} className="w-10 h-10" />
+                    <div className="flex grow flex-col items-center justify-center">
+                      <UploadCloud strokeWidth={0.95} className="h-10 w-10" />
                       <p className="mb-2 px-4 text-center">
-                        <span className="font-medium text-sm">
+                        <span className="text-sm font-medium">
                           Нажмите чтобы загрузить файл
                         </span>
                       </p>
@@ -74,9 +74,9 @@ const ImageDropzone: React.FC<{
                 onClick={fieldReset}
                 variant="ghost"
                 type="button"
-                className="p-1 absolute top-9 right-1"
+                className="absolute right-1 top-9 p-1"
               >
-                <X className="w-6 h-6" />
+                <X className="h-6 w-6" />
               </Button>
             </Card>
             <FormMessage />

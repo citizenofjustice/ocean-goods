@@ -32,10 +32,10 @@ const CartElement: React.FC<{
 
   return (
     <>
-      <li className="border flex flex-col gap-1 bg-background-200 rounded-xl px-4 pt-4 pb-2 text-sm sm:text-base">
+      <li className="bg-background-200 flex flex-col gap-1 rounded-xl border px-4 pb-2 pt-4 text-sm sm:text-base">
         <div className="flex flex-row gap-2">
           <div className="basis-1/4">
-            <div className="rounded overflow-hidden min-w-[60px]">
+            <div className="min-w-[60px] overflow-hidden rounded">
               {cartItem.mainImage && (
                 <img
                   className="rounded"
@@ -49,20 +49,20 @@ const CartElement: React.FC<{
               )}
             </div>
           </div>
-          <div className="basis-3/4 flex flex-col gap-1">
-            <div className="flex gap-2 justify-between items-center">
+          <div className="flex basis-3/4 flex-col gap-1">
+            <div className="flex items-center justify-between gap-2">
               <div className="font-medium">{cartItem.productName}</div>
               <div className="flex items-center">
                 <Trash2
                   onClick={handleCartItemRemoval}
-                  className="w-5 h-5 text-primary-800 hover:cursor-pointer"
+                  className="text-primary-800 h-5 w-5 hover:cursor-pointer"
                 />
               </div>
             </div>
             <div>{`${cartItem.kcal}\u00A0ккал., ${cartItem.weight}\u00A0гр.`}</div>
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>Цена: {cartItem.totalProductPrice}&nbsp;руб.</div>
           <div>
             <CartAmontControls

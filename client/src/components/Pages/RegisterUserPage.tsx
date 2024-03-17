@@ -102,9 +102,9 @@ const RegisterUserPage = () => {
 
   return (
     <>
-      <Card className="w-full mt-4">
+      <Card className="mt-4 w-full">
         <CardHeader>
-          <p className="font-medium text-center">Регистрация пользователя:</p>
+          <p className="text-center font-medium">Регистрация пользователя:</p>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -124,7 +124,7 @@ const RegisterUserPage = () => {
                           <SelectValue
                             placeholder={
                               isLoading ? (
-                                <Loader2 className="w-4 h-4" />
+                                <Loader2 className="h-4 w-4" />
                               ) : (
                                 "Выберите подходящую роль"
                               )
@@ -184,12 +184,12 @@ const RegisterUserPage = () => {
                         />
                         {isPasswordShown ? (
                           <EyeOff
-                            className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                            className="absolute right-2 top-[50%] h-5 w-5 translate-y-[-50%] hover:cursor-pointer"
                             onClick={() => setIsPasswordShown(false)}
                           />
                         ) : (
                           <Eye
-                            className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                            className="absolute right-2 top-[50%] h-5 w-5 translate-y-[-50%] hover:cursor-pointer"
                             onClick={() => setIsPasswordShown(true)}
                           />
                         )}

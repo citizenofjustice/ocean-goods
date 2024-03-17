@@ -32,17 +32,17 @@ const PrivelegesPage = () => {
         {!isLoading && !isError && (
           <>
             <CardHeader>
-              <p className="font-medium text-center">Перечень полномочий:</p>
+              <p className="text-center font-medium">Перечень полномочий:</p>
             </CardHeader>
             <CardContent>
               <ul>
                 {dataAvailable && data.length > 0 ? (
                   data.map((item: Privelege) => (
                     <li
-                      className="flex border bg-background-50 rounded-lg items-center my-4 py-4 px-2 h-16 w-full gap-2"
+                      className="bg-background-50 my-4 flex h-16 w-full items-center gap-2 rounded-lg border px-2 py-4"
                       key={item.privelegeId}
                     >
-                      <p className="text-start justify-items-start basis-10/12 px-2 first-letter:capitalize">
+                      <p className="basis-10/12 justify-items-start px-2 text-start first-letter:capitalize">
                         {item.title}
                       </p>
                     </li>

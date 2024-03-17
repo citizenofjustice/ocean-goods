@@ -23,7 +23,7 @@ const EditCatalogItemPage = observer(() => {
       try {
         if (!itemId)
           throw new Error(
-            `Could not get 'id' request parameter for getting edit data`
+            `Could not get 'id' request parameter for getting edit data`,
           );
         const response = await axios.get(`/catalog/${itemId}`);
         return {

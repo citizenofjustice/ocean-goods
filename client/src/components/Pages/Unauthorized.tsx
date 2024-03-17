@@ -8,8 +8,8 @@ const Unauthorized = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-[60vh] px-6">
-        <p className="font-bold text-xl">Нет доступа</p>
+      <div className="flex h-[60vh] flex-col items-center justify-center px-6">
+        <p className="text-xl font-bold">Нет доступа</p>
         <br />
         <p className="text-center">
           Пользователю с вашими правами не доступна данная страница

@@ -65,7 +65,7 @@ const RoleItem: React.FC<{
     mutationFn: async (updatedRole: FormData) => {
       const response = await axiosPrivate.put(
         `/roles/${role.roleId}`,
-        updatedRole
+        updatedRole,
       );
       return response.data;
     },
@@ -99,8 +99,8 @@ const RoleItem: React.FC<{
 
   return (
     <>
-      <li className="flex bg-background-50 border rounded-lg items-center py-4 px-2 h-16 w-full gap-2">
-        <p className="text-start justify-items-start basis-10/12 px-2">
+      <li className="bg-background-50 flex h-16 w-full items-center gap-2 rounded-lg border px-2 py-4">
+        <p className="basis-10/12 justify-items-start px-2 text-start">
           {role.title}
         </p>
         <div className="flex gap-3">
@@ -112,7 +112,7 @@ const RoleItem: React.FC<{
             onSubmit={onSubmit}
             priveleges={priveleges}
           >
-            <FilePenLine className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+            <FilePenLine className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
           </RolesDialog>
           <ConfirmActionAlert
             question="Вы уверены что хотите удалить роль пользователя?"
@@ -120,7 +120,7 @@ const RoleItem: React.FC<{
             onConfirm={() => removeMutation.mutate(role.roleId)}
           >
             <Button className="p-0" variant="link">
-              <Trash2 className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+              <Trash2 className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>
         </div>

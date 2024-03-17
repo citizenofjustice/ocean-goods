@@ -63,7 +63,7 @@ const CatalogItemCard: React.FC<{
     <>
       <Card className="grid content-between">
         <CardHeader className="flex flex-row items-center justify-between px-4">
-          <p className="w-full text-center font-medium px-1 vsm:px-3">
+          <p className="w-full px-1 text-center font-medium vsm:px-3">
             <Link to={`item/${catalogItem.productId}`}>
               {catalogItem.productName}
             </Link>
@@ -78,7 +78,7 @@ const CatalogItemCard: React.FC<{
                   className="gap-2"
                   onClick={() => navigate(`edit-item/${catalogItem.productId}`)}
                 >
-                  <SquarePen className="w-5 h-5" />
+                  <SquarePen className="h-5 w-5" />
                   <p>Изменить</p>
                 </DropdownMenuItem>
 
@@ -91,7 +91,7 @@ const CatalogItemCard: React.FC<{
                     className="gap-2"
                     onSelect={(e) => e.preventDefault()}
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <Trash2 className="h-5 w-5" />
                     <p>Удалить</p>
                   </DropdownMenuItem>
                 </ConfirmActionAlert>
@@ -103,10 +103,10 @@ const CatalogItemCard: React.FC<{
           {catalogItem.mainImage?.path && (
             <Link to={`/item/${catalogItem.productId}`}>
               <img
-                className="rounded border"
+                className="rounded"
                 width={`${catalogItem.mainImage.width}px`}
                 height={`${catalogItem.mainImage.height}px`}
-                loading="lazy"
+                // loading="lazy"
                 src={`${import.meta.env.VITE_SERVER_URL}${
                   catalogItem.mainImage.path
                 }`}
@@ -114,17 +114,17 @@ const CatalogItemCard: React.FC<{
             </Link>
           )}
           {catalogItem.discount > 0 && (
-            <div className="absolute bottom-8 right-8 flex items-center px-2 bg-destructive rounded-md font-semibold text-white">
+            <div className="absolute bottom-8 right-8 flex items-center rounded-md bg-destructive px-2 font-semibold text-white">
               - {catalogItem.discount} %
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex gap-2 justify-between px-4">
+        <CardFooter className="flex justify-between gap-2 px-4">
           <CartAddButton
             productId={catalogItem.productId}
             catalogItem={catalogItem}
           />
-          <span className="font-semibold text-end">
+          <span className="text-end font-semibold">
             {catalogItem.finalPrice} руб.
           </span>
         </CardFooter>

@@ -13,7 +13,7 @@ const AmountContolButton: React.FC<{
     <Button
       type="button"
       variant="outline"
-      className="h-5 sm:h-8 p-1 sm:p-2 bg-secondary"
+      className="h-5 bg-secondary p-1 sm:h-8 sm:p-2"
       onClick={buttonAction}
     >
       {children}

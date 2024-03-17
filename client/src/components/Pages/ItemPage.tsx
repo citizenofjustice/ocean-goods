@@ -41,7 +41,7 @@ const ItemPage = observer(() => {
           data.discount,
           data.weight,
           data.kcal,
-          data.mainImage
+          data.mainImage,
         );
         setCatalogItem(item);
         setCatalogItemProductType(data.productTypes.type);
@@ -59,14 +59,14 @@ const ItemPage = observer(() => {
           {!nonMobile ? (
             <ScrollArea className="flex justify-center">
               {catalogItem && (
-                <div className="grid items-center gap-y-4 grid-cols-1 lg:grid-cols-2 sm:max-w-xl lg:max-w-5xl lg:gap-8 py-6 px-4">
+                <div className="grid grid-cols-1 items-center gap-y-4 px-4 py-6 sm:max-w-xl lg:max-w-5xl lg:grid-cols-2 lg:gap-8">
                   <ItemPageMainImage catalogItem={catalogItem} />
                   <div>
-                    <p className="font-bold text-xl first-letter:capitalize">
+                    <p className="text-xl font-bold first-letter:capitalize">
                       {catalogItem.productName}
                     </p>
                     <div className="flex items-center space-x-3">
-                      <p className="font-medium opacity-70 line-through">
+                      <p className="font-medium line-through opacity-70">
                         {catalogItem.price} РУБ.
                       </p>
                       <p className="font-medium">
@@ -79,7 +79,7 @@ const ItemPage = observer(() => {
                     catalogItemProductType={catalogItemProductType}
                     nonMobile={nonMobile}
                   />
-                  <div className="w-full flex justify-center items-center mt-4">
+                  <div className="mt-4 flex w-full items-center justify-center">
                     <CartAddButton
                       productId={catalogItem.productId}
                       catalogItem={catalogItem}
@@ -89,18 +89,18 @@ const ItemPage = observer(() => {
               )}
             </ScrollArea>
           ) : (
-            <div className="flex justify-center h-[80vh]">
+            <div className="flex h-[80vh] justify-center">
               {catalogItem && (
-                <div className="grid grid-cols-2 items-center sm:gap-4 lg:gap-8 p-4 max-w-5xl">
+                <div className="grid max-w-5xl grid-cols-2 items-center p-4 sm:gap-4 lg:gap-8">
                   <ItemPageMainImage catalogItem={catalogItem} />
                   <div className="">
-                    <div className="flex justify-between gap-2 my-4">
+                    <div className="my-4 flex justify-between gap-2">
                       <div className="px-4">
-                        <p className="font-bold text-xl first-letter:capitalize">
+                        <p className="text-xl font-bold first-letter:capitalize">
                           {catalogItem.productName}
                         </p>
                         <div className="flex items-center space-x-3">
-                          <p className="font-medium opacity-70 line-through">
+                          <p className="font-medium line-through opacity-70">
                             {catalogItem.price} РУБ.
                           </p>
                           <p className="font-medium">
@@ -114,7 +114,7 @@ const ItemPage = observer(() => {
                       />
                     </div>
                     <Card>
-                      <ScrollArea className="content-scroll max-h-[60vh] p-4 overflow-y-auto">
+                      <ScrollArea className="content-scroll max-h-[60vh] overflow-y-auto p-4">
                         <ItemPageProductInfo
                           catalogItem={catalogItem}
                           catalogItemProductType={catalogItemProductType}
@@ -146,10 +146,10 @@ const ItemPageMainImage: React.FC<{
   catalogItem: CatalogItemModel;
 }> = ({ catalogItem }) => {
   return (
-    <div className="w-fit h-fit mx-auto">
+    <div className="mx-auto h-fit w-fit">
       {catalogItem.mainImage?.path && (
         <img
-          className="w-full h-full rounded-lg max-w-[60vw] sm:max-w-[40vw] lg:max-w-[30vw]"
+          className="h-full w-full max-w-[60vw] rounded-lg sm:max-w-[40vw] lg:max-w-[30vw]"
           loading="lazy"
           width={`${catalogItem.mainImage.width}px`}
           height={`${catalogItem.mainImage.height}px`}
@@ -172,7 +172,7 @@ const ItemPageProductInfo: React.FC<{
 
   return (
     <div className="space-y-4">
-      <div className="space-y-1 flex flex-col">
+      <div className="flex flex-col space-y-1">
         <span className="flex justify-between gap-2">
           <p className="font-medium">Тип продукта:</p>
           <p className="text-end">{catalogItemProductType}</p>
@@ -198,20 +198,20 @@ const ItemPageProductInfo: React.FC<{
           {!descriptionIsOpen && !nonMobile && (
             <p
               role="button"
-              className="opacity-70 flex items-center"
+              className="flex items-center opacity-70"
               onClick={() => setDescriptionIsOpen(true)}
             >
-              развернуть <ChevronDown className="w-4 h-4" />
+              развернуть <ChevronDown className="h-4 w-4" />
             </p>
           )}
         </span>
         {descriptionIsOpen && !nonMobile && (
           <p
             role="button"
-            className="opacity-70 flex justify-end items-center"
+            className="flex items-center justify-end opacity-70"
             onClick={() => setDescriptionIsOpen(false)}
           >
-            свернуть <ChevronUp className="w-4 h-4" />
+            свернуть <ChevronUp className="h-4 w-4" />
           </p>
         )}
       </div>

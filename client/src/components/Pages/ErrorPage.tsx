@@ -18,7 +18,7 @@ const ErrorPage: React.FC<{
   customMessage: string;
 }> = observer(({ error, customMessage }) => {
   return (
-    <Alert variant="destructive" className="max-w-2xl m-auto">
+    <Alert variant="destructive" className="m-auto max-w-2xl">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Ошибка</AlertTitle>
       <Accordion type="single" collapsible>

@@ -118,8 +118,8 @@ const CatalogPage = observer(() => {
               item.discount,
               item.weight,
               item.kcal,
-              item.mainImage
-            )
+              item.mainImage,
+            ),
         );
         return { ...response.data, catalog: fetchedCatalogItems };
       }
@@ -173,11 +173,11 @@ const CatalogPage = observer(() => {
   return (
     <div className="px-4">
       <div
-        className={`m-auto z-30 max-w-screen-lg sticky top-0 bg-white flex justify-center items-center`}
+        className={`sticky top-0 z-30 m-auto flex max-w-screen-lg items-center justify-center bg-white`}
       >
         <div className="mb-4">
           <span
-            className="transition ease-in-out delay-150 mt-4 mb-2 flex justify-center gap-2 hover:cursor-pointer text-gray-500"
+            className="mb-2 mt-4 flex justify-center gap-2 text-gray-500 transition delay-150 ease-in-out hover:cursor-pointer"
             onClick={() => setIsFiltersShown((prevVal) => !prevVal)}
           >
             <ChevronDownCircle
@@ -196,20 +196,20 @@ const CatalogPage = observer(() => {
             }}
           >
             <div
-              className="grid gap-0 vsm:gap-4 grid-cols-1 vsm:grid-cols-2 items-center "
+              className="grid grid-cols-1 items-center gap-0 vsm:grid-cols-2 vsm:gap-4 "
               ref={filtersRef}
             >
-              <div className="flex justify-start items-center p-2 relative">
+              <div className="relative flex items-center justify-start p-2">
                 <Input
                   placeholder={`Поиск по названию`}
                   value={filterBy}
                   onChange={(e) => setFilterBy(e.target.value)}
                   className="max-w-[260px] pr-8"
                 />
-                <Search className="absolute top-[50%] translate-y-[-50%] right-4 w-5 h-5" />
+                <Search className="absolute right-4 top-[50%] h-5 w-5 translate-y-[-50%]" />
               </div>
-              <div className="flex justify-start items-center gap-2 flex-col vvsm:flex-row p-2">
-                <p className="font-medium text-sm">Сортировка:</p>
+              <div className="flex flex-col items-center justify-start gap-2 p-2 vvsm:flex-row">
+                <p className="text-sm font-medium">Сортировка:</p>
                 <SimpleSelect
                   options={sortOptions}
                   placeholder="Сортировать по"
@@ -230,7 +230,7 @@ const CatalogPage = observer(() => {
         />
       ) : (
         data.pages[0].totalRows > 0 && (
-          <div className="grid gap-4 vsm:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 sm:max-w-screen-lg px-2 m-auto">
+          <div className="m-auto grid gap-4 px-2 vsm:grid-cols-2 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
             {data.pages.map((group, i) => (
               <Fragment key={i}>
                 {group.catalog.map((item: CatalogItemModel) => (

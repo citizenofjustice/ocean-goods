@@ -71,7 +71,7 @@ const OrdersListPage = () => {
 
   // Handler for filter input change
   const handleFilterInput = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = event.target;
     setFilterBy(value);
@@ -113,7 +113,7 @@ const OrdersListPage = () => {
   return (
     <>
       <div className="w-full px-4 pb-4">
-        <div className="max-w-4xl m-auto pt-4 mb-4 grid grid-cols-1 sm:grid-cols-12 gap-2 justify-between">
+        <div className="m-auto mb-4 grid max-w-4xl grid-cols-1 justify-between gap-2 pt-4 sm:grid-cols-12">
           <div className="flex gap-2 sm:col-span-7">
             <Input
               placeholder={`Поиск ${filterPlaceholder}`}
@@ -128,11 +128,11 @@ const OrdersListPage = () => {
               size={isSmall ? "small" : "normal"}
             />
           </div>
-          <div className="sm:ml-auto sm:col-span-5">
+          <div className="sm:col-span-5 sm:ml-auto">
             <DatePickerWithRange onDateChange={handleDatepickerChange} />
           </div>
         </div>
-        <div className="max-w-4xl m-auto flex max-h-[70vh] rounded-md border overflow-hidden">
+        <div className="m-auto flex max-h-[70vh] max-w-4xl overflow-hidden rounded-md border">
           <Table>
             <TableHeader className="sticky top-0 bg-white drop-shadow-[0_0px_3px_rgba(0,0,0,0.25)]">
               <TableRow>
@@ -145,7 +145,7 @@ const OrdersListPage = () => {
                   >
                     {item.orderBy ? (
                       <span
-                        className={`flex items-center shrink-0 hover:cursor-pointer ${item.textAlign}`}
+                        className={`flex shrink-0 items-center hover:cursor-pointer ${item.textAlign}`}
                         onClick={() => handleSort(item)}
                       >
                         {item.name}
@@ -194,7 +194,7 @@ const OrdersListPage = () => {
                             <TableCell>
                               {format(
                                 new Date(item.createdAt),
-                                "dd.MM.y HH:mm"
+                                "dd.MM.y HH:mm",
                               )}
                             </TableCell>
                             <TableCell>{item.customerName}</TableCell>
@@ -229,7 +229,7 @@ const OrdersListPage = () => {
                   )}
                 </>
               )}
-              <TableRow ref={intersectionRef} className="w-full h-1"></TableRow>
+              <TableRow ref={intersectionRef} className="h-1 w-full"></TableRow>
             </TableBody>
           </Table>
         </div>

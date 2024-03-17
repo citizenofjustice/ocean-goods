@@ -15,7 +15,7 @@ const PopupMessageBlock: React.FC<{
         setShow(false);
         onClose();
       },
-      popup.type === "success" ? 2000 : 5000
+      popup.type === "success" ? 2000 : 5000,
     );
 
     return () => {
@@ -33,13 +33,13 @@ const PopupMessageBlock: React.FC<{
 
   return (
     <div
-      className={`${popup.type} rounded w-fit max-w-[80vw] m-auto flex items-center gap-2 py-2 text-sm vsm:text-base text-white font-medium`}
+      className={`${popup.type} m-auto flex w-fit max-w-[80vw] items-center gap-2 rounded py-2 text-sm font-medium text-white vsm:text-base`}
     >
       <div className="px-4 text-center">{popup.message}</div>
       <div className="px-1">
         <X
           onClick={handleMessageClose}
-          className="w-6 h-6 hover:cursor-pointer"
+          className="h-6 w-6 hover:cursor-pointer"
         />
       </div>
     </div>

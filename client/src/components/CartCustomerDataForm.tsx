@@ -42,7 +42,7 @@ const contactOptions: ContactOption[] = [
     value: "telegram",
     content: (
       <span className="flex gap-2">
-        <img className="w-6 h-6" src={telegramIcon} /> Телегарам
+        <img className="h-6 w-6" src={telegramIcon} /> Телегарам
       </span>
     ),
   },
@@ -50,7 +50,7 @@ const contactOptions: ContactOption[] = [
     value: "whatsppp",
     content: (
       <span className="flex gap-2">
-        <img className="w-6 h-6" src={whatsAppIcon} /> WhatsApp
+        <img className="h-6 w-6" src={whatsAppIcon} /> WhatsApp
       </span>
     ),
   },
@@ -58,7 +58,7 @@ const contactOptions: ContactOption[] = [
     value: "viber",
     content: (
       <span className="flex gap-2">
-        <img className="w-6 h-6" src={viberIcon} /> Viber
+        <img className="h-6 w-6" src={viberIcon} /> Viber
       </span>
     ),
   },
@@ -66,7 +66,7 @@ const contactOptions: ContactOption[] = [
     value: "phone",
     content: (
       <span className="flex gap-2">
-        <img className="w-6 h-6" src={phoneIcon} /> Звонок по телефону
+        <img className="h-6 w-6" src={phoneIcon} /> Звонок по телефону
       </span>
     ),
   },
@@ -149,7 +149,7 @@ const CartCustomerDataForm: React.FC<{
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4 w-full max-w-sm"
+          className="flex w-full max-w-sm flex-col gap-4"
         >
           <FormField
             control={form.control}

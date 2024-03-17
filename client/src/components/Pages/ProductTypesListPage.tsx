@@ -56,7 +56,7 @@ const ProductTypesListPage = () => {
           {!isLoading && !isError && (
             <>
               <CardHeader className="font-medium">
-                <div className="w-full flex justify-between items-center">
+                <div className="flex w-full items-center justify-between">
                   <p className="font-medium">Список типов продуктов:</p>
                   <ProductTypeDialog
                     form={form}
@@ -65,7 +65,7 @@ const ProductTypesListPage = () => {
                     onClose={() => setIsDialogOpen(false)}
                     onOpen={() => setIsDialogOpen(true)}
                   >
-                    <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer" />
+                    <PlusCircleIcon className="text-primary-800 h-8 w-8 hover:cursor-pointer" />
                   </ProductTypeDialog>
                 </div>
               </CardHeader>

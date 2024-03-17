@@ -22,7 +22,7 @@ const MenuList: React.FC<{
           <li onClick={onMenuClose} className={isDesktop ? "mx-4" : "m-4"}>
             <NavLink
               to={item.path}
-              className="flex flex-row items-center text-primary-800"
+              className="text-primary-800 flex flex-row items-center"
             >
               <p className="mr-2">{item.title}</p>
               {item.icon}

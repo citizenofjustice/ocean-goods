@@ -74,7 +74,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({ control }) => {
                 <SelectValue
                   placeholder={
                     isLoading ? (
-                      <Loader2 className="w-4 h-4" />
+                      <Loader2 className="h-4 w-4" />
                     ) : (
                       "Выберите тип продукта"
                     )

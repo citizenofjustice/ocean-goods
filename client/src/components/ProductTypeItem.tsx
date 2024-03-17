@@ -33,7 +33,7 @@ const ProductTypeItem: React.FC<{
   const removeMutation = useMutation({
     mutationFn: async (productTypeId: number) => {
       const response = await axiosPrivate.delete(
-        `/product-types/${productTypeId}`
+        `/product-types/${productTypeId}`,
       );
       return response.data;
     },
@@ -41,7 +41,7 @@ const ProductTypeItem: React.FC<{
       // if request was successful modify query data
       queryClient.setQueryData(["product-type"], (oldData: ProductType[]) => {
         const newData = oldData.filter(
-          (item) => item.productTypeId !== variables
+          (item) => item.productTypeId !== variables,
         );
         return newData;
       });
@@ -66,7 +66,7 @@ const ProductTypeItem: React.FC<{
     mutationFn: async (updatedProductType: ProductType) => {
       const response = await axiosPrivate.put(
         `/product-types/${updatedProductType.productTypeId}`,
-        updatedProductType
+        updatedProductType,
       );
       return response.data;
     },
@@ -116,8 +116,8 @@ const ProductTypeItem: React.FC<{
 
   return (
     <>
-      <li className="flex bg-background-50 border rounded-lg items-center justify-between my-4 py-4 px-2 h-16 w-full gap-2">
-        <p className="text-start justify-items-start px-2">
+      <li className="bg-background-50 my-4 flex h-16 w-full items-center justify-between gap-2 rounded-lg border px-2 py-4">
+        <p className="justify-items-start px-2 text-start">
           {productType.type}
         </p>
         <div className="flex gap-3">
@@ -128,7 +128,7 @@ const ProductTypeItem: React.FC<{
             onClose={() => setIsDialogOpen(false)}
             onSubmit={onSubmit}
           >
-            <FilePenLine className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+            <FilePenLine className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
           </ProductTypeDialog>
           <ConfirmActionAlert
             question="Вы уверены что хотите удалить тип продукта?"
@@ -136,7 +136,7 @@ const ProductTypeItem: React.FC<{
             onConfirm={removeProductTypeHandler}
           >
             <Button className="p-0" variant="link">
-              <Trash2 className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
+              <Trash2 className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>
         </div>

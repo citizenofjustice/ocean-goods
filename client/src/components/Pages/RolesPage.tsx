@@ -95,7 +95,7 @@ const Roles = () => {
               {!isLoading && (
                 <>
                   <CardHeader className="font-medium">
-                    <div className="w-full flex justify-between items-center">
+                    <div className="flex w-full items-center justify-between">
                       <p className="font-medium">Список ролей:</p>
                       <RolesDialog
                         form={form}
@@ -105,7 +105,7 @@ const Roles = () => {
                         onSubmit={onSubmit}
                         priveleges={privelegesQuery.data}
                       >
-                        <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer" />
+                        <PlusCircleIcon className="text-primary-800 h-8 w-8 hover:cursor-pointer" />
                       </RolesDialog>
                     </div>
                   </CardHeader>

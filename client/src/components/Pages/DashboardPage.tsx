@@ -49,8 +49,8 @@ const DashboardPage = () => {
   return (
     <div className="m-4">
       {isMenuPage ? (
-        <Card className="p-4 mx-auto max-w-lg">
-          <p className="mb-4 font-medium text-lg text-center">
+        <Card className="mx-auto max-w-lg p-4">
+          <p className="mb-4 text-center text-lg font-medium">
             Панель управления
           </p>
           <Accordion type="single" collapsible>
@@ -75,7 +75,7 @@ const DashboardPage = () => {
           </Accordion>
         </Card>
       ) : (
-        <div className="mx-auto max-w-lg transform translate-x-off-screen-right animate-slide-in">
+        <div className="mx-auto max-w-lg translate-x-off-screen-right transform animate-slide-in">
           <Outlet />
         </div>
       )}
