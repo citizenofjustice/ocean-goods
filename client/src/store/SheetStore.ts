@@ -10,15 +10,15 @@ class SheetStore {
   // Constructor for the SheetStore class
   constructor() {
     makeAutoObservable(this, {
-      //   setMenuSheetActive: action,
+      toggleMenuSheetActive: action,
       toggleCartSheetActive: action,
       toggleCartCustomerFormActive: action,
     });
   }
 
-  //   setMenuSheetActive(isActive: boolean) {
-  //     this.isMenuSheetActive = isActive;
-  //   }
+  toggleMenuSheetActive() {
+    this.isMenuSheetActive = !this.isMenuSheetActive;
+  }
 
   toggleCartSheetActive() {
     this.isCartSheetActive = !this.isCartSheetActive;

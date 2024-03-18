@@ -4,7 +4,6 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/UI/shadcn/sheet";
-import { useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useMediaQuery } from "usehooks-ts";
 import { NavLink } from "react-router-dom";
@@ -22,7 +21,6 @@ import CartSheetContent from "../CartSheetContent";
  * @returns
  */
 const Navbar = observer(() => {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const tablet = useMediaQuery("(min-width: 768px)"); // media query for conditional rendering of navbar
   const { cart, auth, sheet } = useStore();
 
@@ -31,8 +29,11 @@ const Navbar = observer(() => {
       <header className="hearer-sticky bg-background-0 border-background-200 z-50 flex h-[4.5rem] flex-row items-center justify-between border-b-2 px-4 py-4 drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)]">
         <div className="flex basis-2/12 justify-start">
           {!tablet ? (
-            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-              <SheetTrigger>
+            <Sheet
+              open={sheet.isMenuSheetActive}
+              onOpenChange={() => sheet.toggleMenuSheetActive()}
+            >
+              <SheetTrigger aria-label="Открыть меню">
                 <Menu className="text-primary-800 h-6 w-6" />
               </SheetTrigger>
               <SheetContent side="left" className="w-[240px] px-4 sm:w-[540px]">
@@ -42,7 +43,7 @@ const Navbar = observer(() => {
                 </SheetClose>
                 <MenuList
                   menuItems={menuItems}
-                  onMenuClose={() => setIsMenuOpen(false)}
+                  onMenuClose={() => sheet.toggleMenuSheetActive()}
                 />
               </SheetContent>
             </Sheet>

@@ -15,7 +15,9 @@ const Unauthorized = () => {
           Пользователю с вашими правами не доступна данная страница
         </p>
         <br />
-        <Button onClick={goBack}>Вернуться назад</Button>
+        <Button onClick={goBack} aria-label="Вернуться на прошлую страницу">
+          Вернуться назад
+        </Button>
       </div>
     </>
   );

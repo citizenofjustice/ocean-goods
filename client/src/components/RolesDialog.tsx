@@ -74,11 +74,16 @@ const RolesDialog: React.FC<RolesDialogProps> = ({
           </DialogHeader>
           <RolesForm form={form} onSubmit={onSubmit} priveleges={priveleges} />
           <DialogFooter>
-            <Button form="role-form" type="submit">
+            <Button form="role-form" type="submit" aria-label="Сохранить роль">
               Сохранить
             </Button>
             <DialogClose asChild>
-              <Button onClick={onClose} type="button" variant="outline">
+              <Button
+                onClick={onClose}
+                type="button"
+                variant="outline"
+                aria-label="Отмена"
+              >
                 Отмена
               </Button>
             </DialogClose>
@@ -102,11 +107,16 @@ const RolesDialog: React.FC<RolesDialogProps> = ({
           <RolesForm form={form} onSubmit={onSubmit} priveleges={priveleges} />
         </div>
         <DrawerFooter className="pt-4">
-          <Button form="role-form" type="submit">
+          <Button form="role-form" type="submit" aria-label="Сохранить роль">
             Сохранить
           </Button>
           <DrawerClose asChild>
-            <Button onClick={onClose} type="button" variant="outline">
+            <Button
+              onClick={onClose}
+              type="button"
+              variant="outline"
+              aria-label="Отмена"
+            >
               Отмена
             </Button>
           </DrawerClose>

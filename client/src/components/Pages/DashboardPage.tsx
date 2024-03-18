@@ -7,6 +7,7 @@ import {
 } from "@/components/UI/shadcn/accordion";
 import { Card } from "@/components/UI/shadcn/card";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 interface DashboradSubMenu {
   path: string;
@@ -47,39 +48,44 @@ const DashboardPage = () => {
   const isMenuPage = location.pathname === "/dashboard";
 
   return (
-    <div className="m-4">
-      {isMenuPage ? (
-        <Card className="mx-auto max-w-lg p-4">
-          <p className="mb-4 text-center text-lg font-medium">
-            Панель управления
-          </p>
-          <Accordion type="single" collapsible>
-            {dashboardMenu.map((menuItem: DashboardMenu) => (
-              <AccordionItem
-                className="last:border-0"
-                key={menuItem.id}
-                value={menuItem.id}
-              >
-                <AccordionTrigger className="text-start">
-                  {menuItem.category}
-                </AccordionTrigger>
-                <AccordionContent className="space-y-2">
-                  {
-                    <DashboardSubMenuPage
-                      dashboardSubMenu={menuItem.subCategory}
-                    />
-                  }
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </Card>
-      ) : (
-        <div className="mx-auto max-w-lg translate-x-off-screen-right transform animate-slide-in">
-          <Outlet />
-        </div>
-      )}
-    </div>
+    <>
+      <Helmet>
+        <title>Панель управления</title>
+      </Helmet>
+      <div className="m-4">
+        {isMenuPage ? (
+          <Card className="mx-auto max-w-lg p-4">
+            <p className="mb-4 text-center text-lg font-medium">
+              Панель управления
+            </p>
+            <Accordion type="single" collapsible>
+              {dashboardMenu.map((menuItem: DashboardMenu) => (
+                <AccordionItem
+                  className="last:border-0"
+                  key={menuItem.id}
+                  value={menuItem.id}
+                >
+                  <AccordionTrigger className="text-start">
+                    {menuItem.category}
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    {
+                      <DashboardSubMenuPage
+                        dashboardSubMenu={menuItem.subCategory}
+                      />
+                    }
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </Card>
+        ) : (
+          <div className="mx-auto max-w-lg translate-x-off-screen-right transform animate-slide-in">
+            <Outlet />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

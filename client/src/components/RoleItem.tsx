@@ -119,7 +119,7 @@ const RoleItem: React.FC<{
             message="Удаление роли может повлечь за собой потерю доступа к некоторому функционалу для пользователей с данной ролью."
             onConfirm={() => removeMutation.mutate(role.roleId)}
           >
-            <Button className="p-0" variant="link">
+            <Button className="p-0" variant="link" aria-label="Удалить роль">
               <Trash2 className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>

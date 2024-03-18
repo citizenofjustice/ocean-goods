@@ -135,7 +135,7 @@ const ProductTypeItem: React.FC<{
             message="Удаление типа продукта повлечет за собой утерю всех записей с данным типом продука в каталоге."
             onConfirm={removeProductTypeHandler}
           >
-            <Button className="p-0" variant="link">
+            <Button className="p-0" variant="link" aria-label="Удалить тип">
               <Trash2 className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>

@@ -1,11 +1,14 @@
 import { X } from "lucide-react";
+import { Suspense, lazy } from "react";
 import { SheetClose, SheetFooter, SheetHeader } from "./UI/shadcn/sheet";
-import CartCustomerDataForm from "./CartCustomerDataForm";
+// import CartCustomerDataForm from "./CartCustomerDataForm";
 import Cart from "./Cart";
 import { Button } from "./UI/shadcn/button";
 import { useStore } from "@/store/root-store-context";
 import { observer } from "mobx-react-lite";
 import { action } from "mobx";
+import LoadingSpinner from "./UI/LoadingSpinner";
+const CartCustomerDataForm = lazy(() => import("./CartCustomerDataForm"));
 
 const CartSheetContent = observer(() => {
   const { sheet, cart } = useStore();
@@ -22,13 +25,15 @@ const CartSheetContent = observer(() => {
         </div>
       </SheetHeader>
       {sheet.isCartCustomerFormActive ? (
-        <CartCustomerDataForm
-          onPreviousPage={() => sheet.toggleCartCustomerFormActive()}
-          onOrderSend={action(() => {
-            sheet.toggleCartSheetActive();
-            sheet.toggleCartCustomerFormActive();
-          })}
-        />
+        <Suspense fallback={<LoadingSpinner />}>
+          <CartCustomerDataForm
+            onPreviousPage={() => sheet.toggleCartCustomerFormActive()}
+            onOrderSend={action(() => {
+              sheet.toggleCartSheetActive();
+              sheet.toggleCartCustomerFormActive();
+            })}
+          />
+        </Suspense>
       ) : (
         <div className="mt-0 vsm:mt-4">
           <Cart />
@@ -43,6 +48,7 @@ const CartSheetContent = observer(() => {
             <Button
               disabled={cart.cartItems.length === 0}
               onClick={() => sheet.toggleCartCustomerFormActive()}
+              aria-label="Оформить заказ"
             >
               Оформить
             </Button>

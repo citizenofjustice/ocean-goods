@@ -3,6 +3,7 @@ import { Trash2 } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { useLocalStorage } from "usehooks-ts";
 
+import imageNotFound from "@/assets/images/ImageNotFound.svg";
 import CartItemModel from "@/classes/CartItemModel";
 import { useStore } from "@/store/root-store-context";
 import CartAmontControls from "@/components/CartAmontControls";
@@ -36,7 +37,7 @@ const CartElement: React.FC<{
         <div className="flex flex-row gap-2">
           <div className="basis-1/4">
             <div className="min-w-[60px] overflow-hidden rounded">
-              {cartItem.mainImage && (
+              {cartItem.mainImage ? (
                 <img
                   className="rounded"
                   loading="lazy"
@@ -45,6 +46,14 @@ const CartElement: React.FC<{
                   src={`${import.meta.env.VITE_SERVER_URL}${
                     cartItem.mainImage?.path
                   }`}
+                  alt="Фото продукта"
+                />
+              ) : (
+                <img
+                  className="rounded"
+                  width="300px"
+                  height="300px"
+                  src={imageNotFound}
                 />
               )}
             </div>

@@ -33,12 +33,12 @@ const ImageDropzone: React.FC<{
                 <Input
                   type="file"
                   accept="image/*"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0)
+                      field.onChange(e.target.files[0]);
+                  }}
                   id="fileInput"
                   className="hidden"
-                  multiple
                 />
               </>
             </FormControl>
@@ -70,14 +70,17 @@ const ImageDropzone: React.FC<{
                   )}
                 </span>
               </label>
-              <Button
-                onClick={fieldReset}
-                variant="ghost"
-                type="button"
-                className="absolute right-1 top-9 p-1"
-              >
-                <X className="h-6 w-6" />
-              </Button>
+              {field.value && (
+                <Button
+                  onClick={fieldReset}
+                  variant="outline"
+                  type="button"
+                  className="absolute right-1 top-9 h-fit bg-background p-1"
+                  aria-label="Удалить фото"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </Card>
             <FormMessage />
           </FormItem>

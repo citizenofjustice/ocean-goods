@@ -150,7 +150,11 @@ const AuthPage = observer(() => {
                   {isPending ? (
                     <ButtonLoading />
                   ) : (
-                    <Button className="px-8" type="submit">
+                    <Button
+                      className="px-8"
+                      type="submit"
+                      aria-label="Войти в аккаунт"
+                    >
                       Войти
                     </Button>
                   )}

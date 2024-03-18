@@ -14,6 +14,7 @@ import CatalogItemModel from "@/classes/CatalogItemModel";
 import CatalogItemCard from "@/components/CatalogItemCard";
 import LoadingSpinner from "@/components/UI/LoadingSpinner";
 import SimpleSelect, { SelectOptions } from "@/components/UI/SimpleSelect";
+import { Helmet } from "react-helmet-async";
 
 // Initial values for sorting
 const initSortValues: SortBy = {
@@ -171,78 +172,88 @@ const CatalogPage = observer(() => {
   };
 
   return (
-    <div className="px-4">
-      <div
-        className={`sticky top-0 z-30 m-auto flex max-w-screen-lg items-center justify-center bg-white`}
-      >
-        <div className="mb-4">
-          <span
-            className="mb-2 mt-4 flex justify-center gap-2 text-gray-500 transition delay-150 ease-in-out hover:cursor-pointer"
-            onClick={() => setIsFiltersShown((prevVal) => !prevVal)}
-          >
-            <ChevronDownCircle
-              className={`transition-transform duration-300 ${
-                isFiltersShown ? "rotate-180" : ""
-              }`}
-            />
-            Показать фильтр
-          </span>
-          <div
-            className="overflow-y-hidden transition-all duration-300"
-            style={{
-              height: isFiltersShown
-                ? filtersRef.current?.offsetHeight || 0
-                : 0,
-            }}
-          >
-            <div
-              className="grid grid-cols-1 items-center gap-0 vsm:grid-cols-2 vsm:gap-4 "
-              ref={filtersRef}
+    <>
+      <Helmet>
+        <title>
+          Рыбные консервы - доставка по г. Зеленодольск. Выгодные цены на
+          качественные рыбные консервы
+        </title>
+        <meta name="description" content="Каталог продуктов." />
+      </Helmet>
+      <div className="px-4">
+        <div
+          className={`sticky top-0 z-30 m-auto flex max-w-screen-lg items-center justify-center bg-white`}
+        >
+          <div className="mb-4">
+            <span
+              className="mb-2 mt-4 flex justify-center gap-2 text-gray-500 transition delay-150 ease-in-out hover:cursor-pointer"
+              onClick={() => setIsFiltersShown((prevVal) => !prevVal)}
             >
-              <div className="relative flex items-center justify-start p-2">
-                <Input
-                  placeholder={`Поиск по названию`}
-                  value={filterBy}
-                  onChange={(e) => setFilterBy(e.target.value)}
-                  className="max-w-[260px] pr-8"
-                />
-                <Search className="absolute right-4 top-[50%] h-5 w-5 translate-y-[-50%]" />
-              </div>
-              <div className="flex flex-col items-center justify-start gap-2 p-2 vvsm:flex-row">
-                <p className="text-sm font-medium">Сортировка:</p>
-                <SimpleSelect
-                  options={sortOptions}
-                  placeholder="Сортировать по"
-                  selectedOption={selectedOption}
-                  onOptionSelect={handleSelect}
-                />
+              <ChevronDownCircle
+                className={`transition-transform duration-300 ${
+                  isFiltersShown ? "rotate-180" : ""
+                }`}
+              />
+              Показать фильтр
+            </span>
+            <div
+              className="overflow-y-hidden transition-all duration-300"
+              style={{
+                height: isFiltersShown
+                  ? filtersRef.current?.offsetHeight || 0
+                  : 0,
+              }}
+            >
+              <div
+                className="grid grid-cols-1 items-center gap-0 vsm:grid-cols-2 vsm:gap-4 "
+                ref={filtersRef}
+              >
+                <div className="relative flex items-center justify-start p-2">
+                  <Input
+                    placeholder={`Поиск по названию`}
+                    value={filterBy}
+                    onChange={(e) => setFilterBy(e.target.value)}
+                    className="max-w-[260px] pr-8"
+                  />
+                  <Search className="absolute right-4 top-[50%] h-5 w-5 translate-y-[-50%]" />
+                </div>
+                <div className="flex flex-col items-center justify-start gap-2 p-2 vvsm:flex-row">
+                  <p className="text-sm font-medium">Сортировка:</p>
+                  <SimpleSelect
+                    options={sortOptions}
+                    placeholder="Сортировать по"
+                    selectedOption={selectedOption}
+                    onOptionSelect={handleSelect}
+                    ariaLabel="Сортировка каталога"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {status === "pending" ? (
-        <LoadingSpinner />
-      ) : status === "error" ? (
-        <ErrorPage
-          error={error}
-          customMessage="При загрузке каталога произошла ошибка"
-        />
-      ) : (
-        data.pages[0].totalRows > 0 && (
-          <div className="m-auto grid gap-4 px-2 vsm:grid-cols-2 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
-            {data.pages.map((group, i) => (
-              <Fragment key={i}>
-                {group.catalog.map((item: CatalogItemModel) => (
-                  <CatalogItemCard key={item.productId} catalogItem={item} />
-                ))}
-              </Fragment>
-            ))}
-          </div>
-        )
-      )}
-      <div className="h-8 w-full" ref={ref} />
-    </div>
+        {status === "pending" ? (
+          <LoadingSpinner />
+        ) : status === "error" ? (
+          <ErrorPage
+            error={error}
+            customMessage="При загрузке каталога произошла ошибка"
+          />
+        ) : (
+          data.pages[0].totalRows > 0 && (
+            <div className="m-auto grid gap-4 px-2 vsm:grid-cols-2 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
+              {data.pages.map((group, i) => (
+                <Fragment key={i}>
+                  {group.catalog.map((item: CatalogItemModel) => (
+                    <CatalogItemCard key={item.productId} catalogItem={item} />
+                  ))}
+                </Fragment>
+              ))}
+            </div>
+          )
+        )}
+        <div className="h-8 w-full" ref={ref} />
+      </div>{" "}
+    </>
   );
 });
 

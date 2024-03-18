@@ -81,7 +81,10 @@ export const convertToWebp = async (
           .json({ error: { message: "Не удалось обработать изображение" } });
 
       // Write the converted image to the file system
-      await fs.promises.writeFile(file.path, webpImage);
+      await fs.promises.writeFile(file.path, webpImage).catch((error) => {
+        console.error(`Error writing file: ${error.message}`);
+      });
+      file.mimetype = "image/webp";
     }
     next();
   } catch (error) {

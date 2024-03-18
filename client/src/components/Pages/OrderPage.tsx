@@ -12,6 +12,7 @@ import { ProductType } from "@/types/ProductType";
 import ErrorPage from "@/components/Pages/ErrorPage";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { DataTable } from "@/components/UI/DataTable";
+import imageNotFound from "@/assets/images/ImageNotFound.svg";
 import { SortArrowsIcons } from "@/components/UI/SortArrowsIcons";
 
 interface CatalogItemWithType extends CatalogItem {
@@ -54,7 +55,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
     cell: (tableProps) => (
       <div className="min-w-[40px] max-w-[100px] overflow-hidden rounded-md">
         <Link to={`/item/${tableProps.row.original.productId}`}>
-          {tableProps.row.original.itemSnapshot.mainImage && (
+          {tableProps.row.original.itemSnapshot.mainImage ? (
             <img
               loading="lazy"
               width={`${tableProps.row.original.itemSnapshot.mainImage.width}px`}
@@ -62,6 +63,13 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
               src={`${import.meta.env.VITE_SERVER_URL}${
                 tableProps.row.original.itemSnapshot.mainImage.path
               }`}
+            />
+          ) : (
+            <img
+              className="rounded"
+              width="300px"
+              height="300px"
+              src={imageNotFound}
             />
           )}
         </Link>

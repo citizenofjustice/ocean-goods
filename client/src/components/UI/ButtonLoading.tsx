@@ -5,7 +5,7 @@ export const ButtonLoading: React.FC<{
   children?: string;
 }> = ({ children = "идет обработка" }) => {
   return (
-    <Button disabled>
+    <Button disabled aria-label={children}>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       {children}
     </Button>

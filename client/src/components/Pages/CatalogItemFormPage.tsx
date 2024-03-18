@@ -222,7 +222,11 @@ const CatalogItemFormPage: React.FC<{
                     onConfirm={form.handleSubmit(onSubmit)}
                     question="Вы уверены что хотите сохранить введеные данные?"
                   >
-                    <Button className="px-8" type="button">
+                    <Button
+                      className="px-8"
+                      type="button"
+                      aria-label="Сохранить продукт"
+                    >
                       Сохранить
                     </Button>
                   </ConfirmActionAlert>

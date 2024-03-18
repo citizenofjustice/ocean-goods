@@ -203,7 +203,9 @@ const RegisterUserPage = () => {
                 {isPending ? (
                   <ButtonLoading />
                 ) : (
-                  <Button>Зарегистрировать</Button>
+                  <Button aria-label="Зарегистрировать пользователя">
+                    Зарегистрировать
+                  </Button>
                 )}
               </div>
             </form>

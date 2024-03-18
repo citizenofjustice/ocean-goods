@@ -8,7 +8,7 @@ const NotFoundPage = () => {
         <p className="text-3xl">ОШИБКА 404</p>
         <p>Страница, которую вы ищете, не существует</p>
       </div>
-      <Button variant="outline">
+      <Button variant="outline" aria-label="Вернуться на главную">
         <Link to="/">Вернуться на главную</Link>
       </Button>
     </div>

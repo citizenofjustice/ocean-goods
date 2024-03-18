@@ -68,11 +68,16 @@ const ProductTypeDialog: React.FC<ProductTypeDialogProps> = ({
           </DialogHeader>
           <ProductTypeForm form={form} onSubmit={onSubmit} />
           <DialogFooter>
-            <Button form="type-add-form" type="submit">
+            <Button form="type-add-form" type="submit" aria-label="Сохранить">
               Сохранить
             </Button>
             <DialogClose asChild>
-              <Button onClick={onClose} type="button" variant="outline">
+              <Button
+                onClick={onClose}
+                type="button"
+                variant="outline"
+                aria-label="Отмена"
+              >
                 Отмена
               </Button>
             </DialogClose>
@@ -96,11 +101,16 @@ const ProductTypeDialog: React.FC<ProductTypeDialogProps> = ({
           <ProductTypeForm form={form} onSubmit={onSubmit} />
         </div>
         <DrawerFooter className="pt-4">
-          <Button form="type-add-form" type="submit">
+          <Button form="type-add-form" type="submit" aria-label="Добавить тип">
             Добавить тип
           </Button>
           <DrawerClose asChild>
-            <Button onClick={onClose} type="button" variant="outline">
+            <Button
+              onClick={onClose}
+              type="button"
+              variant="outline"
+              aria-label="Отмена"
+            >
               Отмена
             </Button>
           </DrawerClose>

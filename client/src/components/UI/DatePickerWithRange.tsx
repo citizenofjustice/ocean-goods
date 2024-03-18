@@ -53,6 +53,7 @@ export const DatePickerWithRange: React.FC<{
               "w-[245px] justify-start text-left font-normal",
               !dateRange && "text-muted-foreground",
             )}
+            aria-label="Укажите период времени"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {dateRange?.from ? (

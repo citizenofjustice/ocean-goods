@@ -242,11 +242,17 @@ const CartCustomerDataForm: React.FC<{
               message="Проверьте указанные контактные данные на правильность."
               onConfirm={form.handleSubmit(onSubmit)}
             >
-              <Button type="button">Заказать</Button>
+              <Button type="button" aria-label="Заказать">
+                Заказать
+              </Button>
             </ConfirmActionAlert>
           )}
-          <Button onClick={onPreviousPage} variant="outline">
-            Отмена
+          <Button
+            onClick={onPreviousPage}
+            aria-label="Вернуться к корзине"
+            variant="outline"
+          >
+            Вернуться к корзине
           </Button>
         </form>
       </Form>

@@ -15,6 +15,7 @@ import CartAddButton from "@/components/CartAddButton";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import CatalogItemModel from "@/classes/CatalogItemModel";
 import LoadingSpinner from "@/components/UI/LoadingSpinner";
+import imageNotFound from "@/assets/images/ImageNotFound.svg";
 
 const ItemPage = observer(() => {
   const params = useParams();
@@ -147,7 +148,7 @@ const ItemPageMainImage: React.FC<{
 }> = ({ catalogItem }) => {
   return (
     <div className="mx-auto h-fit w-fit">
-      {catalogItem.mainImage?.path && (
+      {catalogItem.mainImage?.path ? (
         <img
           className="h-full w-full max-w-[60vw] rounded-lg sm:max-w-[40vw] lg:max-w-[30vw]"
           loading="lazy"
@@ -157,6 +158,13 @@ const ItemPageMainImage: React.FC<{
             catalogItem.mainImage?.path
           }`}
           alt={catalogItem.productName}
+        />
+      ) : (
+        <img
+          className="rounded"
+          width="300px"
+          height="300px"
+          src={imageNotFound}
         />
       )}
     </div>
@@ -191,7 +199,7 @@ const ItemPageProductInfo: React.FC<{
         <span className="flex justify-between gap-2">
           <p className="font-medium">Описание:</p>
         </span>
-        <span className="flex">
+        <span className="flex justify-between gap-2">
           <p className={`${descriptionIsOpen || nonMobile ? "" : "truncate"}`}>
             {catalogItem.description}
           </p>

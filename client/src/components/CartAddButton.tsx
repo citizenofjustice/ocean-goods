@@ -42,6 +42,7 @@ const CartAddButton: React.FC<{
           className="h-8 px-2 sm:h-10 sm:px-4"
           disabled={!catalogItem.inStock}
           onClick={handleItemCartAddition}
+          aria-label={catalogItem.inStock ? "В корзинну" : "Нет в наличии"}
         >
           {catalogItem.inStock ? "В корзину" : "Нет в наличии"}
         </Button>
