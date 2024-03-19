@@ -1,25 +1,26 @@
-import { Control } from "react-hook-form";
+import { z } from "zod";
+import axios from "@/api/axios";
+import { AxiosError } from "axios";
+import { Loader2 } from "lucide-react";
 import {
   FormField,
   FormItem,
   FormLabel,
   FormControl,
   FormMessage,
-} from "./UI/form";
+} from "@/components/UI/shadcn/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./UI/select";
-import { Loader2 } from "lucide-react";
+} from "@/components/UI/shadcn/select";
+import { Control } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import { getProductTypesSelectValues } from "../api/index";
-import { AxiosError } from "axios";
-import { useStore } from "../store/root-store-context";
-import { z } from "zod";
-import { zodCatalogItemForm } from "../lib/zodCatalogItemForm";
+
+import { useStore } from "@/store/root-store-context";
+import { zodCatalogItemForm } from "@/lib/zodCatalogItemForm";
 
 interface SelectValueProp {
   id: string;
@@ -40,7 +41,8 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({ control }) => {
   const { isLoading, isError, data } = useQuery({
     queryKey: ["product-type-select"],
     queryFn: async () => {
-      const data = await getProductTypesSelectValues();
+      const response = await axios.get(`/product-types/select-values`);
+      const data = response.data;
       if (data instanceof AxiosError) {
         alert.setPopup({
           message: "Не удалось загрузить типы продуктов",
@@ -73,7 +75,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({ control }) => {
                 <SelectValue
                   placeholder={
                     isLoading ? (
-                      <Loader2 className="w-4 h-4" />
+                      <Loader2 className="h-4 w-4" />
                     ) : (
                       "Выберите тип продукта"
                     )
@@ -83,7 +85,7 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({ control }) => {
             </FormControl>
             <FormMessage />
             {!isLoading && !isError && (
-              <SelectContent>
+              <SelectContent key={Math.random()}>
                 {data.map((item: SelectValueProp) => (
                   <SelectItem key={item.id} value={String(item.id)}>
                     {item.optionValue}

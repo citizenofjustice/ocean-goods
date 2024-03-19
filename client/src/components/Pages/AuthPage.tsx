@@ -1,11 +1,6 @@
 import { z } from "zod";
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { useForm } from "react-hook-form";
-import { observer } from "mobx-react-lite";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocation, useNavigate } from "react-router-dom";
-
 import {
   Form,
   FormControl,
@@ -13,14 +8,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../UI/form";
-import { Input } from "../UI/input";
-import { Button } from "../UI/button";
-import { ButtonLoading } from "../UI/ButtonLoading";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useStore } from "../../store/root-store-context";
-import { Card, CardContent, CardHeader, CardTitle } from "../UI/card";
+} from "@/components/UI/shadcn/form";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/UI/shadcn/card";
+import { useForm } from "react-hook-form";
+import { observer } from "mobx-react-lite";
 import { Eye, EyeOff } from "lucide-react";
+import { Helmet } from "react-helmet-async";
+import { Input } from "@/components/UI/shadcn/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/UI/shadcn/button";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { useStore } from "@/store/root-store-context";
+import { zodAuthUserForm } from "@/lib/zodAuthUserForm";
+import { ButtonLoading } from "@/components/UI/ButtonLoading";
 
 const AuthPage = observer(() => {
   const navigate = useNavigate();
@@ -32,31 +39,9 @@ const AuthPage = observer(() => {
   const from = location.state?.from.pathname || "/";
   const axiosPrivate = useAxiosPrivate();
 
-  const formSchema = z.object({
-    email: z.string().email("Неверная электонная почта"),
-    password: z.string().min(2, {
-      message: "Password must be at least 2 characters.",
-    }),
-    // Disabled temporarily
-    // password: z.string().refine(
-    //   (password) => {
-    //     const hasSymbol = /\W/.test(password);
-    //     const hasNumber = /\d/.test(password);
-    //     const hasUppercase = /[A-Z]/.test(password);
-    //     const hasLowercase = /[a-z]/.test(password);
-
-    //     return hasSymbol && hasNumber && hasUppercase && hasLowercase;
-    //   },
-    //   {
-    //     message:
-    //       "Пароль должен состоять из букв верхнего и нижнего регисторв латинского алфавита, цифр и символов",
-    //   }
-    // ),
-  });
-
   // Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof zodAuthUserForm>>({
+    resolver: zodResolver(zodAuthUserForm),
     defaultValues: {
       email: "",
       password: "",
@@ -64,15 +49,20 @@ const AuthPage = observer(() => {
   });
 
   // Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof zodAuthUserForm>) {
     setIsPending(true);
     const fData = new FormData();
     fData.append("email", values.email);
     fData.append("password", values.password);
     try {
       const response = await axiosPrivate.post(`/login`, fData);
-      const { user, accessToken, role } = response.data;
-      auth.setAuthData({ ...authData, user, accessToken, roles: [role] });
+      const { user, accessToken, priveleges } = response.data;
+      auth.setAuthData({
+        ...authData,
+        user,
+        accessToken,
+        priveleges,
+      });
       form.reset();
       navigate(from, { replace: true });
     } catch (error) {
@@ -93,8 +83,15 @@ const AuthPage = observer(() => {
 
   return (
     <>
-      <div className="w-full flex justify-center">
-        <Card className="mt-[10vh] min-w-[200px] w-[400px] mx-4">
+      <Helmet>
+        <title>Вход в учетную запись | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Страница входа в учетную запись пользователя."
+        />
+      </Helmet>
+      <div className="flex w-full justify-center">
+        <Card className="mx-4 mt-[10vh] w-[400px] min-w-[200px]">
           <CardHeader>
             <CardTitle className="text-center">Авторизация</CardTitle>
           </CardHeader>
@@ -109,9 +106,16 @@ const AuthPage = observer(() => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Эл. почта:</FormLabel>
+                      <FormLabel htmlFor="auth-user-email">
+                        Эл. почта:
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="email@example.com" {...field} />
+                        <Input
+                          id="auth-user-email"
+                          autoComplete="on"
+                          placeholder="email@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -122,22 +126,25 @@ const AuthPage = observer(() => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Пароль:</FormLabel>
+                      <FormLabel htmlFor="auth-user-password">
+                        Пароль:
+                      </FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
+                            id="auth-user-password"
                             className="pr-10"
                             type={isPasswordShown ? "text" : "password"}
                             {...field}
                           />
                           {isPasswordShown ? (
                             <EyeOff
-                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                              className="absolute right-2 top-[50%] h-5 w-5 translate-y-[-50%] hover:cursor-pointer"
                               onClick={() => setIsPasswordShown(false)}
                             />
                           ) : (
                             <Eye
-                              className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5 hover:cursor-pointer"
+                              className="absolute right-2 top-[50%] h-5 w-5 translate-y-[-50%] hover:cursor-pointer"
                               onClick={() => setIsPasswordShown(true)}
                             />
                           )}
@@ -151,7 +158,11 @@ const AuthPage = observer(() => {
                   {isPending ? (
                     <ButtonLoading />
                   ) : (
-                    <Button className="px-8" type="submit">
+                    <Button
+                      className="px-8"
+                      type="submit"
+                      aria-label="Войти в аккаунт"
+                    >
                       Войти
                     </Button>
                   )}

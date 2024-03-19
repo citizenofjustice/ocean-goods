@@ -1,0 +1,20 @@
+FROM node:current-alpine3.19
+
+# Set the working directory
+RUN mkdir -p /app/client
+WORKDIR /app/client
+
+# Copy the package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN yarn install
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY . .
+
+# Expose the port
+EXPOSE 5173
+
+# Run the app
+CMD ["yarn", "run", "dev"]

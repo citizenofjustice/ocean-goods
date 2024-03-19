@@ -1,11 +1,5 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./UI/dialog";
+import { z } from "zod";
+import { useRef } from "react";
 import {
   Form,
   FormControl,
@@ -13,17 +7,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "./UI/form";
-import { Input } from "./UI/input";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "./UI/button";
+} from "@/components/UI/shadcn/form";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/UI/shadcn/drawer";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/UI/shadcn/dialog";
 import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-import { zodProductTypeForm } from "../lib/zodProductTypeForm";
-import { PlusCircleIcon } from "lucide-react";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
+
+import { Input } from "@/components/UI/shadcn/input";
+import { Button } from "@/components/UI/shadcn/button";
+import { zodProductTypeForm } from "@/lib/zodProductTypeForm";
 
 interface ProductTypeDialogProps {
   form: UseFormReturn<z.infer<typeof zodProductTypeForm>>;
+  children: React.ReactNode;
   onSubmit: (values: z.infer<typeof zodProductTypeForm>) => void;
   isOpen: boolean;
   onClose: () => void;
@@ -32,51 +44,104 @@ interface ProductTypeDialogProps {
 
 const ProductTypeDialog: React.FC<ProductTypeDialogProps> = ({
   form,
+  children,
   onSubmit,
   isOpen,
   onClose,
   onOpen,
 }) => {
-  return (
-    <Dialog open={isOpen}>
-      <DialogTrigger asChild>
-        <Button variant="link" onClick={onOpen}>
-          <PlusCircleIcon className="w-8 h-8 text-primary-800 hover:cursor-pointer " />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="flex flex-col">
-        <DialogHeader>
-          <DialogTitle>Введите название типа продукта</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form id="type-add-form" onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Тип продукта:</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button onClick={onClose} type="button" variant="outline">
-              Отмена
+  const dialogRef = useRef(null);
+  useOnClickOutside(dialogRef, onClose);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  if (isDesktop)
+    return (
+      <Dialog open={isOpen}>
+        <DialogTrigger asChild>
+          <Button className="p-0" variant="link" onClick={onOpen}>
+            {children}
+          </Button>
+        </DialogTrigger>
+        <DialogContent ref={dialogRef} className="flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Введите название типа продукта</DialogTitle>
+          </DialogHeader>
+          <ProductTypeForm form={form} onSubmit={onSubmit} />
+          <DialogFooter>
+            <Button form="type-add-form" type="submit" aria-label="Сохранить">
+              Сохранить
             </Button>
-          </DialogClose>
-          <Button form="type-add-form" type="submit">
+            <DialogClose asChild>
+              <Button
+                onClick={onClose}
+                type="button"
+                variant="outline"
+                aria-label="Отмена"
+              >
+                Отмена
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+
+  return (
+    <Drawer open={isOpen} onClose={onClose}>
+      <DrawerTrigger asChild>
+        <Button className="p-0" variant="link" onClick={onOpen}>
+          {children}
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent ref={dialogRef}>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Введите название типа продукта</DrawerTitle>
+        </DrawerHeader>
+        <div className="px-4">
+          <ProductTypeForm form={form} onSubmit={onSubmit} />
+        </div>
+        <DrawerFooter className="pt-4">
+          <Button form="type-add-form" type="submit" aria-label="Добавить тип">
             Добавить тип
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DrawerClose asChild>
+            <Button
+              onClick={onClose}
+              type="button"
+              variant="outline"
+              aria-label="Отмена"
+            >
+              Отмена
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+};
+
+const ProductTypeForm: React.FC<{
+  form: UseFormReturn<z.infer<typeof zodProductTypeForm>>;
+  onSubmit: (values: z.infer<typeof zodProductTypeForm>) => void;
+}> = ({ form, onSubmit }) => {
+  return (
+    <Form {...form}>
+      <form id="type-add-form" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Тип продукта:</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
   );
 };
 

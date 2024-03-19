@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
-import { CatalogItem } from "../types/CatalogItem";
-import { BasicImage } from "src/types/BasicImage";
+import { BasicImage } from "@/types/BasicImage";
+import { CatalogItem } from "@/types/CatalogItem";
 
 // Catalog item class implementing CatalogItem interface
 class CatalogItemModel implements CatalogItem {

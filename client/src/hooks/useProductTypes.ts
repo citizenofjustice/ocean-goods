@@ -1,10 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxiosPrivate from "./useAxiosPrivate";
-import { useStore } from "../store/root-store-context";
-import { AxiosError } from "axios";
 import { z } from "zod";
-import { zodProductTypeForm } from "../lib/zodProductTypeForm";
+import { AxiosError } from "axios";
 import { UseFormReturn } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { useStore } from "@/store/root-store-context";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { zodProductTypeForm } from "@/lib/zodProductTypeForm";
 
 export function useProductTypes(
   form: UseFormReturn<z.infer<typeof zodProductTypeForm>>

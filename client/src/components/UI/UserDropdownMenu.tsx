@@ -1,36 +1,32 @@
-import { ListBulletIcon, UserIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
-import { MenuItem } from "../../types/MenuItem";
 import { nanoid } from "nanoid";
-import {
-  Cog6ToothIcon,
-  PlusIcon,
-  ArrowLeftOnRectangleIcon,
-} from "@heroicons/react/24/outline";
-import { useOnClickOutside } from "usehooks-ts";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useStore } from "../../store/root-store-context";
-import { useQueryClient } from "@tanstack/react-query";
 import { observer } from "mobx-react-lite";
+import { useOnClickOutside } from "usehooks-ts";
+import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { List, LogOut, Plus, Settings, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import { MenuItem } from "@/types/MenuItem";
+import { useStore } from "@/store/root-store-context";
 
 const menuItems: MenuItem[] = [
   {
     id: nanoid(),
     title: "Создать",
     path: "/new-item",
-    icon: <PlusIcon className="w-6 h-6" />,
+    icon: <Plus className="h-6 w-6" />,
   },
   {
     id: nanoid(),
     title: "Управление",
     path: "/dashboard",
-    icon: <Cog6ToothIcon className="w-6 h-6" />,
+    icon: <Settings className="h-6 w-6" />,
   },
   {
     id: nanoid(),
     title: "Заказы",
     path: "/orders",
-    icon: <ListBulletIcon className="w-6 h-6" />,
+    icon: <List className="h-6 w-6" />,
   },
 ];
 
@@ -58,22 +54,22 @@ const UserDropdownMenu = observer(() => {
   return (
     <>
       <button
-        className="flex text-sm bg-primary rounded-full p-2 h-fit"
+        className="flex h-fit rounded-full bg-primary p-2 text-sm"
         type="button"
         onClick={() => setIsShown(true)}
       >
         <span className="sr-only">Открыть меню пользователя</span>
-        <UserIcon className="text-secondary h-4 w-4" />
+        <User className="h-4 w-4 text-secondary" />
       </button>
 
       {isShown && (
         <div
           ref={dropdownRef}
-          className="absolute top-[2.5rem] left-[-6.5rem] z-10 rounded-lg shadow-lg w-44 bg-primary px-2"
+          className="absolute left-[-6.5rem] top-[2.5rem] z-10 w-44 rounded-lg bg-primary px-2 shadow-lg"
         >
           <div className="divide-y divide-secondary">
-            <div className="px-4 py-3 text-sm flex items-center text-secondary">
-              <p className="font-medium truncate first-letter:capitalize">
+            <div className="flex items-center px-4 py-3 text-sm text-secondary">
+              <p className="truncate font-medium first-letter:capitalize">
                 {auth.authData.user}
               </p>
             </div>
@@ -90,8 +86,8 @@ const UserDropdownMenu = observer(() => {
                 </li>
               ))}
             </ul>
-            <div className="py-2 px-4 flex items-center text-secondary hover:text-white">
-              <ArrowLeftOnRectangleIcon className="h-6 w-6" />
+            <div className="flex items-center px-4 py-2 text-secondary hover:text-white">
+              <LogOut className="h-6 w-6" />
               <span
                 onClick={handleLogout}
                 className="block px-2 py-2 text-sm  hover:cursor-pointer"

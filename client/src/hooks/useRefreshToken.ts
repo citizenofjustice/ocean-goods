@@ -1,5 +1,7 @@
-import axios from "../api/axios";
-import { useStore } from "../store/root-store-context";
+import { AxiosError } from "axios";
+
+import axios from "@/api/axios";
+import { useStore } from "@/store/root-store-context";
 
 // Hook for refreshing access token
 const useRefreshToken = () => {
@@ -18,13 +20,17 @@ const useRefreshToken = () => {
         ...authData,
         user: response.data.user,
         accessToken: response.data.accessToken,
-        roles: [response.data.role],
+        priveleges: response.data.priveleges,
       });
       // Returning the new access token
       return response.data.accessToken;
     } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error(error.response?.data.error.message);
+      } else {
+        console.error("Не удалось обновить токен авторизации:", error);
+      }
       // Handle the error here
-      console.error("Failed to refresh token:", error);
     }
   };
 

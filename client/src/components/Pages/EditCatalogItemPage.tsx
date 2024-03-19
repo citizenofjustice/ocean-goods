@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { Helmet } from "react-helmet-async";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
-import axios from "../../api/axios";
-import ErrorPage from "./ErrorPage";
-import LoadingSpinner from "../UI/LoadingSpinner";
-import CatalogItemForm from "./CatalogItemForm";
-import { CatalogItemInputs } from "../../types/form-types";
+import axios from "@/api/axios";
+import ErrorPage from "@/components/Pages/ErrorPage";
+import LoadingSpinner from "@/components/UI/LoadingSpinner";
+import { CatalogItemInputs } from "@/types/CatalogItemInputs";
+import CatalogItemFormPage from "@/components/Pages/CatalogItemFormPage";
 
 const EditCatalogItemPage = observer(() => {
   const { id } = useParams(); // Get the item ID from the route parameters
@@ -23,7 +24,7 @@ const EditCatalogItemPage = observer(() => {
       try {
         if (!itemId)
           throw new Error(
-            `Could not get 'id' request parameter for getting edit data`
+            `Could not get 'id' request parameter for getting edit data`,
           );
         const response = await axios.get(`/catalog/${itemId}`);
         return {
@@ -57,9 +58,18 @@ const EditCatalogItemPage = observer(() => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          Редактирование карточки продукта | {import.meta.env.VITE_MAIN_TITLE}
+        </title>
+        <meta
+          name="description"
+          content="Страница для редактирования карточки продукта."
+        />
+      </Helmet>
       {isLoading && <LoadingSpinner />}
       {!isLoading && beforeEditData && !isError && (
-        <CatalogItemForm
+        <CatalogItemFormPage
           actionType="UPDATE"
           editItemId={itemId}
           editInitValues={beforeEditData}

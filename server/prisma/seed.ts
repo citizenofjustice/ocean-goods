@@ -44,19 +44,24 @@ const createAdmin = async () => {
 
 const createUser = async (roleId: number) => {
   try {
-    const email = process.env.ADMIN_EMAIL;
-    const password = process.env.ADMIN_PASSWORD;
+    if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {
+      const email: string = process.env.ADMIN_EMAIL;
+      const password: string = process.env.ADMIN_PASSWORD;
 
-    // Encrypt the password
-    const passwordHash = await bcrypt.hash(password, 13);
-    // Insert a new user into the database
-    await prisma.users.create({
-      data: {
-        login: email,
-        passwordHash: passwordHash,
-        roleId: roleId,
-      },
-    });
+      // Encrypt the password
+      const passwordHash = await bcrypt.hash(password, 13);
+      // Insert a new user into the database
+      await prisma.users.create({
+        data: {
+          login: email,
+          passwordHash: passwordHash,
+          roleId: roleId,
+        },
+      });
+    } else
+      throw new Error(
+        "Unable to create default admin. Not found env variables."
+      );
   } catch (error) {
     console.error(error);
   }

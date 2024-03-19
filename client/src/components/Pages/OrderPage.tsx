@@ -1,18 +1,20 @@
 import { format } from "date-fns";
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
 import { Column, ColumnDef } from "@tanstack/react-table";
+import { TableCell, TableRow } from "@/components/UI/shadcn/table";
 
-import ErrorPage from "./ErrorPage";
-import { DataTable } from "../UI/DataTable";
-import { OrderItem } from "../../types/OrderItem";
-import { CatalogItem } from "../../types/CatalogItem";
-import { ProductType } from "../../types/ProductType";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { SortArrowsIcons } from "../UI/SortArrowsIcons";
-import { TableCell, TableRow } from "../UI/table";
+import { OrderItem } from "@/types/OrderItem";
+import { CatalogItem } from "@/types/CatalogItem";
+import { ProductType } from "@/types/ProductType";
+import ErrorPage from "@/components/Pages/ErrorPage";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import { DataTable } from "@/components/UI/DataTable";
+import imageNotFound from "@/assets/images/ImageNotFound.svg";
+import { SortArrowsIcons } from "@/components/UI/SortArrowsIcons";
 
 interface CatalogItemWithType extends CatalogItem {
   productTypes: ProductType;
@@ -33,7 +35,7 @@ const TableHeadSort: React.FC<{
       <span
         className={`${
           column.getIsSorted() ? "text-black" : ""
-        } flex items-center shrink-0 hover:cursor-pointer`}
+        } flex shrink-0 items-center hover:cursor-pointer`}
         role="button"
         tabIndex={0}
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -52,14 +54,25 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
   {
     accessorKey: "itemSnapshot.mainImage",
     cell: (tableProps) => (
-      <div className="overflow-hidden min-w-[40px] max-w-[100px] rounded-md">
+      <div className="min-w-[40px] max-w-[100px] overflow-hidden rounded-md">
         <Link to={`/item/${tableProps.row.original.productId}`}>
-          <img
-            src={
-              import.meta.env.VITE_REACT_SERVER_URL +
-              tableProps.row.original.itemSnapshot.mainImage?.path
-            }
-          />
+          {tableProps.row.original.itemSnapshot.mainImage ? (
+            <img
+              loading="lazy"
+              width={`${tableProps.row.original.itemSnapshot.mainImage.width}px`}
+              height={`${tableProps.row.original.itemSnapshot.mainImage.height}px`}
+              src={`${import.meta.env.VITE_SERVER_URL}${
+                tableProps.row.original.itemSnapshot.mainImage.path
+              }`}
+            />
+          ) : (
+            <img
+              className="rounded"
+              width="300px"
+              height="300px"
+              src={imageNotFound}
+            />
+          )}
         </Link>
       </div>
     ),
@@ -85,7 +98,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
   {
     accessorKey: "amount",
     cell: (tableProps) => (
-      <p className="text-center pr-4">{tableProps.row.original.amount}</p>
+      <p className="pr-4 text-center">{tableProps.row.original.amount}</p>
     ),
     header: ({ column }) => {
       return <TableHeadSort column={column}>Кол.-во</TableHeadSort>;
@@ -94,7 +107,7 @@ const columns: ColumnDef<OrderItemWithTypeName>[] = [
   {
     accessorKey: "finalPrice",
     cell: (tableProps) => (
-      <p className="text-end pr-4">
+      <p className="pr-4 text-end">
         {tableProps.row.original.finalPrice}&nbsp;руб.
       </p>
     ),
@@ -121,10 +134,10 @@ const OrderPage = () => {
             const finalPrice =
               item.itemSnapshot.price -
               Math.round(
-                item.itemSnapshot.price * (item.itemSnapshot.discount / 100)
+                item.itemSnapshot.price * (item.itemSnapshot.discount / 100),
               );
             return { ...item, finalPrice };
-          }
+          },
         );
         return { ...response.data, orderItems: fetchedOrderItems };
       }
@@ -134,12 +147,19 @@ const OrderPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Детали заказа | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Страница с детальной информацией по заказу (состав заказа, заказчик, дата и т.д.)."
+        />
+      </Helmet>
       <div className="w-full px-4 pb-4">
         <div className="mt-6">
           {isLoading && <Loader2 className="m-auto h-8 w-8 animate-spin" />}
           {!isLoading && !isError && (
             <>
-              <div className="mb-4 font-body text-base flex flex-col items-center justify-center sm:flex-row sm:divide-x sm:divide-solid sm:divide-background-700">
+              <div className="font-body sm:divide-background-700 mb-4 flex flex-col items-center justify-center text-base sm:flex-row sm:divide-x sm:divide-solid">
                 <p className="sm:px-4">
                   Дата заказа:{" "}
                   {format(new Date(data.createdAt), "dd.MM.y HH:mm")}

@@ -1,13 +1,19 @@
+import { z } from "zod";
 import { useState } from "react";
 import { AxiosError } from "axios";
+import { FilePenLine, Trash2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/UI/shadcn/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import RoleEdit from "./RoleEdit";
-import { Role } from "../types/Role";
-import { Privelege } from "../types/Privelege";
-import { useStore } from "../store/root-store-context";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { Role } from "@/types/Role";
+import { Privelege } from "@/types/Privelege";
+import { zodRolesForm } from "@/lib/zodRolesForm";
+import RolesDialog from "@/components/RolesDialog";
+import { useStore } from "@/store/root-store-context";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import ConfirmActionAlert from "@/components/UI/ConfirmActionAlert";
 
 const RoleItem: React.FC<{
   priveleges: Privelege[];
@@ -17,12 +23,14 @@ const RoleItem: React.FC<{
   const { alert } = useStore();
   const queryClient = useQueryClient();
   const axiosPrivate = useAxiosPrivate();
-  const [isInEdit, setIsInEdit] = useState<boolean>(false); // State to manage the edit mode
-
-  // Handler function to toggle the edit mode
-  const editModeHandler = () => {
-    setIsInEdit((prevValue) => !prevValue);
-  };
+  const form = useForm<z.infer<typeof zodRolesForm>>({
+    resolver: zodResolver(zodRolesForm),
+    defaultValues: {
+      title: role.title,
+      privelegeIds: role.privelegeIds,
+    },
+  });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Mutation to remove a role
   const removeMutation = useMutation({
@@ -57,14 +65,14 @@ const RoleItem: React.FC<{
     mutationFn: async (updatedRole: FormData) => {
       const response = await axiosPrivate.put(
         `/roles/${role.roleId}`,
-        updatedRole
+        updatedRole,
       );
       return response.data;
     },
     onSuccess: async () => {
+      setIsDialogOpen(false);
       // if query was successful invalidate query and refetch data
       await queryClient.invalidateQueries({ queryKey: ["roles"] });
-      setIsInEdit(false);
     },
     onError: (error) => {
       // display error alert if request failed
@@ -78,44 +86,45 @@ const RoleItem: React.FC<{
           message: "При изменении роли произошла неизвестная ошибка",
           type: "error",
         });
+      form.reset();
     },
   });
 
+  const onSubmit = (values: z.infer<typeof zodRolesForm>) => {
+    const fData = new FormData();
+    fData.append("title", values.title);
+    fData.append("privelegeIds", JSON.stringify(values.privelegeIds));
+    updateMutation.mutate(fData);
+  };
+
   return (
     <>
-      {!isInEdit && (
-        <li className="flex bg-background-50 rounded-lg items-center py-4 px-2 h-16 w-full gap-2">
-          <p className="text-start justify-items-start basis-10/12 px-2">
-            {role.title}
-          </p>
-          <div className="flex items-center basis-2/12 justify-center">
-            <div className="flex flex-row items-center justify-center gap-1">
-              <div onClick={editModeHandler}>
-                <PencilSquareIcon className="w-6 h-6 text-primary-800 hover:cursor-pointer" />
-              </div>
-              <TrashIcon
-                onClick={() => removeMutation.mutate(role.roleId)}
-                className="w-6 h-6 text-primary-800 hover:cursor-pointer"
-              />
-            </div>
-          </div>
-        </li>
-      )}
-      {isInEdit && (
-        <RoleEdit
-          initValues={{
-            roleId: role.roleId,
-            title: role.title,
-            privelegeIds: role.privelegeIds,
-          }}
-          priveleges={priveleges}
-          onFormClose={() => setIsInEdit(false)}
-          onFormSubmit={(updatedRole: FormData) =>
-            updateMutation.mutate(updatedRole)
-          }
-          isPending={updateMutation.isPending}
-        />
-      )}
+      <li className="bg-background-50 flex h-16 w-full items-center gap-2 rounded-lg border px-2 py-4">
+        <p className="basis-10/12 justify-items-start px-2 text-start">
+          {role.title}
+        </p>
+        <div className="flex gap-3">
+          <RolesDialog
+            form={form}
+            isOpen={isDialogOpen}
+            onOpen={() => setIsDialogOpen(true)}
+            onClose={() => setIsDialogOpen(false)}
+            onSubmit={onSubmit}
+            priveleges={priveleges}
+          >
+            <FilePenLine className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
+          </RolesDialog>
+          <ConfirmActionAlert
+            question="Вы уверены что хотите удалить роль пользователя?"
+            message="Удаление роли может повлечь за собой потерю доступа к некоторому функционалу для пользователей с данной ролью."
+            onConfirm={() => removeMutation.mutate(role.roleId)}
+          >
+            <Button className="p-0" variant="link" aria-label="Удалить роль">
+              <Trash2 className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
+            </Button>
+          </ConfirmActionAlert>
+        </div>
+      </li>
     </>
   );
 };

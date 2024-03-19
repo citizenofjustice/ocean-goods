@@ -1,18 +1,20 @@
-import { observer } from "mobx-react-lite";
-import ItemCard from "../ItemCard";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import CatalogItemModel from "../../classes/CatalogItemModel";
-import { Fragment, useEffect, useRef, useState } from "react";
-import LoadingSpinner from "../UI/LoadingSpinner";
 import { AxiosError } from "axios";
-import axios from "../../api/axios";
-import ErrorPage from "./ErrorPage";
-import SimpleSelect, { SelectOptions } from "../UI/SimpleSelect";
+import { observer } from "mobx-react-lite";
+import { Helmet } from "react-helmet-async";
+import { Input } from "@/components/UI/shadcn/input";
+import { ChevronDownCircle, Search } from "lucide-react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useDebounce, useIntersectionObserver } from "usehooks-ts";
-import { SortBy } from "../../types/SortBy";
-import { CatalogItem } from "../../types/CatalogItem";
-import { Input } from "../UI/input";
-import { ChevronDownCircle, ChevronUpCircle, Search } from "lucide-react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+
+import axios from "@/api/axios";
+import { SortBy } from "@/types/SortBy";
+import { CatalogItem } from "@/types/CatalogItem";
+import ErrorPage from "@/components/Pages/ErrorPage";
+import CatalogItemModel from "@/classes/CatalogItemModel";
+import CatalogItemCard from "@/components/CatalogItemCard";
+import LoadingSpinner from "@/components/UI/LoadingSpinner";
+import SimpleSelect, { SelectOptions } from "@/components/UI/SimpleSelect";
 
 // Initial values for sorting
 const initSortValues: SortBy = {
@@ -77,6 +79,7 @@ const CatalogPage = observer(() => {
   const [isFiltersShown, setIsFiltersShown] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string>("createdAtDown");
   const queryClient = useQueryClient();
+  const filtersRef = useRef<HTMLDivElement>(null);
 
   // IntersectionObserver for inifinite page loading
   const entry = useIntersectionObserver(ref, { threshold: 0.5 });
@@ -116,8 +119,8 @@ const CatalogPage = observer(() => {
               item.discount,
               item.weight,
               item.kcal,
-              item.mainImage
-            )
+              item.mainImage,
+            ),
         );
         return { ...response.data, catalog: fetchedCatalogItems };
       }
@@ -169,70 +172,88 @@ const CatalogPage = observer(() => {
   };
 
   return (
-    <div className="px-4">
-      <div
-        className={`m-auto z-30 max-w-screen-lg sticky top-0 bg-white flex gap-4 justify-center items-center`}
-      >
-        {!isFiltersShown && (
-          <span
-            className="my-4 flex justify-center gap-2 hover:cursor-pointer text-gray-500"
-            onClick={() => setIsFiltersShown(true)}
-          >
-            <ChevronDownCircle /> Показать фильтр
-          </span>
-        )}
-        {isFiltersShown && (
-          <>
+    <>
+      <Helmet>
+        <title>Каталог | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Каталог морских деликатесов и не только. Качественные консервы от отечественных производителей с доставкой по г. Зеленодольск."
+        />
+      </Helmet>
+      <div className="px-4">
+        <div
+          className={`sticky top-0 z-30 m-auto flex max-w-screen-lg items-center justify-center bg-white`}
+        >
+          <div className="mb-4">
             <span
-              className="flex justify-center gap-2 hover:cursor-pointer text-gray-500"
-              onClick={() => setIsFiltersShown(false)}
+              className="mb-2 mt-4 flex justify-center gap-2 text-gray-500 transition delay-150 ease-in-out hover:cursor-pointer"
+              onClick={() => setIsFiltersShown((prevVal) => !prevVal)}
             >
-              <ChevronUpCircle />
+              <ChevronDownCircle
+                className={`transition-transform duration-300 ${
+                  isFiltersShown ? "rotate-180" : ""
+                }`}
+              />
+              Показать фильтр
             </span>
-            <div className="my-2 h-28 vsm:h-20 grid gap-0 vsm:gap-4 grid-cols-none vsm:grid-cols-2 items-center">
-              <div className="m-auto vsm:m-0 vsm:ml-auto relative">
-                <Input
-                  placeholder={`Поиск по названию`}
-                  value={filterBy}
-                  onChange={(e) => setFilterBy(e.target.value)}
-                  className="max-w-[260px] pr-8"
-                />
-                <Search className="absolute top-[50%] translate-y-[-50%] right-2 w-5 h-5" />
-              </div>
-              <div className="m-auto vsm:m-0 vsm:mr-auto">
-                <SimpleSelect
-                  options={sortOptions}
-                  placeholder="Сортировать по"
-                  selectedOption={selectedOption}
-                  onOptionSelect={handleSelect}
-                />
+            <div
+              className="overflow-y-hidden transition-all duration-300"
+              style={{
+                height: isFiltersShown
+                  ? filtersRef.current?.offsetHeight || 0
+                  : 0,
+              }}
+            >
+              <div
+                className="grid grid-cols-1 items-center gap-0 vsm:grid-cols-2 vsm:gap-4 "
+                ref={filtersRef}
+              >
+                <div className="relative flex items-center justify-start p-2">
+                  <Input
+                    placeholder={`Поиск по названию`}
+                    value={filterBy}
+                    onChange={(e) => setFilterBy(e.target.value)}
+                    className="max-w-[260px] pr-8"
+                  />
+                  <Search className="absolute right-4 top-[50%] h-5 w-5 translate-y-[-50%]" />
+                </div>
+                <div className="flex flex-col items-center justify-start gap-2 p-2 vvsm:flex-row">
+                  <p className="text-sm font-medium">Сортировка:</p>
+                  <SimpleSelect
+                    options={sortOptions}
+                    placeholder="Сортировать по"
+                    selectedOption={selectedOption}
+                    onOptionSelect={handleSelect}
+                    ariaLabel="Сортировка каталога"
+                  />
+                </div>
               </div>
             </div>
-          </>
-        )}
-      </div>
-      {status === "pending" ? (
-        <LoadingSpinner />
-      ) : status === "error" ? (
-        <ErrorPage
-          error={error}
-          customMessage="При загрузке каталога произошла ошибка"
-        />
-      ) : (
-        data.pages[0].totalRows > 0 && (
-          <div className="grid gap-4 vsm:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 sm:max-w-screen-lg px-2 m-auto">
-            {data.pages.map((group, i) => (
-              <Fragment key={i}>
-                {group.catalog.map((item: CatalogItemModel) => (
-                  <ItemCard key={item.productId} catalogItem={item} />
-                ))}
-              </Fragment>
-            ))}
           </div>
-        )
-      )}
-      <div className="h-8 w-full" ref={ref} />
-    </div>
+        </div>
+        {status === "pending" ? (
+          <LoadingSpinner />
+        ) : status === "error" ? (
+          <ErrorPage
+            error={error}
+            customMessage="При загрузке каталога произошла ошибка"
+          />
+        ) : (
+          data.pages[0].totalRows > 0 && (
+            <div className="m-auto grid gap-4 px-2 vsm:grid-cols-2 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
+              {data.pages.map((group, i) => (
+                <Fragment key={i}>
+                  {group.catalog.map((item: CatalogItemModel) => (
+                    <CatalogItemCard key={item.productId} catalogItem={item} />
+                  ))}
+                </Fragment>
+              ))}
+            </div>
+          )
+        )}
+        <div className="h-8 w-full" ref={ref} />
+      </div>{" "}
+    </>
   );
 });
 

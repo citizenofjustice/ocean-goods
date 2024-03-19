@@ -6,7 +6,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "./select";
+} from "@/components/UI/shadcn/select";
 
 export interface SelectOptions {
   value: string;
@@ -20,6 +20,7 @@ const SimpleSelect: React.FC<{
   placeholder?: string;
   groupLabel?: string;
   size?: "normal" | "small";
+  ariaLabel?: string;
 }> = ({
   options,
   selectedOption,
@@ -27,6 +28,7 @@ const SimpleSelect: React.FC<{
   placeholder,
   groupLabel,
   size = "normal",
+  ariaLabel,
 }) => {
   const isSmall = size === "small";
 
@@ -35,7 +37,10 @@ const SimpleSelect: React.FC<{
       value={selectedOption}
       onValueChange={(value) => onOptionSelect(value)}
     >
-      <SelectTrigger className={isSmall ? "w-10" : "w-36"}>
+      <SelectTrigger
+        className={isSmall ? "w-10" : "w-36"}
+        aria-label={ariaLabel}
+      >
         {isSmall ? "" : <SelectValue placeholder={placeholder} />}
       </SelectTrigger>
       <SelectContent className="bg-white">

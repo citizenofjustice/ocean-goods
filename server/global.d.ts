@@ -30,6 +30,10 @@ namespace NodeJS {
 namespace Express {
   interface Request {
     user: string | JwtPayload;
-    role: string | JwtPayload;
+    priveleges: string | JwtPayload;
+    imageDimensions?: {
+      width: number;
+      height: number;
+    };
   }
 }

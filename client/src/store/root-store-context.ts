@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import RootStore from "./root-store";
+import RootStore from "@/store/root-store";
 
 // Creating a context for the root store
 // The context is initially null

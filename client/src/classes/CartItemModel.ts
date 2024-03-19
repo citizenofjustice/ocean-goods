@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
 import { makeAutoObservable } from "mobx";
 
-import { CartItem } from "../types/CartItem";
-import { BasicImage } from "src/types/BasicImage";
+import { CartItem } from "@/types/CartItem";
+import { BasicImage } from "@/types/BasicImage";
 
 class CartItemModel implements CartItem {
   cartItemId: string = nanoid();

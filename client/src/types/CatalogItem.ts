@@ -1,4 +1,4 @@
-import { BasicImage } from "./BasicImage";
+import { BasicImage } from "@/types/BasicImage";
 
 // declaring interface for catalog item
 export interface CatalogItem {

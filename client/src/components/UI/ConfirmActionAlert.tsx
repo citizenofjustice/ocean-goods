@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,9 +7,11 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogOverlay,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./alert-dialog";
+} from "@/components/UI/shadcn/alert-dialog";
+import { useOnClickOutside } from "usehooks-ts";
 
 const ConfirmActionAlert: React.FC<{
   children: React.ReactNode;
@@ -18,11 +20,18 @@ const ConfirmActionAlert: React.FC<{
   onConfirm: () => void;
 }> = ({ children, question, message, onConfirm }) => {
   const [open, setOpen] = useState(false);
+  const alertRef = useRef(null);
+  useOnClickOutside(alertRef, () => setOpen(false));
+
+  const handleConfirm = () => {
+    setOpen(false);
+    onConfirm();
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent className="rounded-md">
+      <AlertDialogContent ref={alertRef} className="rounded-md">
         <AlertDialogHeader>
           <AlertDialogTitle>{question}</AlertDialogTitle>
           {message && (
@@ -30,10 +39,10 @@ const ConfirmActionAlert: React.FC<{
           )}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setOpen(false)}>
-            Отмена
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Подтвердить</AlertDialogAction>
+          <AlertDialogCancel>Отмена</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm}>
+            Подтвердить
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

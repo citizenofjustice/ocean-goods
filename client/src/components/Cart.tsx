@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite";
-import { useLockBodyScroll } from "@uidotdev/usehooks";
+import { Helmet } from "react-helmet-async";
+import { ScrollArea } from "@/components/UI/shadcn/scroll-area";
 
-import CartElement from "./CartElement";
-import { useStore } from "../store/root-store-context";
-import { ScrollArea } from "./UI/scroll-area";
+import CartElement from "@/components/CartElement";
+import { useStore } from "@/store/root-store-context";
 
 /**
  * Component rendering list of cart items
@@ -14,19 +14,24 @@ const Cart = observer(() => {
   const { cart } = useStore();
   const { cartItems } = cart;
 
-  useLockBodyScroll(); // disabling body scroll
-
   return (
     <>
-      <ScrollArea className="h-[75vh] rounded-md border-0 vsm:border p-4">
-        <div className="grid h-max gap-2 justify-center py-2">
-          <ul className="flex flex-col gap-2 rounded-xl max-w-lg">
+      <Helmet>
+        <title>Корзина | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Список продуктов добавленных в корзину."
+        />
+      </Helmet>
+      <ScrollArea className="h-[75vh] rounded-md border-0 p-4 vsm:border">
+        <div className="grid h-max justify-center gap-2 py-2">
+          <ul className="flex max-w-lg flex-col gap-2 rounded-xl">
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
                 <CartElement key={item.cartItemId} cartItem={item} />
               ))
             ) : (
-              <p className="text-center text-text-700 font-medium">
+              <p className="text-text-700 text-center font-medium">
                 Корзина пуста
               </p>
             )}

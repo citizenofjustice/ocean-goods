@@ -6,7 +6,7 @@ import { Bot } from "./bot/index";
 import { ConfigService } from "./bot/config.service";
 
 // Importing middleware functions from "./middleware"
-import { verifyRole } from "./middleware/verifyRole";
+import { verifyAccess } from "./middleware/verifyAccess";
 import { verifyToken } from "./middleware/verifyToken";
 import { errorHandler } from "./middleware/errorHandler";
 
@@ -39,13 +39,12 @@ app.use("/api/catalog", catalogRouter);
 app.use("/api/product-types", productTypesRouter);
 app.use("/api/orders", ordersRouter);
 
-// Using middleware functions, routes below will use it
+// Using middleware function, routes below will use it
 app.use(verifyToken);
-app.use(verifyRole);
 // Using more routers for different API endpoints
-app.use("/api/users", userRouter);
-app.use("/api/roles", rolesRouter);
-app.use("/api/priveleges", privelegesRouter);
+app.use("/api/users", verifyAccess([1, 4]), userRouter);
+app.use("/api/roles", verifyAccess([1, 2]), rolesRouter);
+app.use("/api/priveleges", verifyAccess([1, 2]), privelegesRouter);
 
 // Using the error handler as the last middleware
 app.use(errorHandler);

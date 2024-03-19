@@ -1,4 +1,4 @@
-import { Button } from "./button";
+import { Button } from "@/components/UI/shadcn/button";
 
 /**
  * Styled amount control button
@@ -8,13 +8,15 @@ import { Button } from "./button";
 const AmountContolButton: React.FC<{
   children: React.ReactNode;
   buttonAction: () => void;
-}> = ({ children, buttonAction }) => {
+  ariaLabel: string;
+}> = ({ children, buttonAction, ariaLabel }) => {
   return (
     <Button
       type="button"
       variant="outline"
-      className="h-5 sm:h-8 p-1 sm:p-2 bg-secondary"
+      className="h-5 bg-secondary p-1 sm:h-8 sm:p-2"
       onClick={buttonAction}
+      aria-label={ariaLabel}
     >
       {children}
     </Button>

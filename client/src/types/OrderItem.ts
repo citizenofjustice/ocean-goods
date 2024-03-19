@@ -1,4 +1,4 @@
-import { CatalogItem } from "./CatalogItem";
+import { CatalogItem } from "@/types/CatalogItem";
 
 export interface OrderItem {
   orderItemId: number;

@@ -13,7 +13,7 @@ class CatalogController {
       let image;
 
       // If there is a file in the request, upload it and get the URL
-      if (req.file) {
+      if (req.file && req.imageDimensions) {
         // First, create an image record
         image = await prisma.image.create({
           data: {
@@ -21,6 +21,8 @@ class CatalogController {
             filename: req.file.filename,
             originalName: req.file.originalname,
             mimetype: req.file.mimetype,
+            width: req.imageDimensions.width,
+            height: req.imageDimensions.height,
           },
         });
       }
@@ -69,6 +71,8 @@ class CatalogController {
           mainImage: {
             select: {
               path: true,
+              width: true,
+              height: true,
             },
           },
         },
@@ -183,7 +187,7 @@ class CatalogController {
       let image: Image | undefined | null;
 
       // If there is a file in the request, upload it and get the URL
-      if (req.file) {
+      if (req.file && req.imageDimensions) {
         // First, create an image record
         image = await prisma.image.create({
           data: {
@@ -191,6 +195,8 @@ class CatalogController {
             filename: req.file.filename,
             originalName: req.file.originalname,
             mimetype: req.file.mimetype,
+            width: req.imageDimensions.width,
+            height: req.imageDimensions.height,
           },
         });
       } else {

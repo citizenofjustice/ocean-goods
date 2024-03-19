@@ -1,4 +1,4 @@
-import { OrderItem } from "./OrderItem";
+import { OrderItem } from "@/types/OrderItem";
 
 export interface Order {
   orderId: number;

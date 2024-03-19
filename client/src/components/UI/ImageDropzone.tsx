@@ -1,17 +1,18 @@
-import { UploadCloud, X } from "lucide-react";
-import { Card } from "./card";
+import { z } from "zod";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "./form";
-import { Input } from "./input";
-import { Button } from "./button";
+} from "@/components/UI/shadcn/form";
 import { Control } from "react-hook-form";
-import { zodCatalogItemForm } from "../../lib/zodCatalogItemForm";
-import { z } from "zod";
+import { UploadCloud, X } from "lucide-react";
+import { Card } from "@/components/UI/shadcn/card";
+import { Input } from "@/components/UI/shadcn/input";
+import { Button } from "@/components/UI/shadcn/button";
+
+import { zodCatalogItemForm } from "@/lib/zodCatalogItemForm";
 
 const ImageDropzone: React.FC<{
   control: Control<z.infer<typeof zodCatalogItemForm>>;
@@ -32,35 +33,36 @@ const ImageDropzone: React.FC<{
                 <Input
                   type="file"
                   accept="image/*"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0)
+                      field.onChange(e.target.files[0]);
+                  }}
                   id="fileInput"
                   className="hidden"
-                  multiple
                 />
               </>
             </FormControl>
-            <Card className="flex w-[100%] h-[100%] justify-center max-h-[140px]">
+            <Card className="flex h-[100%] h-[140px] w-[100%] justify-center">
               <label
                 htmlFor="fileInput"
-                className="hover:cursor-pointer w-full"
+                className="w-full hover:cursor-pointer"
               >
-                <span className="py-2 w-[100%] h-[100%] flex flex-col items-center justify-center">
+                <span className="flex h-[100%] w-[100%] flex-col items-center justify-center py-2">
                   {field.value ? (
                     <img
-                      className="max-w-[100%] max-h-[100%] rounded"
+                      className="max-h-[100%] max-w-[100%] rounded"
+                      loading="lazy"
                       src={
                         typeof field.value === "string"
-                          ? import.meta.env.VITE_REACT_SERVER_URL + field.value
+                          ? `${import.meta.env.VITE_SERVER_URL}${field.value}`
                           : URL.createObjectURL(field.value)
                       }
                     />
                   ) : (
-                    <div className="flex flex-col justify-center items-center grow">
-                      <UploadCloud strokeWidth={0.95} className="w-10 h-10" />
+                    <div className="flex grow flex-col items-center justify-center">
+                      <UploadCloud strokeWidth={0.95} className="h-10 w-10" />
                       <p className="mb-2 px-4 text-center">
-                        <span className="font-medium text-sm">
+                        <span className="text-sm font-medium">
                           Нажмите чтобы загрузить файл
                         </span>
                       </p>
@@ -68,14 +70,17 @@ const ImageDropzone: React.FC<{
                   )}
                 </span>
               </label>
-              <Button
-                onClick={fieldReset}
-                variant="ghost"
-                type="button"
-                className="p-1 absolute top-9 right-1"
-              >
-                <X className="w-6 h-6" />
-              </Button>
+              {field.value && (
+                <Button
+                  onClick={fieldReset}
+                  variant="outline"
+                  type="button"
+                  className="absolute right-1 top-9 h-fit bg-background p-1"
+                  aria-label="Удалить фото"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </Card>
             <FormMessage />
           </FormItem>

@@ -1,20 +1,24 @@
 import { AxiosError } from "axios";
-import { observer } from "mobx-react-lite";
-import { Alert, AlertDescription, AlertTitle } from "../UI/alert";
-import { AlertCircle } from "lucide-react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/UI/shadcn/alert";
 import {
   Accordion,
   AccordionContent,
   AccordionTrigger,
   AccordionItem,
-} from "../UI/accordion";
+} from "@/components/UI/shadcn/accordion";
+import { observer } from "mobx-react-lite";
+import { AlertCircle } from "lucide-react";
 
 const ErrorPage: React.FC<{
   error: Error | null;
   customMessage: string;
 }> = observer(({ error, customMessage }) => {
   return (
-    <Alert variant="destructive" className="max-w-2xl m-auto">
+    <Alert variant="destructive" className="m-auto max-w-2xl">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Ошибка</AlertTitle>
       <Accordion type="single" collapsible>

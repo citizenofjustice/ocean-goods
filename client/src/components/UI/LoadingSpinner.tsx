@@ -1,4 +1,4 @@
-import LoadingSVG from "./LoadingSVG";
+import { Loader2 } from "lucide-react";
 
 const LoadingSpinner: React.FC<{
   size?: "small" | "normal" | "large";
@@ -32,7 +32,7 @@ const LoadingSpinner: React.FC<{
         <div
           className={`animate-spin w-${spinnerSize} h-${spinnerSize} ${color}`}
         >
-          <LoadingSVG className={`w-${spinnerSize} h-${spinnerSize}`} />
+          <Loader2 className={`w-${spinnerSize} h-${spinnerSize}`} />
         </div>
       </div>
     </>

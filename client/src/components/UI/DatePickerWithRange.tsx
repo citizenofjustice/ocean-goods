@@ -1,16 +1,17 @@
-"use client";
-
-import { format, endOfDay } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
-
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { ru } from "date-fns/locale";
-import { Button } from "./button";
-import { Calendar } from "./calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/UI/shadcn/popover";
 import { useRef, useState } from "react";
+import { format, endOfDay } from "date-fns";
+import { DateRange } from "react-day-picker";
 import { useOnClickOutside } from "usehooks-ts";
+import { Button } from "@/components/UI/shadcn/button";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/UI/shadcn/calendar";
 
 export const DatePickerWithRange: React.FC<{
   onDateChange: (dateRange: DateRange | undefined) => void;
@@ -50,8 +51,9 @@ export const DatePickerWithRange: React.FC<{
             variant={"outline"}
             className={cn(
               "w-[245px] justify-start text-left font-normal",
-              !dateRange && "text-muted-foreground"
+              !dateRange && "text-muted-foreground",
             )}
+            aria-label="Укажите период времени"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {dateRange?.from ? (
@@ -68,7 +70,7 @@ export const DatePickerWithRange: React.FC<{
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 bg-white" align="start">
+        <PopoverContent className="w-auto bg-white p-0" align="start">
           <div ref={popoverRef}>
             <Calendar
               initialFocus

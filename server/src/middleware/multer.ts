@@ -1,7 +1,9 @@
-import path from "path";
-import multer, { FileFilterCallback } from "multer";
 import fs from "fs";
+import path from "path";
+import sharp from "sharp";
 import { randomUUID } from "crypto";
+import multer, { FileFilterCallback } from "multer";
+import { Request, Response, NextFunction } from "express";
 
 // Function to check the file type
 function checkFileType(file: Express.Multer.File, cb: FileFilterCallback) {
@@ -38,7 +40,7 @@ const storage = multer.diskStorage({
     return cb(null, path);
   },
   filename: function (req, file, cb) {
-    cb(null, randomUUID() + path.extname(file.originalname));
+    cb(null, randomUUID() + ".webp"); // Change the extension to .webp
   },
 });
 
@@ -53,3 +55,39 @@ export const upload = multer({
     checkFileType(file, cb);
   },
 });
+
+// Middleware to convert image to webp
+export const convertToWebp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { file } = req;
+    if (file) {
+      // Convert image to webp format and get metadata
+      const image = sharp(file.path);
+      const webpImage = await image.webp().toBuffer();
+      const metadata = await image.metadata();
+      if (metadata.width && metadata.height) {
+        // Attach the image dimensions to the request object
+        req.imageDimensions = {
+          width: metadata.width,
+          height: metadata.height,
+        };
+      } else
+        return res
+          .status(400)
+          .json({ error: { message: "Не удалось обработать изображение" } });
+
+      // Write the converted image to the file system
+      await fs.promises.writeFile(file.path, webpImage).catch((error) => {
+        console.error(`Error writing file: ${error.message}`);
+      });
+      file.mimetype = "image/webp";
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

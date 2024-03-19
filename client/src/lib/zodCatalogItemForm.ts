@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { zodInputStringPipe } from "./zodInputStringPipe";
-import { zodImageFile } from "./zodImageFile";
+
+import { zodImageFile } from "@/lib/zodImageFile";
+import { zodInputStringPipe } from "@/lib/zodInputStringPipe";
 
 export const zodCatalogItemForm = z.object({
   productName: z.string().min(2, { message: "Слишком короткое наименование" }),
