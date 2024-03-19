@@ -2,6 +2,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
 import { PlusCircleIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader } from "@/components/UI/shadcn/card";
@@ -87,6 +88,13 @@ const Roles = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Роли пользователей | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Список ролей пользователей с возможностью добавления, редактирования и удаления."
+        />
+      </Helmet>
       {!isError && ( // If there is no error in fetching roles
         <Card className="mt-4 w-full">
           {!privelegesQuery.isError && ( // If there is no error in fetching privileges

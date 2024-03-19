@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/UI/shadcn/select";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Input } from "@/components/UI/shadcn/input";
@@ -102,6 +103,12 @@ const RegisterUserPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          Регистрация пользователя | {import.meta.env.VITE_MAIN_TITLE}
+        </title>
+        <meta name="description" content="Форма регистрации пользователя." />
+      </Helmet>
       <Card className="mt-4 w-full">
         <CardHeader>
           <p className="text-center font-medium">Регистрация пользователя:</p>

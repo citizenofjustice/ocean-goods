@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
 import { observer } from "mobx-react-lite";
+import { Helmet } from "react-helmet-async";
 import { useMediaQuery } from "usehooks-ts";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -54,6 +55,21 @@ const ItemPage = observer(() => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {catalogItem?.productName
+            ? `${catalogItem.productName}`
+            : "Карточка продукта"}{" "}
+          | {import.meta.env.VITE_MAIN_TITLE}
+        </title>
+        <meta
+          name="description"
+          content="Карточка продукта с информацией о продукте, фото и описанием."
+        />
+        {catalogItem && (
+          <meta property="og:title" content={`${catalogItem.productName}`} />
+        )}
+      </Helmet>
       {isLoading && <LoadingSpinner />}
       {!isLoading && !isError && (
         <>

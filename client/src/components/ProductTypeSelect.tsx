@@ -1,4 +1,5 @@
 import { z } from "zod";
+import axios from "@/api/axios";
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import {
@@ -19,7 +20,6 @@ import { Control } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 
 import { useStore } from "@/store/root-store-context";
-import { getProductTypesSelectValues } from "@/api/index";
 import { zodCatalogItemForm } from "@/lib/zodCatalogItemForm";
 
 interface SelectValueProp {
@@ -41,7 +41,8 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({ control }) => {
   const { isLoading, isError, data } = useQuery({
     queryKey: ["product-type-select"],
     queryFn: async () => {
-      const data = await getProductTypesSelectValues();
+      const response = await axios.get(`/product-types/select-values`);
+      const data = response.data;
       if (data instanceof AxiosError) {
         alert.setPopup({
           message: "Не удалось загрузить типы продуктов",

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
 import { PlusCircleIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,6 +51,13 @@ const ProductTypesListPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Типы продуктов | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Список типов продуктов с возможностью добавления, редактирования и удаления."
+        />
+      </Helmet>
       {!isError && (
         <Card className="mt-4 w-full">
           {isLoading && <LoadingSpinner />}

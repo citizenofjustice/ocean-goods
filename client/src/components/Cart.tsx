@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import { Helmet } from "react-helmet-async";
 import { ScrollArea } from "@/components/UI/shadcn/scroll-area";
 
 import CartElement from "@/components/CartElement";
@@ -15,6 +16,13 @@ const Cart = observer(() => {
 
   return (
     <>
+      <Helmet>
+        <title>Корзина | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Список продуктов добавленных в корзину."
+        />
+      </Helmet>
       <ScrollArea className="h-[75vh] rounded-md border-0 p-4 vsm:border">
         <div className="grid h-max justify-center gap-2 py-2">
           <ul className="flex max-w-lg flex-col gap-2 rounded-xl">

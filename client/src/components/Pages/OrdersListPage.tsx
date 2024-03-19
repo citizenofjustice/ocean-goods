@@ -15,6 +15,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { useIntersectionObserver, useMediaQuery } from "usehooks-ts";
 
 import { Order } from "@/types/Order";
+import { Helmet } from "react-helmet-async";
 import { useOrders } from "@/hooks/useOrders";
 import ErrorPage from "@/components/Pages/ErrorPage";
 import { TableColumnHeader } from "@/types/TableColumnHeader";
@@ -112,6 +113,13 @@ const OrdersListPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Список заказов | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Таблица со списком заказов и возможностью поиска и сортировки по полям таблицы."
+        />
+      </Helmet>
       <div className="w-full px-4 pb-4">
         <div className="m-auto mb-4 grid max-w-4xl grid-cols-1 justify-between gap-2 pt-4 sm:grid-cols-12">
           <div className="flex gap-2 sm:col-span-7">

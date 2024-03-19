@@ -50,7 +50,11 @@ const DashboardPage = () => {
   return (
     <>
       <Helmet>
-        <title>Панель управления</title>
+        <title>Панель управления | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Панель управления сайтом (доступ запрещен для рядовых пользователей)."
+        />
       </Helmet>
       <div className="m-4">
         {isMenuPage ? (

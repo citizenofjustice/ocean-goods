@@ -18,6 +18,7 @@ import {
 } from "@/components/UI/shadcn/select";
 import { useForm } from "react-hook-form";
 import { observer } from "mobx-react-lite";
+import { Helmet } from "react-helmet-async";
 import { Input } from "@/components/UI/shadcn/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/UI/shadcn/button";
@@ -142,121 +143,132 @@ const CartCustomerDataForm: React.FC<{
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <div className="mb-4 text-center">
-        Чтобы завершить оформление введите контактные данные:
-      </div>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex w-full max-w-sm flex-col gap-4"
-        >
-          <FormField
-            control={form.control}
-            name="customerName"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel htmlFor="customerName">Имя заказчика:</FormLabel>
-                <FormControl>
-                  <Input
-                    id="customerName"
-                    placeholder="Введите имя"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="contactMethod"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel htmlFor="contactMethod">
-                  Предпочитаемый способ связи:
-                </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+    <>
+      <Helmet>
+        <title>Оформление заказа | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Контактная форма для оформления заказа."
+        />
+      </Helmet>
+      <div className="flex flex-col items-center p-4">
+        <div className="mb-4 text-center">
+          Чтобы завершить оформление введите контактные данные:
+        </div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex w-full max-w-sm flex-col gap-4"
+          >
+            <FormField
+              control={form.control}
+              name="customerName"
+              render={({ field }) => (
+                <FormItem className="">
+                  <FormLabel htmlFor="customerName">Имя заказчика:</FormLabel>
                   <FormControl>
-                    <SelectTrigger id="contactMethod">
-                      <SelectValue placeholder="Выберите способ связи" />
-                    </SelectTrigger>
+                    <Input
+                      id="customerName"
+                      placeholder="Введите имя"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
-                  <SelectContent>
-                    {contactOptions.map((item: ContactOption, index) => (
-                      <SelectItem key={index} value={item.value}>
-                        {item.content}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="customerPhone"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel htmlFor="customerPhone">Телефонный номер:</FormLabel>
-                <FormControl>
-                  <Input
-                    id="customerPhone"
-                    placeholder="Введите номер телефона"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="customerEmail"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel htmlFor="customerEmail">
-                  Электронная почта:
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    id="customerEmail"
-                    placeholder="не обязательное поле"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="contactMethod"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="contactMethod">
+                    Предпочитаемый способ связи:
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger id="contactMethod">
+                        <SelectValue placeholder="Выберите способ связи" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <FormMessage />
+                    <SelectContent>
+                      {contactOptions.map((item: ContactOption, index) => (
+                        <SelectItem key={index} value={item.value}>
+                          {item.content}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="customerPhone"
+              render={({ field }) => (
+                <FormItem className="">
+                  <FormLabel htmlFor="customerPhone">
+                    Телефонный номер:
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="customerPhone"
+                      placeholder="Введите номер телефона"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="customerEmail"
+              render={({ field }) => (
+                <FormItem className="">
+                  <FormLabel htmlFor="customerEmail">
+                    Электронная почта:
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="customerEmail"
+                      placeholder="не обязательное поле"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {isPending ? (
-            <ButtonLoading />
-          ) : (
-            <ConfirmActionAlert
-              question="Вы уверены что хотите оформить заказ?"
-              message="Проверьте указанные контактные данные на правильность."
-              onConfirm={form.handleSubmit(onSubmit)}
+            {isPending ? (
+              <ButtonLoading />
+            ) : (
+              <ConfirmActionAlert
+                question="Вы уверены что хотите оформить заказ?"
+                message="Проверьте указанные контактные данные на правильность."
+                onConfirm={form.handleSubmit(onSubmit)}
+              >
+                <Button type="button" aria-label="Заказать">
+                  Заказать
+                </Button>
+              </ConfirmActionAlert>
+            )}
+            <Button
+              onClick={onPreviousPage}
+              aria-label="Вернуться к корзине"
+              variant="outline"
             >
-              <Button type="button" aria-label="Заказать">
-                Заказать
-              </Button>
-            </ConfirmActionAlert>
-          )}
-          <Button
-            onClick={onPreviousPage}
-            aria-label="Вернуться к корзине"
-            variant="outline"
-          >
-            Вернуться к корзине
-          </Button>
-        </form>
-      </Form>
-    </div>
+              Вернуться к корзине
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </>
   );
 });
 

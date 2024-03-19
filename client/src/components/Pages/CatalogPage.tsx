@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import { observer } from "mobx-react-lite";
+import { Helmet } from "react-helmet-async";
 import { Input } from "@/components/UI/shadcn/input";
 import { ChevronDownCircle, Search } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
@@ -14,7 +15,6 @@ import CatalogItemModel from "@/classes/CatalogItemModel";
 import CatalogItemCard from "@/components/CatalogItemCard";
 import LoadingSpinner from "@/components/UI/LoadingSpinner";
 import SimpleSelect, { SelectOptions } from "@/components/UI/SimpleSelect";
-import { Helmet } from "react-helmet-async";
 
 // Initial values for sorting
 const initSortValues: SortBy = {
@@ -174,11 +174,11 @@ const CatalogPage = observer(() => {
   return (
     <>
       <Helmet>
-        <title>
-          Рыбные консервы - доставка по г. Зеленодольск. Выгодные цены на
-          качественные рыбные консервы
-        </title>
-        <meta name="description" content="Каталог продуктов." />
+        <title>Каталог | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Каталог морских деликатесов и не только. Качественные консервы от отечественных производителей с доставкой по г. Зеленодольск."
+        />
       </Helmet>
       <div className="px-4">
         <div

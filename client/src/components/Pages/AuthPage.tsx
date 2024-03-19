@@ -18,6 +18,7 @@ import {
 import { useForm } from "react-hook-form";
 import { observer } from "mobx-react-lite";
 import { Eye, EyeOff } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { Input } from "@/components/UI/shadcn/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/UI/shadcn/button";
@@ -82,6 +83,13 @@ const AuthPage = observer(() => {
 
   return (
     <>
+      <Helmet>
+        <title>Вход в учетную запись | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Страница входа в учетную запись пользователя."
+        />
+      </Helmet>
       <div className="flex w-full justify-center">
         <Card className="mx-4 mt-[10vh] w-[400px] min-w-[200px]">
           <CardHeader>

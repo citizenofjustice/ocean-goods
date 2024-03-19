@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader } from "@/components/UI/shadcn/card";
 
+import { Helmet } from "react-helmet-async";
 import { Privelege } from "@/types/Privelege";
 import ErrorPage from "@/components/Pages/ErrorPage";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
@@ -27,6 +28,13 @@ const PrivelegesPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Список привелегий | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Список существующих привелегий для зарегистрированных пользователей."
+        />
+      </Helmet>
       <Card className="mt-4 w-full">
         {isLoading && <LoadingSpinner />}
         {!isLoading && !isError && (

@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Column, ColumnDef } from "@tanstack/react-table";
@@ -146,6 +147,13 @@ const OrderPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Детали заказа | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Страница с детальной информацией по заказу (состав заказа, заказчик, дата и т.д.)."
+        />
+      </Helmet>
       <div className="w-full px-4 pb-4">
         <div className="mt-6">
           {isLoading && <Loader2 className="m-auto h-8 w-8 animate-spin" />}

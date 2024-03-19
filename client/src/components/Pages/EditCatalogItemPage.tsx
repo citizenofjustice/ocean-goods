@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { Helmet } from "react-helmet-async";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
@@ -57,6 +58,15 @@ const EditCatalogItemPage = observer(() => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          Редактирование карточки продукта | {import.meta.env.VITE_MAIN_TITLE}
+        </title>
+        <meta
+          name="description"
+          content="Страница для редактирования карточки продукта."
+        />
+      </Helmet>
       {isLoading && <LoadingSpinner />}
       {!isLoading && beforeEditData && !isError && (
         <CatalogItemFormPage

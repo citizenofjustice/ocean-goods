@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/UI/shadcn/button";
 
@@ -8,6 +9,13 @@ const Unauthorized = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Доступ запрещен | {import.meta.env.VITE_MAIN_TITLE}</title>
+        <meta
+          name="description"
+          content="Сообщение об отсутсвии необходимых полномочий для доступа к странице."
+        />
+      </Helmet>
       <div className="flex h-[60vh] flex-col items-center justify-center px-6">
         <p className="text-xl font-bold">Нет доступа</p>
         <br />

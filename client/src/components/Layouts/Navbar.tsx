@@ -4,9 +4,9 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/UI/shadcn/sheet";
+import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { useMediaQuery } from "usehooks-ts";
-import { NavLink } from "react-router-dom";
 import { LogIn, Menu, X, ShoppingCart } from "lucide-react";
 
 import WebAppLogo from "@/components/UI/WebAppLogo";
@@ -71,12 +71,13 @@ const Navbar = observer(() => {
               <UserDropdownMenu />
             </div>
           ) : (
-            <NavLink
+            <Link
               to="/auth"
               className="text-primary-800 mx-4 flex flex-row items-center"
+              aria-label="Войти в учетную запись"
             >
               <LogIn className="h-6 w-6" />
-            </NavLink>
+            </Link>
           )}
           <Sheet
             open={sheet.isCartSheetActive}
