@@ -47,7 +47,7 @@ const PrivelegesPage = () => {
                 {dataAvailable && data.length > 0 ? (
                   data.map((item: Privelege) => (
                     <li
-                      className="bg-background-50 my-4 flex h-16 w-full items-center gap-2 rounded-lg border px-2 py-4"
+                      className="my-4 flex h-16 w-full items-center gap-2 rounded-lg border bg-background px-2 py-4"
                       key={item.privelegeId}
                     >
                       <p className="basis-10/12 justify-items-start px-2 text-start first-letter:capitalize">

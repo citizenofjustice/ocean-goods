@@ -61,6 +61,8 @@ export const theme = {
     },
     fontFamily: {
       sans: ["var(--font-sans)", ...fontFamily.sans],
+      alegreya: ['"Alegreya Sans SC"', ...fontFamily.sans],
+      roboto: ['"Roboto Slab"', ...fontFamily.serif],
     },
     keyframes: {
       "accordion-down": {

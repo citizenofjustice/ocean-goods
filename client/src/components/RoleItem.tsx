@@ -99,7 +99,7 @@ const RoleItem: React.FC<{
 
   return (
     <>
-      <li className="bg-background-50 flex h-16 w-full items-center gap-2 rounded-lg border px-2 py-4">
+      <li className="flex h-16 w-full items-center gap-2 rounded-lg border bg-background px-2 py-4">
         <p className="basis-10/12 justify-items-start px-2 text-start">
           {role.title}
         </p>
@@ -112,7 +112,7 @@ const RoleItem: React.FC<{
             onSubmit={onSubmit}
             priveleges={priveleges}
           >
-            <FilePenLine className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
+            <FilePenLine className="h-6 w-6 hover:cursor-pointer" />
           </RolesDialog>
           <ConfirmActionAlert
             question="Вы уверены что хотите удалить роль пользователя?"
@@ -120,7 +120,7 @@ const RoleItem: React.FC<{
             onConfirm={() => removeMutation.mutate(role.roleId)}
           >
             <Button className="p-0" variant="link" aria-label="Удалить роль">
-              <Trash2 className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
+              <Trash2 className="h-6 w-6 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>
         </div>

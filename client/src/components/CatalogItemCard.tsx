@@ -62,9 +62,9 @@ const CatalogItemCard: React.FC<{
 
   return (
     <>
-      <Card className="grid content-between">
-        <CardHeader className="flex flex-row items-center justify-between px-4">
-          <p className="w-full px-1 text-center font-medium vsm:px-3">
+      <Card className="grid max-w-[18rem] content-between vsm:max-w-none">
+        <CardHeader className="flex flex-row items-start justify-between px-4 py-3 lg:py-6">
+          <p className="flex h-full w-full items-center justify-center text-center  font-medium leading-4 vsm:px-3">
             <Link to={`item/${catalogItem.productId}`}>
               {catalogItem.productName}
             </Link>
@@ -102,7 +102,7 @@ const CatalogItemCard: React.FC<{
             </DropdownMenu>
           )}
         </CardHeader>
-        <CardContent className="relative px-4">
+        <CardContent className="relative px-4 pb-3 lg:pb-6">
           <Link to={`/item/${catalogItem.productId}`}>
             {catalogItem.mainImage?.path ? (
               <img
@@ -130,7 +130,7 @@ const CatalogItemCard: React.FC<{
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex justify-between gap-2 px-4">
+        <CardFooter className="flex justify-between gap-2 px-4 pb-3 lg:pb-6">
           <CartAddButton
             productId={catalogItem.productId}
             catalogItem={catalogItem}

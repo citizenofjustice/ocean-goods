@@ -1,12 +1,13 @@
-import { Outlet } from "react-router-dom";
+import { ScanEye } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 
 import useRefreshToken from "@/hooks/useRefreshToken";
 import { useStore } from "@/store/root-store-context";
-import LoadingSpinner from "@/components/UI/LoadingSpinner";
 
-const PersistAuth = observer(() => {
+const PersistAuth: React.FC<{
+  children: React.ReactNode;
+}> = observer(({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { refresh } = useRefreshToken();
   const { auth } = useStore();
@@ -31,7 +32,17 @@ const PersistAuth = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <>{isLoading ? <LoadingSpinner /> : <Outlet />}</>;
+  return (
+    <>
+      {isLoading ? (
+        <div className="relative mr-4">
+          <ScanEye className="h-6 w-6 animate-pulse" />
+        </div>
+      ) : (
+        children
+      )}
+    </>
+  );
 });
 
 export default PersistAuth;

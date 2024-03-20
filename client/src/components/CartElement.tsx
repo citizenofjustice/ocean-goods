@@ -33,7 +33,7 @@ const CartElement: React.FC<{
 
   return (
     <>
-      <li className="bg-background-200 flex flex-col gap-1 rounded-xl border px-4 pb-2 pt-4 text-sm sm:text-base">
+      <li className="flex flex-col gap-1 rounded-xl border bg-background px-4 pb-2 pt-4 text-sm sm:text-base">
         <div className="flex flex-row gap-2">
           <div className="basis-1/4">
             <div className="min-w-[60px] overflow-hidden rounded">
@@ -64,7 +64,7 @@ const CartElement: React.FC<{
               <div className="flex items-center">
                 <Trash2
                   onClick={handleCartItemRemoval}
-                  className="text-primary-800 h-5 w-5 hover:cursor-pointer"
+                  className="h-5 w-5 hover:cursor-pointer"
                 />
               </div>
             </div>

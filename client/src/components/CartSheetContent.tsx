@@ -42,7 +42,7 @@ const CartSheetContent = observer(() => {
       <SheetFooter>
         {!sheet.isCartCustomerFormActive && (
           <div className="mt-4 flex w-full items-center justify-between gap-2 gap-2 px-4 py-3 text-sm vsm:text-base">
-            <p className="text-text-700 font-medium">
+            <p className="font-medium">
               Cумма заказа: {cart.totalCartPrice}&nbsp;руб.
             </p>
             <Button

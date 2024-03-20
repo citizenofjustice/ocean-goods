@@ -17,6 +17,7 @@ class AuthStore {
     accessToken: undefined,
     priveleges: undefined,
   };
+  authPending: boolean = true;
 
   // Getter to check if the user is authenticated
   get isAuth() {
@@ -32,8 +33,13 @@ class AuthStore {
     makeAutoObservable(this, {
       setAuthData: action,
       logoutUser: action,
+      setAuthPending: action,
     });
   }
+
+  setAuthPending = (value: boolean) => {
+    this.authPending = value;
+  };
 
   // Action to set the authentication data
   setAuthData = (authData: AuthData) => {

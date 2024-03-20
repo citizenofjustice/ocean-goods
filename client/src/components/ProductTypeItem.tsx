@@ -116,7 +116,7 @@ const ProductTypeItem: React.FC<{
 
   return (
     <>
-      <li className="bg-background-50 my-4 flex h-16 w-full items-center justify-between gap-2 rounded-lg border px-2 py-4">
+      <li className="my-4 flex h-16 w-full items-center justify-between gap-2 rounded-lg border bg-background px-2 py-4">
         <p className="justify-items-start px-2 text-start">
           {productType.type}
         </p>
@@ -128,7 +128,7 @@ const ProductTypeItem: React.FC<{
             onClose={() => setIsDialogOpen(false)}
             onSubmit={onSubmit}
           >
-            <FilePenLine className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
+            <FilePenLine className="h-6 w-6 hover:cursor-pointer" />
           </ProductTypeDialog>
           <ConfirmActionAlert
             question="Вы уверены что хотите удалить тип продукта?"
@@ -136,7 +136,7 @@ const ProductTypeItem: React.FC<{
             onConfirm={removeProductTypeHandler}
           >
             <Button className="p-0" variant="link" aria-label="Удалить тип">
-              <Trash2 className="text-primary-800 h-6 w-6 hover:cursor-pointer" />
+              <Trash2 className="h-6 w-6 hover:cursor-pointer" />
             </Button>
           </ConfirmActionAlert>
         </div>

@@ -175,7 +175,7 @@ const CatalogItemFormPage: React.FC<{
                 control={form.control}
                 name="description"
                 render={({ field }) => (
-                  <FormItem className="">
+                  <FormItem>
                     <FormLabel htmlFor="description">Описание:</FormLabel>
                     <FormControl>
                       <Textarea

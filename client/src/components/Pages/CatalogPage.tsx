@@ -240,7 +240,7 @@ const CatalogPage = observer(() => {
           />
         ) : (
           data.pages[0].totalRows > 0 && (
-            <div className="m-auto grid gap-4 px-2 vsm:grid-cols-2 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
+            <div className="m-auto grid justify-center gap-4 px-2 vsm:grid-cols-2 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
               {data.pages.map((group, i) => (
                 <Fragment key={i}>
                   {group.catalog.map((item: CatalogItemModel) => (

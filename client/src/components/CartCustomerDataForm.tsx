@@ -164,7 +164,7 @@ const CartCustomerDataForm: React.FC<{
               control={form.control}
               name="customerName"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel htmlFor="customerName">Имя заказчика:</FormLabel>
                   <FormControl>
                     <Input
@@ -210,7 +210,7 @@ const CartCustomerDataForm: React.FC<{
               control={form.control}
               name="customerPhone"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel htmlFor="customerPhone">
                     Телефонный номер:
                   </FormLabel>
@@ -229,7 +229,7 @@ const CartCustomerDataForm: React.FC<{
               control={form.control}
               name="customerEmail"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel htmlFor="customerEmail">
                     Электронная почта:
                   </FormLabel>

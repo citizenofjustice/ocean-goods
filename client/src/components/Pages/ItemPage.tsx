@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { AxiosError } from "axios";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/UI/shadcn/accordion";
 import { observer } from "mobx-react-lite";
 import { Helmet } from "react-helmet-async";
 import { useMediaQuery } from "usehooks-ts";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/UI/shadcn/card";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { Separator } from "@/components/UI/shadcn/separator";
 import { ScrollBar } from "@/components/UI/shadcn/scroll-area";
 
@@ -79,7 +84,7 @@ const ItemPage = observer(() => {
                 <div className="grid grid-cols-1 items-center gap-y-4 px-4 py-6 sm:max-w-xl lg:max-w-5xl lg:grid-cols-2 lg:gap-8">
                   <ItemPageMainImage catalogItem={catalogItem} />
                   <div>
-                    <p className="text-xl font-bold first-letter:capitalize">
+                    <p className="font-alegreya text-xl font-bold first-letter:capitalize">
                       {catalogItem.productName}
                     </p>
                     <div className="flex items-center space-x-3">
@@ -110,8 +115,8 @@ const ItemPage = observer(() => {
               {catalogItem && (
                 <div className="grid max-w-5xl grid-cols-2 items-center p-4 sm:gap-4 lg:gap-8">
                   <ItemPageMainImage catalogItem={catalogItem} />
-                  <div className="">
-                    <div className="my-4 flex justify-between gap-2">
+                  <div>
+                    <div className="my-4 flex items-center justify-between gap-2">
                       <div className="px-4">
                         <p className="text-xl font-bold first-letter:capitalize">
                           {catalogItem.productName}
@@ -193,10 +198,11 @@ const ItemPageProductInfo: React.FC<{
   nonMobile: boolean;
 }> = ({ catalogItem, catalogItemProductType, nonMobile }) => {
   const [descriptionIsOpen, setDescriptionIsOpen] = useState(false);
+  const mount = nonMobile ? true : undefined;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col space-y-1">
+    <div className="font-roboto space-y-4">
+      <div className="flex max-w-lg flex-col space-y-1">
         <span className="flex justify-between gap-2">
           <p className="font-medium">Тип продукта:</p>
           <p className="text-end">{catalogItemProductType}</p>
@@ -216,28 +222,31 @@ const ItemPageProductInfo: React.FC<{
           <p className="font-medium">Описание:</p>
         </span>
         <span className="flex justify-between gap-2">
-          <p className={`${descriptionIsOpen || nonMobile ? "" : "truncate"}`}>
-            {catalogItem.description}
-          </p>
-          {!descriptionIsOpen && !nonMobile && (
-            <p
-              role="button"
-              className="flex items-center opacity-70"
-              onClick={() => setDescriptionIsOpen(true)}
+          <Accordion type="single" className="w-full max-w-sm" collapsible>
+            <AccordionItem
+              className="last:border-0"
+              value="product-description"
             >
-              развернуть <ChevronDown className="h-4 w-4" />
-            </p>
-          )}
+              {!mount && (
+                <AccordionTrigger
+                  className="mb-2 flex w-full justify-between gap-4 py-0 font-normal"
+                  onClick={() => setDescriptionIsOpen((prev) => !prev)}
+                >
+                  <p
+                    className={`w-full truncate ${descriptionIsOpen ? "text-end" : "text-start"}`}
+                  >
+                    {descriptionIsOpen ? "Свернуть" : catalogItem.description}
+                  </p>
+                </AccordionTrigger>
+              )}
+              <AccordionContent forceMount={mount}>
+                <div className="whitespace-pre-line text-base">
+                  {catalogItem.description}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </span>
-        {descriptionIsOpen && !nonMobile && (
-          <p
-            role="button"
-            className="flex items-center justify-end opacity-70"
-            onClick={() => setDescriptionIsOpen(false)}
-          >
-            свернуть <ChevronUp className="h-4 w-4" />
-          </p>
-        )}
       </div>
     </div>
   );

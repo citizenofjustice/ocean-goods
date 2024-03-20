@@ -7,7 +7,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/UI/shadcn/alert-dialog";
