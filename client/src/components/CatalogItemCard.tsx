@@ -15,6 +15,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import imageNotFound from "@/assets/images/ImageNotFound.svg";
 import { useStore } from "@/store/root-store-context";
@@ -105,14 +106,15 @@ const CatalogItemCard: React.FC<{
         <CardContent className="relative px-4 pb-3 lg:pb-6">
           <Link to={`/item/${catalogItem.productId}`}>
             {catalogItem.mainImage?.path ? (
-              <img
-                className="rounded"
-                width={`${catalogItem.mainImage.width}px`}
-                height={`${catalogItem.mainImage.height}px`}
+              <LazyLoadImage
+                alt={"Фото продукта"}
+                effect="opacity"
+                width="100%"
+                height="100%"
                 src={`${import.meta.env.VITE_SERVER_URL}${
                   catalogItem.mainImage.path
                 }`}
-                alt="Фото продукта"
+                wrapperClassName={`w-[${catalogItem.mainImage.width}px] w-[${catalogItem.mainImage.height}px]`}
               />
             ) : (
               <img

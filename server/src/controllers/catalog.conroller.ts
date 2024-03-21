@@ -110,11 +110,11 @@ class CatalogController {
         }
       }
 
-      // Query the database for items in the catalog
-      const catalogQuery = await prisma.catalog.findMany(queryParameters);
-
-      // Count the total rows
-      const totalRows = await prisma.catalog.count();
+      // Query the database for items in the catalog and count the total rows
+      const [catalogQuery, totalRows] = await Promise.all([
+        prisma.catalog.findMany(queryParameters),
+        prisma.catalog.count(),
+      ]);
 
       // Calculate the cursor for the next page
       const nextPage = totalRows > pageNum * limitNum ? pageNum + 1 : null;
