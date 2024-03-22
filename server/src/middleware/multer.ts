@@ -98,9 +98,8 @@ export const convertToWebp = async (
 
       file.mimetype = "image/webp";
       file.path = filePath;
-
-      next();
     }
+    next();
   } catch (error) {
     next(error);
   }

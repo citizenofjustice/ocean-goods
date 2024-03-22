@@ -22,7 +22,6 @@ const useRefreshToken = () => {
         accessToken: response.data.accessToken,
         priveleges: response.data.priveleges,
       });
-      auth.setAuthPending(false);
       // Returning the new access token
       return response.data.accessToken;
     } catch (error) {

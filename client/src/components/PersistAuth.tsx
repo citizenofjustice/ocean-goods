@@ -17,10 +17,12 @@ const PersistAuth: React.FC<{
 
     const verifyRefreshToken = async () => {
       try {
+        auth.setAuthPending(true);
         await refresh();
       } catch (error) {
-        console.error(error);
+        auth.setAuthPending(false);
       } finally {
+        auth.setAuthPending(false);
         isMounted && setIsLoading(false);
       }
     };

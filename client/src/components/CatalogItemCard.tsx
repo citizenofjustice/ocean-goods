@@ -62,87 +62,90 @@ const CatalogItemCard: React.FC<{
   });
 
   return (
-    <>
-      <Card className="grid max-w-[18rem] content-between vsm:max-w-none">
-        <CardHeader className="flex flex-row items-start justify-between px-4 py-3 lg:py-6">
-          <p className="flex h-full w-full items-center justify-center text-center  font-medium leading-4 vsm:px-3">
-            <Link to={`item/${catalogItem.productId}`}>
-              {catalogItem.productName}
-            </Link>
-          </p>
-          {auth.isAuth && (
-            <DropdownMenu>
-              <DropdownMenuTrigger aria-label="Выпадаюшее меню продукта">
-                <MoreHorizontal className="w-5 w-5" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="translate-x-[-20%]">
+    <Card className="grid max-w-[18rem] content-between vsm:max-w-none">
+      <CardHeader className="flex flex-row items-start justify-between px-4 py-3 lg:py-6">
+        <p className="flex h-full w-full items-center justify-center text-center  font-medium leading-4 vsm:px-3">
+          <Link to={`item/${catalogItem.productId}`}>
+            {catalogItem.productName}
+          </Link>
+        </p>
+        {auth.isAuth && (
+          <DropdownMenu>
+            <DropdownMenuTrigger aria-label="Выпадаюшее меню продукта">
+              <MoreHorizontal className="w-5 w-5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="translate-x-[-20%]">
+              <DropdownMenuItem
+                className="gap-2"
+                onClick={() => navigate(`edit-item/${catalogItem.productId}`)}
+                aria-label="Редактировать продукт"
+              >
+                <SquarePen className="h-5 w-5" />
+                <p>Изменить</p>
+              </DropdownMenuItem>
+
+              <ConfirmActionAlert
+                onConfirm={() => mutation.mutate(catalogItem.productId)}
+                question="Вы уверены что хотите продолжить?"
+                message="Это действие навсегда удалит данную запись."
+              >
                 <DropdownMenuItem
                   className="gap-2"
-                  onClick={() => navigate(`edit-item/${catalogItem.productId}`)}
-                  aria-label="Редактировать продукт"
+                  onSelect={(e) => e.preventDefault()}
+                  aria-label="Удалить продукт"
                 >
-                  <SquarePen className="h-5 w-5" />
-                  <p>Изменить</p>
+                  <Trash2 className="h-5 w-5" />
+                  <p>Удалить</p>
                 </DropdownMenuItem>
-
-                <ConfirmActionAlert
-                  onConfirm={() => mutation.mutate(catalogItem.productId)}
-                  question="Вы уверены что хотите продолжить?"
-                  message="Это действие навсегда удалит данную запись."
-                >
-                  <DropdownMenuItem
-                    className="gap-2"
-                    onSelect={(e) => e.preventDefault()}
-                    aria-label="Удалить продукт"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                    <p>Удалить</p>
-                  </DropdownMenuItem>
-                </ConfirmActionAlert>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </ConfirmActionAlert>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </CardHeader>
+      <CardContent className="relative px-4 pb-3 lg:pb-6">
+        <Link to={`/item/${catalogItem.productId}`}>
+          {catalogItem.mainImage?.path ? (
+            <LazyLoadImage
+              alt={"Фото продукта"}
+              effect="opacity"
+              width={catalogItem.mainImage.width}
+              height={catalogItem.mainImage.height}
+              src={`${import.meta.env.VITE_SERVER_URL}${
+                catalogItem.mainImage.path
+              }`}
+              wrapperProps={{
+                style: {
+                  width: "100%",
+                  height: "100%",
+                },
+              }}
+            />
+          ) : (
+            <img
+              className="rounded"
+              width="300px"
+              height="300px"
+              src={imageNotFound}
+              alt="Изображение не найдено"
+            />
           )}
-        </CardHeader>
-        <CardContent className="relative px-4 pb-3 lg:pb-6">
-          <Link to={`/item/${catalogItem.productId}`}>
-            {catalogItem.mainImage?.path ? (
-              <LazyLoadImage
-                alt={"Фото продукта"}
-                effect="opacity"
-                width="100%"
-                height="100%"
-                src={`${import.meta.env.VITE_SERVER_URL}${
-                  catalogItem.mainImage.path
-                }`}
-                wrapperClassName={`w-[${catalogItem.mainImage.width}px] w-[${catalogItem.mainImage.height}px]`}
-              />
-            ) : (
-              <img
-                className="rounded"
-                width="300px"
-                height="300px"
-                src={imageNotFound}
-                alt="Изображение не найдено"
-              />
-            )}
-          </Link>
-          {catalogItem.discount > 0 && (
-            <div className="absolute bottom-8 right-8 flex items-center rounded-md bg-red-700 px-2 font-semibold text-white">
-              - {catalogItem.discount} %
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="flex justify-between gap-2 px-4 pb-3 lg:pb-6">
-          <CartAddButton
-            productId={catalogItem.productId}
-            catalogItem={catalogItem}
-          />
-          <span className="text-end font-semibold">
-            {catalogItem.finalPrice} руб.
-          </span>
-        </CardFooter>
-      </Card>
-    </>
+        </Link>
+        {catalogItem.discount > 0 && (
+          <div className="absolute bottom-8 right-8 flex items-center rounded-md bg-red-700 px-2 font-medium text-white">
+            - {catalogItem.discount} %
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className="flex justify-between gap-2 px-4 pb-3 lg:pb-6">
+        <CartAddButton
+          productId={catalogItem.productId}
+          catalogItem={catalogItem}
+        />
+        <span className="text-end font-medium">
+          {catalogItem.finalPrice} руб.
+        </span>
+      </CardFooter>
+    </Card>
   );
 });
 

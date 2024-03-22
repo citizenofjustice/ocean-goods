@@ -84,14 +84,14 @@ const ItemPage = observer(() => {
                 <div className="grid grid-cols-1 items-center gap-y-4 px-4 py-6 sm:max-w-xl lg:max-w-5xl lg:grid-cols-2 lg:gap-8">
                   <ItemPageMainImage catalogItem={catalogItem} />
                   <div>
-                    <p className="font-alegreya text-xl font-bold first-letter:capitalize">
+                    <p className="text-xl font-medium first-letter:capitalize">
                       {catalogItem.productName}
                     </p>
                     <div className="flex items-center space-x-3">
-                      <p className="font-medium line-through opacity-70">
+                      <p className="font-medium text-gray-500 line-through opacity-70">
                         {catalogItem.price} РУБ.
                       </p>
-                      <p className="font-medium">
+                      <p className="font-medium text-gray-500">
                         {catalogItem.finalPrice} РУБ. / ШТ.
                       </p>
                     </div>
@@ -118,7 +118,7 @@ const ItemPage = observer(() => {
                   <div>
                     <div className="my-4 flex items-center justify-between gap-2">
                       <div className="px-4">
-                        <p className="text-xl font-bold first-letter:capitalize">
+                        <p className="text-xl font-medium first-letter:capitalize">
                           {catalogItem.productName}
                         </p>
                         <div className="flex items-center space-x-3">
@@ -201,7 +201,7 @@ const ItemPageProductInfo: React.FC<{
   const mount = nonMobile ? true : undefined;
 
   return (
-    <div className="font-roboto space-y-4">
+    <div className="space-y-4">
       <div className="flex max-w-lg flex-col space-y-1">
         <span className="flex justify-between gap-2">
           <p className="font-medium">Тип продукта:</p>

@@ -7,7 +7,6 @@ const WebAppLogo = () => {
       <div className="logo-filter h-16 w-20">
         <img
           src={Logo}
-          loading="eager"
           className="h-fit w-fit"
           alt="website logo Ocean Goods"
         />

@@ -60,8 +60,6 @@ export const theme = {
       sm: "calc(var(--radius) - 4px)",
     },
     fontFamily: {
-      sans: ["var(--font-sans)", ...fontFamily.sans],
-      alegreya: ['"Alegreya Sans SC"', ...fontFamily.sans],
       roboto: ['"Roboto Slab"', ...fontFamily.serif],
     },
     keyframes: {

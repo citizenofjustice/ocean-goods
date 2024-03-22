@@ -24,9 +24,7 @@ const MenuList: React.FC<{
               to={item.path}
               className="flex flex-row items-center text-gray-900"
             >
-              <p className="font-alegreya mr-2 text-2xl font-medium">
-                {item.title}
-              </p>
+              <p className="mr-2 text-lg font-medium uppercase">{item.title}</p>
               {item.icon}
             </NavLink>
           </li>

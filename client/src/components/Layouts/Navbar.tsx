@@ -91,7 +91,7 @@ const Navbar = observer(() => {
               {/* small highlight with counter if cart is not empty */}
               {cart.totalQuantity > 0 && (
                 <div className="absolute right-[-4px] top-[-6px] min-h-[16px] min-w-[16px] rounded-full bg-red-500 px-[3px] outline outline-2 outline-white">
-                  <p className="text-center align-middle text-xs font-bold text-white">
+                  <p className="text-center align-middle text-xs font-medium text-white">
                     {cart.totalQuantity}
                   </p>
                 </div>

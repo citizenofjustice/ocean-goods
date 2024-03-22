@@ -7,6 +7,7 @@ import RootStore from "./store/root-store";
 import { RootStoreContext } from "./store/root-store-context";
 import Layout from "./components/Layouts/Layout";
 import RequireAuth from "./components/RequireAuth";
+import CatalogPage from "./components/Pages/CatalogPage";
 
 // lazy loaded components
 const Roles = lazy(() => import("./components/Pages/RolesPage"));
@@ -20,7 +21,6 @@ const RegisterUserPage = lazy(
 );
 const ContactPage = lazy(() => import("./components/Pages/ContactPage"));
 const Unauthorized = lazy(() => import("./components/Pages/Unauthorized"));
-const CatalogPage = lazy(() => import("./components/Pages/CatalogPage"));
 const NotFoundPage = lazy(() => import("./components/Pages/NotFoundPage"));
 const ProductTypesListPage = lazy(
   () => import("./components/Pages/ProductTypesListPage"),
