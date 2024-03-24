@@ -10,8 +10,10 @@ const ContactPage = () => {
           content="Контактные данные для связи по вопросам заказов и доставки."
         />
       </Helmet>
-      <p>Связаться по вопросам заказа можно по номеру:</p>
-      <div>Тел. 8-999-555-35-35</div>
+      <div className="mt-8 max-w-lg space-y-2 text-lg">
+        <p>По вопросам связанным с заказом можно связаться по номеру:</p>
+        <div>Тел.: {import.meta.env.VITE_CONTACT}</div>
+      </div>
     </div>
   );
 };

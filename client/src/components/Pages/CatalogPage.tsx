@@ -120,7 +120,7 @@ const CatalogPage = observer(() => {
           content="Каталог морских деликатесов и не только. Качественные консервы от отечественных производителей с доставкой по г. Зеленодольск."
         />
       </Helmet>
-      <div className="px-4">
+      <div className="space-y-2 px-4">
         <div
           className={`sticky top-0 z-30 m-auto flex max-w-screen-lg items-center justify-center bg-white`}
         >
