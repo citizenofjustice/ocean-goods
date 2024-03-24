@@ -62,9 +62,9 @@ const CatalogItemCard: React.FC<{
   });
 
   return (
-    <Card className="grid max-w-[18rem] content-between vsm:max-w-none">
+    <Card className="flex max-w-[18rem] flex-col justify-between vsm:max-w-none">
       <CardHeader className="flex flex-row items-start justify-between px-4 py-3 lg:py-6">
-        <p className="flex h-full w-full items-center justify-center text-center  font-medium leading-4 vsm:px-3">
+        <p className="flex h-full grow items-center justify-center text-center font-medium leading-4 vsm:px-3">
           <Link to={`item/${catalogItem.productId}`}>
             {catalogItem.productName}
           </Link>

@@ -32,7 +32,7 @@ class CatalogController {
         data: {
           productName: item.productName,
           productTypeId: Number(item.productTypeId),
-          inStock: !!item.inStock,
+          inStock: item.inStock === "true" ? true : false,
           description: item.description,
           price: Number(item.price),
           discount: Number(item.discount),

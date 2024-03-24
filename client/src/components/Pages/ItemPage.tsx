@@ -122,9 +122,11 @@ const ItemPage = observer(() => {
                           {catalogItem.productName}
                         </p>
                         <div className="flex items-center space-x-3">
-                          <p className="font-medium line-through opacity-70">
-                            {catalogItem.price} РУБ.
-                          </p>
+                          {catalogItem.discount > 0 && (
+                            <p className="font-medium line-through opacity-70">
+                              {catalogItem.price} РУБ.
+                            </p>
+                          )}
                           <p className="font-medium">
                             {catalogItem.finalPrice} РУБ. / ШТ.
                           </p>
