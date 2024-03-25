@@ -13,11 +13,11 @@ const CartAmontControls: React.FC<{
   onIncrement: () => void;
 }> = ({ currentValue, onDecrement, onIncrement }) => {
   return (
-    <div className="flex h-8 items-center rounded rounded-md border px-1 text-sm sm:h-10 sm:text-base">
+    <div className="flex h-8 w-[5.5rem] items-center justify-between overflow-hidden rounded rounded-md text-sm sm:text-base">
       <AmountContolButton buttonAction={onDecrement} ariaLabel="Убавить">
         <Minus className="h-3 w-3" />
       </AmountContolButton>
-      <span className="bg-background-0 mx-0 w-8 rounded px-2 text-center font-medium sm:w-10">
+      <span className="flex h-full w-full items-center justify-center bg-primary/10 text-center font-medium">
         {currentValue}
       </span>
       <AmountContolButton buttonAction={onIncrement} ariaLabel="Добавить">

@@ -73,7 +73,7 @@ const ProductTypesListPage = () => {
                     onClose={() => setIsDialogOpen(false)}
                     onOpen={() => setIsDialogOpen(true)}
                   >
-                    <PlusCircleIcon className="text-primary-800 h-8 w-8 hover:cursor-pointer" />
+                    <PlusCircleIcon className="h-8 w-8 hover:cursor-pointer" />
                   </ProductTypeDialog>
                 </div>
               </CardHeader>

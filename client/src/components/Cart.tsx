@@ -31,9 +31,7 @@ const Cart = observer(() => {
                 <CartElement key={item.cartItemId} cartItem={item} />
               ))
             ) : (
-              <p className="text-text-700 text-center font-medium">
-                Корзина пуста
-              </p>
+              <p className="text-center font-medium">Корзина пуста</p>
             )}
           </ul>
         </div>

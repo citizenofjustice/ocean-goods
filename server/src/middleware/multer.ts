@@ -35,12 +35,12 @@ function checkFileType(file: Express.Multer.File, cb: FileFilterCallback) {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path = `./public/images/${file.fieldname}/`;
+    const path = `./public/images/${file.fieldname}`;
     fs.mkdirSync(path, { recursive: true });
     return cb(null, path);
   },
   filename: function (req, file, cb) {
-    cb(null, randomUUID() + ".webp"); // Change the extension to .webp
+    cb(null, randomUUID() + path.extname(file.originalname)); // Change the extension to .webp
   },
 });
 
@@ -67,24 +67,37 @@ export const convertToWebp = async (
     if (file) {
       // Convert image to webp format and get metadata
       const image = sharp(file.path);
-      const webpImage = await image.webp().toBuffer();
-      const metadata = await image.metadata();
-      if (metadata.width && metadata.height) {
+      const resizedWebpImage = await image.resize(500).webp().toBuffer();
+      const converted = `${file.destination}/converted`;
+      fs.mkdirSync(converted, { recursive: true });
+      const filePath = `${converted}/${randomUUID()}.webp`;
+      // Write the converted image to the file system
+      await fs.promises.writeFile(filePath, resizedWebpImage);
+
+      const newImage = sharp(resizedWebpImage);
+      const newImageMeta = await newImage.metadata();
+      if (newImageMeta.width && newImageMeta.height) {
         // Attach the image dimensions to the request object
         req.imageDimensions = {
-          width: metadata.width,
-          height: metadata.height,
+          width: newImageMeta.width,
+          height: newImageMeta.height,
         };
       } else
         return res
           .status(400)
           .json({ error: { message: "Не удалось обработать изображение" } });
 
-      // Write the converted image to the file system
-      await fs.promises.writeFile(file.path, webpImage).catch((error) => {
-        console.error(`Error writing file: ${error.message}`);
+      // delete a file asynchronously
+      fs.unlink(file.path, (err) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log("File is deleted.");
+        }
       });
+
       file.mimetype = "image/webp";
+      file.path = filePath;
     }
     next();
   } catch (error) {

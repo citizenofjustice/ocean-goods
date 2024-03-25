@@ -4,6 +4,13 @@ import { NextFunction, Request, Response } from "express";
 
 import { prisma } from "../db";
 
+interface DecodedToken {
+  userInfo: {
+    user: string;
+    priveleges: number[];
+  };
+}
+
 class AuthController {
   // method to authenticate user
   async authUser(req: Request, res: Response, next: NextFunction) {
@@ -117,16 +124,34 @@ class AuthController {
   async handleRefreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       // Extract the refresh token from the cookies
-      const cookies = req.cookies;
+      const refreshToken = req.cookies?.token;
       // If no refresh token, return 401 status
-      if (!cookies?.token)
-        return res.status(401).json({
-          error: { message: "Доступ запрещен. Отсутствует токен авторизации" },
-        });
-      const refreshToken = cookies.token;
+      if (!refreshToken) {
+        return res.sendStatus(401); // Unauthorized
+      }
 
-      // Query the database for the user with the provided refresh token
-      const foundUser = await prisma.users.findFirst({
+      // Create a promise to verify the token
+      const verifyTokenPromise = new Promise<DecodedToken>(
+        (resolve, reject) => {
+          // Verify the token using jwt.verify
+          jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (error: any, decoded: any) => {
+              // If there's an error, reject the promise
+              if (error) {
+                reject(error);
+              } else {
+                // If no error, resolve the promise with the decoded token
+                resolve(decoded as DecodedToken);
+              }
+            }
+          );
+        }
+      );
+
+      // Create a promise to find the user in the database
+      const findUserPromise = prisma.users.findFirst({
         where: {
           refreshToken: refreshToken,
         },
@@ -143,55 +168,42 @@ class AuthController {
         },
       });
 
-      // Check if user exists
-      if (!foundUser)
-        return res.status(403).json({
-          error: {
-            message: "Возникла проблема при обновлении токена авторизации",
-          },
-        });
+      // Wait for both promises to complete
+      const [decoded, foundUser] = await Promise.all([
+        verifyTokenPromise,
+        findUserPromise,
+      ]);
 
+      // If no user is found or the user id doesn't match the one in the token, return 403 status
+      if (!foundUser || foundUser.id !== Number(decoded.userInfo.user)) {
+        return res.sendStatus(403); // Forbidden
+      }
+
+      // Extract the privilege ids from the user's roles
       const privelegeIds = foundUser.roles.rolePriveleges.map(
         (rp) => rp.privelegeId
       );
 
-      // Verify the refresh token
-      jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET,
-        (error: any, decoded: any) => {
-          // If token is invalid or user ID does not match, return 403 status
-          if (!decoded)
-            return res.status(403).json({
-              error: { message: "Доступ запрещен" },
-            });
-          if (error || foundUser.id !== decoded.userInfo.user)
-            return res.status(403).json({
-              error: { message: "Доступ запрещен" },
-            });
-
-          // Create a new access token
-          const accessToken = jwt.sign(
-            {
-              userInfo: {
-                user: decoded.userInfo.user,
-                priveleges: privelegeIds,
-              },
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            {
-              expiresIn: "10m",
-            }
-          );
-
-          // Send the response with the access token and user info
-          res.json({
-            user: foundUser.login,
-            accessToken,
+      // Create a new access token with the user info and privilege ids
+      const accessToken = jwt.sign(
+        {
+          userInfo: {
+            user: decoded.userInfo.user,
             priveleges: privelegeIds,
-          });
+          },
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "10m",
         }
       );
+
+      // Send the response with the user login, access token, and privilege ids
+      res.json({
+        user: foundUser.login,
+        accessToken,
+        priveleges: privelegeIds,
+      });
     } catch (error) {
       // Pass the error to the errorHandler middleware
       next(error);

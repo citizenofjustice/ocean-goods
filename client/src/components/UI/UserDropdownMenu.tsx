@@ -1,42 +1,47 @@
 import { nanoid } from "nanoid";
 import { observer } from "mobx-react-lite";
-import { useOnClickOutside } from "usehooks-ts";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { List, LogOut, Plus, Settings, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { MenuItem } from "@/types/MenuItem";
 import { useStore } from "@/store/root-store-context";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./shadcn/dropdown-menu";
 
 const menuItems: MenuItem[] = [
   {
     id: nanoid(),
     title: "Создать",
     path: "/new-item",
-    icon: <Plus className="h-6 w-6" />,
+    icon: <Plus className="h-5 w-5" />,
   },
   {
     id: nanoid(),
     title: "Управление",
     path: "/dashboard",
-    icon: <Settings className="h-6 w-6" />,
+    icon: <Settings className="h-5 w-5" />,
   },
   {
     id: nanoid(),
     title: "Заказы",
     path: "/orders",
-    icon: <List className="h-6 w-6" />,
+    icon: <List className="h-5 w-5" />,
   },
 ];
 
 const UserDropdownMenu = observer(() => {
   const [isShown, setIsShown] = useState<boolean>(false);
-  const dropdownRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  useOnClickOutside(dropdownRef, () => setIsShown(false));
   const { auth } = useStore();
 
   useEffect(() => {
@@ -53,51 +58,42 @@ const UserDropdownMenu = observer(() => {
 
   return (
     <>
-      <button
-        className="flex h-fit rounded-full bg-primary p-2 text-sm"
-        type="button"
-        onClick={() => setIsShown(true)}
-      >
-        <span className="sr-only">Открыть меню пользователя</span>
-        <User className="h-4 w-4 text-secondary" />
-      </button>
-
-      {isShown && (
-        <div
-          ref={dropdownRef}
-          className="absolute left-[-6.5rem] top-[2.5rem] z-10 w-44 rounded-lg bg-primary px-2 shadow-lg"
+      <DropdownMenu open={isShown} onOpenChange={setIsShown}>
+        <DropdownMenuTrigger className="flex h-fit rounded-full bg-primary p-2 text-sm">
+          <span className="sr-only">Открыть меню пользователя</span>
+          <User className="h-4 w-4 text-secondary" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          sideOffset={10}
+          alignOffset={-30}
+          className="top-0 bg-primary text-white"
         >
-          <div className="divide-y divide-secondary">
-            <div className="flex items-center px-4 py-3 text-sm text-secondary">
-              <p className="truncate font-medium first-letter:capitalize">
-                {auth.authData.user}
-              </p>
-            </div>
-            <ul className="py-2 text-sm text-secondary">
-              {menuItems.map((item: MenuItem) => (
-                <li className="flex items-center px-4 " key={item.id}>
-                  {item.icon}
-                  <Link
-                    to={item.path}
-                    className="block px-2 py-2 hover:text-white"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center px-4 py-2 text-secondary hover:text-white">
-              <LogOut className="h-6 w-6" />
-              <span
-                onClick={handleLogout}
-                className="block px-2 py-2 text-sm  hover:cursor-pointer"
-              >
-                Выйти
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+          <DropdownMenuLabel>
+            <p className="truncate font-medium first-letter:capitalize">
+              {auth.authData.user}
+            </p>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {menuItems.map((item: MenuItem) => (
+            <Link key={item.id} to={item.path}>
+              <DropdownMenuItem className="gap-2 hover:cursor-pointer">
+                {item.icon}
+                {item.title}
+              </DropdownMenuItem>
+            </Link>
+          ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            role="button"
+            onClick={handleLogout}
+            className="gap-2 hover:cursor-pointer"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Выйти</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 });

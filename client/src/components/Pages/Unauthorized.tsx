@@ -17,7 +17,7 @@ const Unauthorized = () => {
         />
       </Helmet>
       <div className="flex h-[60vh] flex-col items-center justify-center px-6">
-        <p className="text-xl font-bold">Нет доступа</p>
+        <p className="text-xl font-medium">Нет доступа</p>
         <br />
         <p className="text-center">
           Пользователю с вашими правами не доступна данная страница

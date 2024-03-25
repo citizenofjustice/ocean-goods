@@ -65,6 +65,26 @@
   }
 }
 
+@font-face {
+  font-family: "Roboto Slab";
+  src: url("/fonts/RobotoSlab-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto Slab";
+  src: url("/fonts/RobotoSlab-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: "Roboto Slab", "ui-serif", "Georgia", "Cambria", "serif";
+}
+
 #root,
 .app {
   padding: 0;
@@ -86,25 +106,15 @@
 .main-abs {
   position: absolute;
   inset: 4.5rem 0px 0px 0px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* class for highlighting active route */
 #nav-menu a.active {
   font-weight: bold;
   text-decoration: underline;
-}
-
-#dashboard-nav a.active {
-  background-color: oklch(93.05% 0.015 212);
-}
-
-/* datepicker */
-.datepicker-w-full,
-.datepicker-w-full > div.react-datepicker-wrapper,
-.datepicker-w-full > div > div.react-datepicker__input-container,
-.datepicker-w-full > div > div.react-datepicker__input-container input {
-  width: 100%;
+  text-decoration-color: hsl(221, 83%, 53%);
 }
 
 .success {
@@ -146,17 +156,4 @@
     rgba(8, 42, 115, 0.804359243697479) 50%,
     rgba(58, 114, 236, 0.5018382352941176) 100%
   );
-}
-
-#order-page-h-scroll::-webkit-scrollbar-track {
-  margin-top: 5px;
-}
-
-#order-page-h-scroll::-webkit-scrollbar {
-  height: 8px;
-}
-
-#order-page-h-scroll::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: #44717d;
 }

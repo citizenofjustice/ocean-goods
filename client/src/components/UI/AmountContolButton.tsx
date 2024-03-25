@@ -14,7 +14,7 @@ const AmountContolButton: React.FC<{
     <Button
       type="button"
       variant="outline"
-      className="h-5 bg-secondary p-1 sm:h-8 sm:p-2"
+      className="h-8 rounded-none border-0 bg-primary p-2 text-white hover:bg-primary hover:text-white focus:bg-primary focus:text-white"
       onClick={buttonAction}
       aria-label={ariaLabel}
     >

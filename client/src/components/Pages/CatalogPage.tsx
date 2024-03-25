@@ -1,11 +1,9 @@
 import { AxiosError } from "axios";
 import { observer } from "mobx-react-lite";
 import { Helmet } from "react-helmet-async";
-import { Input } from "@/components/UI/shadcn/input";
-import { ChevronDownCircle, Search } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useDebounce, useIntersectionObserver } from "usehooks-ts";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import axios from "@/api/axios";
 import { SortBy } from "@/types/SortBy";
@@ -14,58 +12,13 @@ import ErrorPage from "@/components/Pages/ErrorPage";
 import CatalogItemModel from "@/classes/CatalogItemModel";
 import CatalogItemCard from "@/components/CatalogItemCard";
 import LoadingSpinner from "@/components/UI/LoadingSpinner";
-import SimpleSelect, { SelectOptions } from "@/components/UI/SimpleSelect";
+import CatalogPageFilter from "../CatalogPageFilter";
 
 // Initial values for sorting
 const initSortValues: SortBy = {
   orderBy: "productName",
   direction: "asc",
 };
-
-interface SortSelectOption extends SelectOptions {
-  dbField: string;
-  direction: "asc" | "desc";
-}
-
-// Options for sorting
-const sortOptions: SortSelectOption[] = [
-  {
-    value: "productNameUp",
-    dbField: "productName",
-    content: "по названию (возр.)",
-    direction: "asc",
-  },
-  {
-    value: "productNameDown",
-    dbField: "productName",
-    content: "по названию (убыв.)",
-    direction: "desc",
-  },
-  {
-    value: "createdAtUp",
-    dbField: "createdAt",
-    content: "по дате (возр.)",
-    direction: "asc",
-  },
-  {
-    value: "createdAtDown",
-    dbField: "createdAt",
-    content: "по дате (убыв.)",
-    direction: "desc",
-  },
-  {
-    value: "finalPriceUp",
-    dbField: "finalPrice",
-    content: "по цене (возр.)",
-    direction: "asc",
-  },
-  {
-    value: "finalPriceDown",
-    dbField: "finalPrice",
-    content: "по цене (убыв.)",
-    direction: "desc",
-  },
-];
 
 /**
  * Component for rendering Catalog page dividided into grid
@@ -76,10 +29,6 @@ const CatalogPage = observer(() => {
   const [filterBy, setFilterBy] = useState<string>("");
   const debounceFilter = useDebounce(filterBy, 750);
   const [sortBy, setSortBy] = useState(initSortValues);
-  const [isFiltersShown, setIsFiltersShown] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string>("createdAtDown");
-  const queryClient = useQueryClient();
-  const filtersRef = useRef<HTMLDivElement>(null);
 
   // IntersectionObserver for inifinite page loading
   const entry = useIntersectionObserver(ref, { threshold: 0.5 });
@@ -162,15 +111,6 @@ const CatalogPage = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, isFetching]);
 
-  // Handler for select change
-  const handleSelect = async (value: string) => {
-    setSelectedOption(value);
-    await queryClient.invalidateQueries({ queryKey: ["orders"] });
-    const option = sortOptions.find((item) => item.value === value);
-    if (!option) throw new Error("Could not find seleted option");
-    setSortBy({ orderBy: option.dbField, direction: option.direction });
-  };
-
   return (
     <>
       <Helmet>
@@ -180,56 +120,16 @@ const CatalogPage = observer(() => {
           content="Каталог морских деликатесов и не только. Качественные консервы от отечественных производителей с доставкой по г. Зеленодольск."
         />
       </Helmet>
-      <div className="px-4">
+      <div className="space-y-2 px-4">
         <div
           className={`sticky top-0 z-30 m-auto flex max-w-screen-lg items-center justify-center bg-white`}
         >
-          <div className="mb-4">
-            <span
-              className="mb-2 mt-4 flex justify-center gap-2 text-gray-500 transition delay-150 ease-in-out hover:cursor-pointer"
-              onClick={() => setIsFiltersShown((prevVal) => !prevVal)}
-            >
-              <ChevronDownCircle
-                className={`transition-transform duration-300 ${
-                  isFiltersShown ? "rotate-180" : ""
-                }`}
-              />
-              Показать фильтр
-            </span>
-            <div
-              className="overflow-y-hidden transition-all duration-300"
-              style={{
-                height: isFiltersShown
-                  ? filtersRef.current?.offsetHeight || 0
-                  : 0,
-              }}
-            >
-              <div
-                className="grid grid-cols-1 items-center gap-0 vsm:grid-cols-2 vsm:gap-4 "
-                ref={filtersRef}
-              >
-                <div className="relative flex items-center justify-start p-2">
-                  <Input
-                    placeholder={`Поиск по названию`}
-                    value={filterBy}
-                    onChange={(e) => setFilterBy(e.target.value)}
-                    className="max-w-[260px] pr-8"
-                  />
-                  <Search className="absolute right-4 top-[50%] h-5 w-5 translate-y-[-50%]" />
-                </div>
-                <div className="flex flex-col items-center justify-start gap-2 p-2 vvsm:flex-row">
-                  <p className="text-sm font-medium">Сортировка:</p>
-                  <SimpleSelect
-                    options={sortOptions}
-                    placeholder="Сортировать по"
-                    selectedOption={selectedOption}
-                    onOptionSelect={handleSelect}
-                    ariaLabel="Сортировка каталога"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <CatalogPageFilter
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            filterBy={filterBy}
+            setFilterBy={setFilterBy}
+          />
         </div>
         {status === "pending" ? (
           <LoadingSpinner />
@@ -240,7 +140,7 @@ const CatalogPage = observer(() => {
           />
         ) : (
           data.pages[0].totalRows > 0 && (
-            <div className="m-auto grid gap-4 px-2 vsm:grid-cols-2 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
+            <div className="m-auto flex flex-col items-center justify-center gap-4 space-y-4 px-2 vsm:grid vsm:grid-cols-2 vsm:items-stretch vsm:space-y-0 sm:max-w-screen-lg sm:grid-cols-3 lg:grid-cols-4">
               {data.pages.map((group, i) => (
                 <Fragment key={i}>
                   {group.catalog.map((item: CatalogItemModel) => (
@@ -252,7 +152,7 @@ const CatalogPage = observer(() => {
           )
         )}
         <div className="h-8 w-full" ref={ref} />
-      </div>{" "}
+      </div>
     </>
   );
 });

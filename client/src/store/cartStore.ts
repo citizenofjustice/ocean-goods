@@ -5,7 +5,7 @@ import CatalogItemModel from "@/classes/CatalogItemModel";
 
 // Loading cart items from local storage
 const cartItemsFromLStorage: CartItemModel[] = JSON.parse(
-  localStorage.getItem("cart") || "[]"
+  localStorage.getItem("cart") || "[]",
 );
 
 // creating store class for keeping cart items
@@ -27,7 +27,7 @@ class CartStore {
         (typeof currentValue.totalProductPrice === "number"
           ? currentValue.totalProductPrice
           : 0),
-      initialValue
+      initialValue,
     );
     return summedPrice;
   }
@@ -45,8 +45,8 @@ class CartStore {
           item.price,
           item.discount,
           item.kcal,
-          item.mainImage
-        )
+          item.mainImage,
+        ),
     );
 
     // Making all properties of this class observable and actions for MobX
@@ -64,7 +64,7 @@ class CartStore {
   // Method to find a cart item by product ID
   findCartItem(productId: number) {
     const cartItem: CartItemModel | undefined = this.cartItems.find(
-      (item) => item.productId === productId
+      (item) => item.productId === productId,
     );
     return cartItem;
   }
@@ -87,7 +87,7 @@ class CartStore {
           product.price,
           product.discount,
           product.kcal,
-          product.mainImage
+          product.mainImage,
         );
         this.cartItems.push(newItem);
       } catch (error) {
@@ -100,7 +100,7 @@ class CartStore {
   removeItem(cartItemId: string) {
     try {
       const filteredItems = this.cartItems.filter(
-        (item) => item.cartItemId !== cartItemId
+        (item) => item.cartItemId !== cartItemId,
       );
       this.cartItems = filteredItems;
       return this.cartItems;
@@ -130,22 +130,6 @@ class CartStore {
       this.cartItems = [];
     } catch (error) {
       console.error("Failed to clear cart:", error);
-    }
-  }
-
-  // Method to compare the cart items with the catalog items
-  compare(catalogItemsProductIds: number[]) {
-    try {
-      if (this.cartItems.length === 0) return;
-      const removedFromCatalog = this.cartItems.filter(
-        (el) => catalogItemsProductIds.indexOf(el.productId) === -1
-      );
-      removedFromCatalog.map((item) => {
-        this.removeItem(item.cartItemId);
-      });
-      localStorage.setItem("cart", JSON.stringify(this.cartItems));
-    } catch (error) {
-      console.error("Failed to compare cart and catalog items:", error);
     }
   }
 }

@@ -6,8 +6,8 @@ import { HelmetProvider } from "react-helmet-async";
 import RootStore from "./store/root-store";
 import { RootStoreContext } from "./store/root-store-context";
 import Layout from "./components/Layouts/Layout";
-import PersistAuth from "./components/PersistAuth";
 import RequireAuth from "./components/RequireAuth";
+import CatalogPage from "./components/Pages/CatalogPage";
 
 // lazy loaded components
 const Roles = lazy(() => import("./components/Pages/RolesPage"));
@@ -21,7 +21,6 @@ const RegisterUserPage = lazy(
 );
 const ContactPage = lazy(() => import("./components/Pages/ContactPage"));
 const Unauthorized = lazy(() => import("./components/Pages/Unauthorized"));
-const CatalogPage = lazy(() => import("./components/Pages/CatalogPage"));
 const NotFoundPage = lazy(() => import("./components/Pages/NotFoundPage"));
 const ProductTypesListPage = lazy(
   () => import("./components/Pages/ProductTypesListPage"),
@@ -47,65 +46,52 @@ function App() {
           <QueryClientProvider client={queryClient}>
             <BrowserRouter>
               <Routes>
-                <Route element={<PersistAuth />}>
-                  <Route path="/" element={<Layout />}>
-                    {/* public routes */}
-                    <Route index element={<CatalogPage />} />
-                    <Route path="auth" element={<AuthPage />} />
-                    <Route path="item/:id" element={<ItemPage />} />
-                    <Route path="contact" element={<ContactPage />} />
-                    <Route path="unauthorized" element={<Unauthorized />} />
+                <Route path="/" element={<Layout />}>
+                  {/* public routes */}
+                  <Route index element={<CatalogPage />} />
+                  <Route path="auth" element={<AuthPage />} />
+                  <Route path="item/:id" element={<ItemPage />} />
+                  <Route path="contact" element={<ContactPage />} />
+                  <Route path="unauthorized" element={<Unauthorized />} />
 
-                    {/* protected routes */}
-                    <Route path="dashboard" element={<DashboardPage />}>
-                      <Route
-                        element={<RequireAuth allowedPriveleges={[1, 3]} />}
-                      >
-                        <Route
-                          path="product-types"
-                          element={<ProductTypesListPage />}
-                        />
-                      </Route>
-                      <Route
-                        element={<RequireAuth allowedPriveleges={[1, 2]} />}
-                      >
-                        <Route path="roles" element={<Roles />} />
-                      </Route>
-                      <Route
-                        element={<RequireAuth allowedPriveleges={[1, 2]} />}
-                      >
-                        <Route path="priveleges" element={<PrivelegesPage />} />
-                      </Route>
-                      <Route
-                        element={<RequireAuth allowedPriveleges={[1, 4]} />}
-                      >
-                        <Route
-                          path="register-user"
-                          element={<RegisterUserPage />}
-                        />
-                      </Route>
-                    </Route>
+                  {/* protected routes */}
+                  <Route path="dashboard" element={<DashboardPage />}>
                     <Route element={<RequireAuth allowedPriveleges={[1, 3]} />}>
                       <Route
-                        path="new-item"
-                        element={<CatalogItemFormPage />}
+                        path="product-types"
+                        element={<ProductTypesListPage />}
                       />
                     </Route>
-                    <Route element={<RequireAuth allowedPriveleges={[1, 3]} />}>
+                    <Route element={<RequireAuth allowedPriveleges={[1, 2]} />}>
+                      <Route path="roles" element={<Roles />} />
+                    </Route>
+                    <Route element={<RequireAuth allowedPriveleges={[1, 2]} />}>
+                      <Route path="priveleges" element={<PrivelegesPage />} />
+                    </Route>
+                    <Route element={<RequireAuth allowedPriveleges={[1, 4]} />}>
                       <Route
-                        path="edit-item/:id"
-                        element={<EditCatalogItemPage />}
+                        path="register-user"
+                        element={<RegisterUserPage />}
                       />
                     </Route>
-                    <Route element={<RequireAuth allowedPriveleges={[1, 5]} />}>
-                      <Route path="orders" element={<OrdersListPage />} />
-                      <Route path="orders/:id" element={<OrderPage />} />
-                    </Route>
-
-                    {/* no route matched */}
-                    <Route path="*" element={<NotFoundPage />} />
+                  </Route>
+                  <Route element={<RequireAuth allowedPriveleges={[1, 3]} />}>
+                    <Route path="new-item" element={<CatalogItemFormPage />} />
+                  </Route>
+                  <Route element={<RequireAuth allowedPriveleges={[1, 3]} />}>
+                    <Route
+                      path="edit-item/:id"
+                      element={<EditCatalogItemPage />}
+                    />
+                  </Route>
+                  <Route element={<RequireAuth allowedPriveleges={[1, 5]} />}>
+                    <Route path="orders" element={<OrdersListPage />} />
+                    <Route path="orders/:id" element={<OrderPage />} />
                   </Route>
                 </Route>
+
+                {/* no route matched */}
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </BrowserRouter>
           </QueryClientProvider>

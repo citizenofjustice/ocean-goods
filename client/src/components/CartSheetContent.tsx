@@ -17,7 +17,7 @@ const CartSheetContent = observer(() => {
     <>
       <SheetHeader>
         <div className="flex justify-between">
-          <div className="ml-4 text-lg font-semibold">Корзина:</div>
+          <div className="ml-4 text-lg font-medium">Корзина:</div>
           <SheetClose className="mr-4 rounded-sm ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-secondary vsm:mr-0">
             <X className="h-6 w-6" />
             <span className="sr-only">Close</span>
@@ -42,7 +42,7 @@ const CartSheetContent = observer(() => {
       <SheetFooter>
         {!sheet.isCartCustomerFormActive && (
           <div className="mt-4 flex w-full items-center justify-between gap-2 gap-2 px-4 py-3 text-sm vsm:text-base">
-            <p className="text-text-700 font-medium">
+            <p className="font-medium">
               Cумма заказа: {cart.totalCartPrice}&nbsp;руб.
             </p>
             <Button
