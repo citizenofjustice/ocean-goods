@@ -1,6 +1,6 @@
 # OceanGoods [![Static Badge](https://img.shields.io/badge/Open_website-grey)](https://ocean-goods.ru)
 
-A full-stack e-commerce website for selling fish products built with [![Static Badge](https://img.shields.io/badge/PostgreSQL-%2331648c)]() ![Static Badge](https://img.shields.io/badge/Express-%237e7e7e) ![Static Badge](https://img.shields.io/badge/React-%23149eca) and ![Static Badge](https://img.shields.io/badge/Node-%23417e38).
+A full-stack e-commerce website for selling fish products built with [![Static Badge](https://img.shields.io/badge/PostgreSQL-%2331648c)](https://www.postgresql.org) [![Static Badge](https://img.shields.io/badge/Express-%237e7e7e)](https://expressjs.com) [![Static Badge](https://img.shields.io/badge/React-%23149eca)](https://react.dev) and [![Static Badge](https://img.shields.io/badge/Node-%23417e38)](https://nodejs.org).
 
 ## Features
   - **JWT cookie authentication:** Utilizes JSON Web Tokens for secure data transmission with expiration times and httpOnly.
