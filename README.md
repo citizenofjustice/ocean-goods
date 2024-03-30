@@ -13,6 +13,49 @@ A full-stack e-commerce website for selling fish products built with [![Static B
   - **Form validation:** Validation of forms with Zod - TypeScript-first schema validation.
   - **MobX state management:** Allows for dynamic state changes across the app without prop drilling.
 
+## Screen recordings
+  <details>
+  <summary>Mobile layout</summary>
+    <table>
+      <tbody>
+        <tr>
+          <td align="center">
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/ef2933b5-3a6d-478a-b8e8-5d64396a7ea2"></video>           
+          </td>
+          <td align="center">
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/a2c2b1f7-d7ce-4f63-b606-6748a6e1caa9"></video>           
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/fac5f016-6ade-4639-ab05-4127f503a521"></video>           
+          </td>
+          <td align="center">
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/cdaa1628-d197-4452-b715-120c30a32783
+"></video>           
+          </td>
+        </tr>
+  </details>
+  
+  <details>
+  <summary>Desktop layout</summary>
+    <table>
+      <tbody>
+        <tr>
+          <td align="center">
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/47130d83-6acc-4ec0-ad3d-e63099c4844c"></video>
+          </td>
+          <td align="center">
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/1212c7ca-5c08-4067-acf7-ee75f96bf391"></video>
+          </td>
+          <td align="center">
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/66b67518-5335-4aa2-b56b-bffa848515ff"></video>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </details>
+
 ## Tech
   - [React](https://react.dev)
   - [Node.js](https://nodejs.org)
