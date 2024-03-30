@@ -42,7 +42,7 @@ A full-stack e-commerce website for selling fish products built with [![Static B
             <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/ef2933b5-3a6d-478a-b8e8-5d64396a7ea2"></video>           
           </td>
           <td align="center">
-            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/a2c2b1f7-d7ce-4f63-b606-6748a6e1caa9"></video>           
+            <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/26346a03-8f50-4d13-94ff-38846ea3c16c"></video>           
           </td>
           <td align="center">
             <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/fac5f016-6ade-4639-ab05-4127f503a521"></video>           
