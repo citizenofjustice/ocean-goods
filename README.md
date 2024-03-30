@@ -34,7 +34,7 @@ A full-stack e-commerce website for selling fish products built with [![Static B
   </details>
 
   <details>
-  <summary>Mobile layout</summary>
+    <summary>Mobile layout</summary>
     <table>
       <tbody>
         <tr>
@@ -51,6 +51,8 @@ A full-stack e-commerce website for selling fish products built with [![Static B
             <video src="https://github.com/citizenofjustice/ocean-goods/assets/13840466/cdaa1628-d197-4452-b715-120c30a32783"></video>           
           </td>
         </tr>
+      </tbody>
+    </table>
   </details>
   
   
