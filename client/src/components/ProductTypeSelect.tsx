@@ -85,7 +85,13 @@ const ProductTypeSelect: React.FC<ProductTypeSelectProps> = ({ control }) => {
             </FormControl>
             <FormMessage />
             {!isLoading && !isError && (
-              <SelectContent key={Math.random()}>
+              <SelectContent
+                ref={(ref) =>
+                  // temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
+                  ref?.addEventListener("touchend", (e) => e.preventDefault())
+                }
+                key={Math.random()}
+              >
                 {data.map((item: SelectValueProp) => (
                   <SelectItem key={item.id} value={String(item.id)}>
                     {item.optionValue}

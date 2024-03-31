@@ -141,7 +141,14 @@ const RegisterUserPage = () => {
                       </FormControl>
                       <FormMessage />
                       {!isLoading && !isError && (
-                        <SelectContent>
+                        <SelectContent
+                          ref={(ref) =>
+                            // temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
+                            ref?.addEventListener("touchend", (e) =>
+                              e.preventDefault(),
+                            )
+                          }
+                        >
                           {data.map((item: SelectValueProp) => (
                             <SelectItem key={item.id} value={item.id}>
                               {item.optionValue}
