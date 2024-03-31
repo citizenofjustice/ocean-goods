@@ -195,7 +195,14 @@ const CartCustomerDataForm: React.FC<{
                       </SelectTrigger>
                     </FormControl>
                     <FormMessage />
-                    <SelectContent>
+                    <SelectContent
+                      ref={(ref) =>
+                        // temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
+                        ref?.addEventListener("touchend", (e) =>
+                          e.preventDefault(),
+                        )
+                      }
+                    >
                       {contactOptions.map((item: ContactOption, index) => (
                         <SelectItem key={index} value={item.value}>
                           {item.content}
